@@ -1,26 +1,20 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
+import { Button, message } from 'antd';
+import 'antd/dist/antd.less';
+import Login from './pages/login/Login';
+import admin from './pages/admin/admin';
+import { BrowserRouter, Route } from 'react-router-dom';
+class App extends Component {
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+	render() {
+		return (
+			<BrowserRouter>
+				<Route path="/login" component={Login}></Route>
+				<Route path="/" component={admin}></Route>
+			</BrowserRouter>
+		);
+	}
 }
 
 export default App;
