@@ -12,9 +12,9 @@ import { StoreValue } from 'antd/lib/form/interface';
  */
 
 export default class Login extends Component {
-	onFinish = (values: { username: string; password: string }) => {
-		console.log(values);
-	};
+	// onFinish = (values: { username: string; password: string }) => {
+	// 	console.log(values);
+	// };
 
 	validatePwd = (rule: RuleObject, value: StoreValue) => {
 		if (!value) {
@@ -27,9 +27,12 @@ export default class Login extends Component {
 			return Promise.resolve();
 		}
 	};
-	onFinishFailed = (errorInfo: any): void => {
-		console.log(errorInfo);
+	onFinishFailed = (errorInfo: any) => {
+    
 	};
+	onFinish = (values: { username: string; password: string }) => {
+
+  };
 
 	private loginFromCom() {
 		return (
