@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import './login.less';
 import logo from './images/logo.png';
-import { Form, Input, Button, Checkbox } from 'antd';
+import { Form, Input, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { RuleObject } from 'antd/lib/form';
 import { StoreValue } from 'antd/lib/form/interface';
+import { reqLogin } from '../../api';
 
 /**
  *  登录的路由组件
@@ -12,9 +13,9 @@ import { StoreValue } from 'antd/lib/form/interface';
  */
 
 export default class Login extends Component {
-	onFinish = (values: { username: string; password: string }) => {
-		console.log(values);
-	};
+	// onFinish = (values: { username: string; password: string }) => {
+	// 	console.log(values);
+	// };
 
 	validatePwd = (rule: RuleObject, value: StoreValue) => {
 		if (!value) {
@@ -27,8 +28,12 @@ export default class Login extends Component {
 			return Promise.resolve();
 		}
 	};
-	onFinishFailed = (errorInfo: any): void => {
-		console.log(errorInfo);
+	onFinishFailed = (errorInfo: any) => {
+		console.log('错了', errorInfo);
+	};
+	onFinish = async (values: { username: string; password: string }) => {
+		const response = await reqLogin(values.username, values.password);
+		console.log(response.data);
 	};
 
 	private loginFromCom() {
