@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import './login.less';
 import logo from './images/logo.png';
-import { Form, Input, Button, Checkbox } from 'antd';
+import { Form, Input, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { RuleObject } from 'antd/lib/form';
 import { StoreValue } from 'antd/lib/form/interface';
+import { reqLogin } from '../../api';
 
 /**
  *  登录的路由组件
@@ -28,11 +29,12 @@ export default class Login extends Component {
 		}
 	};
 	onFinishFailed = (errorInfo: any) => {
-    
+		console.log('错了', errorInfo);
 	};
-	onFinish = (values: { username: string; password: string }) => {
-
-  };
+	onFinish = async (values: { username: string; password: string }) => {
+		const response = await reqLogin(values.username, values.password);
+		console.log(response.data);
+	};
 
 	private loginFromCom() {
 		return (
