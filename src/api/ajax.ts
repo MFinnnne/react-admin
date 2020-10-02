@@ -1,7 +1,5 @@
 import { message } from 'antd';
-import { rejects } from 'assert';
 import Axios from 'axios';
-import { promises, resolve } from 'dns';
 
 export default function ajax<T>(url: string, data: {}, method: string = 'GET'): Promise<T> {
 	return new Promise((resolve, rejects) => {
@@ -12,8 +10,8 @@ export default function ajax<T>(url: string, data: {}, method: string = 'GET'): 
 			promise = Axios.post(url, data);
 		}
 		promise
-			.then((response) => {
-				resolve(response);
+			.then((response:any) => {
+				resolve(response.data);
 			})
 			.catch((error) => {
 				message.error('请求出错：' + error.message);

@@ -16,10 +16,12 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "suppressImplicitAnyIndexErrors": true,
     "noEmit": true,
     "jsx": "react"
   },
   "include": [
-    "src", "craco.config.js"
+    "src",
+    "craco.config.js"
   ]
 }
