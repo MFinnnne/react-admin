@@ -1,18 +1,25 @@
 import React, { Component } from 'react';
 import './login.less';
-import logo from './images/logo.png';
-import { Form, Input, Button } from 'antd';
+import logo from '../../assets/images/logo.png';
+import { Form, Input, Button, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { RuleObject } from 'antd/lib/form';
 import { StoreValue } from 'antd/lib/form/interface';
 import { reqLogin } from '../../api';
+import { Redirect, RouteComponentProps } from 'react-router';
+import StorageUtils from '../../utils/StorageUtils';
+import MemeoryUtils from '../../utils/MemeoryUtils';
 
 /**
  *  登录的路由组件
  *  Author: MFine
  */
 
-export default class Login extends Component {
+interface IProps {}
+
+type LoginProps = IProps & RouteComponentProps;
+
+export default class Login extends Component<LoginProps, {}> {
 	// onFinish = (values: { username: string; password: string }) => {
 	// 	console.log(values);
 	// };
@@ -28,12 +35,25 @@ export default class Login extends Component {
 			return Promise.resolve();
 		}
 	};
+
 	onFinishFailed = (errorInfo: any) => {
 		console.log('错了', errorInfo);
 	};
+
 	onFinish = async (values: { username: string; password: string }) => {
 		const response = await reqLogin(values.username, values.password);
-		console.log(response.data);
+
+		if (response.status === 0) {
+			message.success('登录成功');
+			const id = response.data._id;
+			const name = response.data.username;
+			MemeoryUtils.user.id = id;
+			MemeoryUtils.user.name = name;
+			StorageUtils.saveUser({ id, name });
+			this.props.history.replace('/');
+		} else {
+			message.error(response.msg);
+		}
 	};
 
 	private loginFromCom() {
@@ -63,6 +83,10 @@ export default class Login extends Component {
 	}
 
 	render() {
+    const user = MemeoryUtils.user;
+    if (user.id !== undefined) {
+			return <Redirect to="/"></Redirect>;
+		}
 		return (
 			<div className="login">
 				<header className="login-header">
