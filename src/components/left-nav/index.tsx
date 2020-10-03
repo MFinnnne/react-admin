@@ -23,7 +23,7 @@ class LeftNav extends Component<LeftNavProps, {}> {
 
 	getOpenKey = (menuList: MenuConfig[]) => {
 		const path: string = this.props.location.pathname;
-		return menuList.map((item) => {
+		return menuList.forEach((item) => {
 			if (item.children) {
 				const cItem = item.children.find((cItem) => cItem.key === path);
 				if (cItem) {

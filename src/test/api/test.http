@@ -5,3 +5,7 @@ Content-Type: application/json
   "username":"admin",
   "password":"admin"
 }
+
+
+
+GET http://api.map.baidu.com/telematics/v3/weather?location=%E5%B8%B8%E5%B7%9E&output=json&ak=3p49MVra6urFRGOT9s8UBWr2
