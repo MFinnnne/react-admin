@@ -1,11 +1,27 @@
-POST http://localhost:5000/login
+###
+POST http://localhost:5000/api/login
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+
+{
+  "name": "admin",
+  "password": "admin"
+}
+###
+GET http://localhost:5000/hello
+###
+GET http://api.map.baidu.com/telematics/v3/weather?location=%E5%B8%B8%E5%B7%9E&output=json&ak=3p49MVra6urFRGOT9s8UBWr2
+
+###
+GET http://zlx.cool:5000/manage/category/list?parentId=0
+
+###
+
+POST http://localhost:5000/manage/category/add
 
 Content-Type: application/json
 {
-  "username":"admin",
-  "password":"admin"
+  "categoryName":"一级分类100",
+  "parentId":"0"
 }
-
-
-
-GET http://api.map.baidu.com/telematics/v3/weather?location=%E5%B8%B8%E5%B7%9E&output=json&ak=3p49MVra6urFRGOT9s8UBWr2

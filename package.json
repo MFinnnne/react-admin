@@ -17,6 +17,7 @@
 		"antd": "^4.6.6",
 		"axios": "^0.20.0",
 		"craco-less": "^1.17.0",
+		"http-proxy-middleware": "^1.0.5",
 		"jsonp": "^0.2.1",
 		"react": "^16.13.1",
 		"react-dom": "^16.13.1",
@@ -46,6 +47,6 @@
 			"last 1 firefox version",
 			"last 1 safari version"
 		]
-	},
-	"proxy": "http://localhost:5000"
+	}
+
 }

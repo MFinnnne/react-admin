@@ -40,8 +40,8 @@ export default class Login extends Component<LoginProps, {}> {
 		console.log('错了', errorInfo);
 	};
 
-	onFinish = async (values: { username: string; password: string }) => {
-		const response = await reqLogin(values.username, values.password);
+	onFinish = async (values: { name: string; password: string }) => {
+		const response = await reqLogin(values.name, values.password);
 
 		if (response.status === 0) {
 			message.success('登录成功');
@@ -83,8 +83,8 @@ export default class Login extends Component<LoginProps, {}> {
 	}
 
 	render() {
-    const user = MemeoryUtils.user;
-    if (user.id !== undefined) {
+		const user = MemeoryUtils.user;
+		if (user.id !== undefined) {
 			return <Redirect to="/"></Redirect>;
 		}
 		return (

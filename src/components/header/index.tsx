@@ -8,6 +8,8 @@ import MemeoryUtils from '../../utils/MemeoryUtils';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import './index.less';
 import StorageUtils from '../../utils/StorageUtils';
+import LinkButton from '../link-button';
+
 
 interface HeaderState {
 	currentTime: string;
@@ -94,9 +96,7 @@ class Header extends Component<HeaderProps, HeaderState> {
 			<div className="header">
 				<div className="header-top">
 					<span>欢迎，{MemeoryUtils.user.name}</span>
-					<a href="javascript:" onClick={this.logout.bind(this)}>
-						退出
-					</a>
+					<LinkButton onClick={this.logout.bind(this)}>退出</LinkButton>
 				</div>
 				<div className="header-bottom">
 					<div className="header-bottom-left">{this.getTitle(menuList)}</div>
