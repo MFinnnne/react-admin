@@ -6,7 +6,7 @@ import jsonp from 'jsonp';
 
 import ajax from './ajax';
 
-export const reqLogin = (name: string, password: string): Promise<any> => ajax<any>('/api/login', { name, password });
+export const reqLogin = (name: string, password: string): Promise<any> => ajax<any>('/api/user/login', { name, password });
 
 export const reqAddUser = (user: any) => ajax('/manage/user/add', user, 'POST');
 
