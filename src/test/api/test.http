@@ -14,7 +14,7 @@ GET http://localhost:5000/hello
 GET http://api.map.baidu.com/telematics/v3/weather?location=%E5%B8%B8%E5%B7%9E&output=json&ak=3p49MVra6urFRGOT9s8UBWr2
 
 ###
-GET http://localhost:5000/api/category/list/0
+GET http://localhost:5000/api/category/list/1
 
 ###
 
