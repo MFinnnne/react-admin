@@ -26,7 +26,7 @@ Content-Type: application/json
 {
   "parentId": "0",
   "categoryName":"一级分类",
-  "name": "乐器"
+  "name": "乐器1"
 }
 
 
