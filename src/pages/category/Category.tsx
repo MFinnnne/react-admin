@@ -1,32 +1,54 @@
 /*
+ *                        _oo0oo_
+ *                       o8888888o
+ *                       88" . "88
+ *                       (| -_- |)
+ *                       0\  =  /0
+ *                     ___/`---'\___
+ *                   .' \\|     |// '.
+ *                  / \\|||  :  |||// \
+ *                 / _||||| -:- |||||- \
+ *                |   | \\\  - /// |   |
+ *                | \_|  ''\---/''  |_/ |
+ *                \  .-\__  '-'  ___/-. /
+ *              ___'. .'  /--.--\  `. .'___
+ *           ."" '<  `.___\_<|>_/___.' >' "".
+ *          | | :  `- \`.;`\ _ /`;.`/ - ` : | |
+ *          \  \ `_.   \_ __\ /__ _/   .-` /  /
+ *      =====`-.____`.___ \_____/___.-`___.-'=====
+ *                        `=---='
+ * 
+ * 
+ *      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * 
+ *            佛祖保佑       永不宕机     永无BUG
+ * 
+ *        佛曰:  
+ *                写字楼里写字间，写字间里程序员；  
+ *                程序人员写程序，又拿程序换酒钱。  
+ *                酒醒只在网上坐，酒醉还来网下眠；  
+ *                酒醉酒醒日复日，网上网下年复年。  
+ *                但愿老死电脑间，不愿鞠躬老板前；  
+ *                奔驰宝马贵者趣，公交自行程序员。  
+ *                别人笑我忒疯癫，我笑自己命太贱；  
+ *                不见满街漂亮妹，哪个归得程序员？
+ */
+
+/*
  * @Descripttion:
  * @version:
  * @Author: MFine
  * @Date: 2020-10-14 21:16:42
  * @LastEditors: MFine
- * @LastEditTime: 2020-10-15 23:31:53
- */
-/*
- *  ┌─────────────────────────────────────────────────────────────┐
- *  │┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐│
- *  ││Esc│!1 │@2 │#3 │$4 │%5 │^6 │&7 │*8 │(9 │)0 │_- │+= │|\ │`~ ││
- *  │├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴───┤│
- *  ││ Tab │ Q │ W │ E │ R │ T │ Y │ U │ I │ O │ P │{[ │}] │ BS  ││
- *  │├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴─────┤│
- *  ││ Ctrl │ A │ S │ D │ F │ G │ H │ J │ K │ L │: ;│" '│ Enter  ││
- *  │├──────┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴────┬───┤│
- *  ││ Shift  │ Z │ X │ C │ V │ B │ N │ M │< ,│> .│? /│Shift │Fn ││
- *  │└─────┬──┴┬──┴──┬┴───┴───┴───┴───┴───┴──┬┴───┴┬──┴┬─────┴───┘│
- *  │      │Fn │ Alt │         Space         │ Alt │Win│   HHKB   │
- *  │      └───┴─────┴───────────────────────┴─────┴───┘          │
- *  └─────────────────────────────────────────────────────────────┘
+ * @LastEditTime: 2020-10-16 17:37:27
  */
 
-import { Button, Card, message, Table } from 'antd';
+import { Button, Card, message, Table, Modal } from 'antd';
 import React, { Component } from 'react';
 import { PlusOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import LinkButton from '../../components/link-button';
 import { reqCategorys } from '../../api';
+import { ModalStatusCode } from './ModalStatusCode';
 
 interface ICategory {
 	parentId: string;
@@ -53,6 +75,7 @@ interface ICategoryState {
 	parentId: string;
 	subCategorys: ICategory[];
 	parentName: string;
+	showStatus: number;
 }
 
 export default class Category extends Component<ICategoryProps, ICategoryState> {
@@ -66,7 +89,12 @@ export default class Category extends Component<ICategoryProps, ICategoryState> 
 			subCategorys: [],
 			parentId: '0',
 			parentName: '',
+			showStatus: 0,
 		};
+		this.addCategory = this.addCategory.bind(this);
+		this.updateCategory = this.updateCategory.bind(this);
+		this.showModalWithMutiForm = this.showModalWithMutiForm.bind(this);
+		this.handleCancel = this.handleCancel.bind(this);
 	}
 
 	componentDidMount() {
@@ -135,7 +163,6 @@ export default class Category extends Component<ICategoryProps, ICategoryState> 
 	 * @return {type}
 	 */
 	private showCategorys(): void {
-    debugger;
 		this.setState(
 			() => {
 				return { parentId: '0', parentName: '' };
@@ -147,12 +174,57 @@ export default class Category extends Component<ICategoryProps, ICategoryState> 
 	}
 
 	/**
-  * @name: 初始化表头 
-  * @test: test font
-  * @msg: 
-  * @return void
-  */ 
- private initColumns() {
+	 * @name: 增加品类
+	 * @test: test font
+	 * @msg:
+	 * @param {type}
+	 * @return {type}
+	 */
+	private addCategory() {
+		this.showModalWithMutiForm(ModalStatusCode.Invisble);
+	}
+
+	/**
+	 * @name: 更新品类
+	 * @test: test font
+	 * @msg:
+	 * @param {type}
+	 * @return {type}
+	 */
+	private updateCategory() {
+		this.showModalWithMutiForm(ModalStatusCode.Update);
+	}
+
+	/**
+	 * @name: 点击退出模态框
+	 * @test: test font
+	 * @msg:
+	 * @param {type}
+	 * @return {type}
+	 */
+	private handleCancel() {
+		this.showModalWithMutiForm(ModalStatusCode.Invisble);
+	}
+
+	/**
+	 * @name: 显示模态框
+	 * @test: test font
+	 * @msg:
+	 * @param {type}
+	 * @return {type}
+	 */
+	private showModalWithMutiForm(status: number = ModalStatusCode.Add) {
+		this.setState({
+			showStatus: status,
+		});
+	}
+	/**
+	 * @name: 初始化表头
+	 * @test: test font
+	 * @msg:
+	 * @return void
+	 */
+	private initColumns() {
 		this.columns = [
 			{
 				title: '分类名称',
@@ -180,7 +252,7 @@ export default class Category extends Component<ICategoryProps, ICategoryState> 
 	}
 
 	render() {
-		const { categorys, loading, parentName } = this.state;
+		const { categorys, loading, parentName,parentId } = this.state;
 		const title: any =
 			this.state.parentId === '0' ? (
 				'一级分类列表'
@@ -192,13 +264,25 @@ export default class Category extends Component<ICategoryProps, ICategoryState> 
 				</span>
 			);
 		const extra: React.ReactNode = (
-			<Button type="primary" icon={<PlusOutlined />}>
-				添加
+			<Button
+				type="primary"
+				icon={<PlusOutlined />}
+				onClick={() => {
+					this.showModalWithMutiForm(ModalStatusCode.Add);
+				}}
+			>
+				{parentId==='0'?'添加':'更新'}
 			</Button>
 		);
 		return (
 			<Card title={title} extra={extra}>
 				<Table rowKey="_id" dataSource={categorys} columns={this.columns} bordered loading={loading} pagination={{ defaultPageSize: 10, showQuickJumper: true }} />
+				<Modal title="添加分类" visible={this.state.showStatus === 1} onOk={this.addCategory} onCancel={this.handleCancel}>
+					<p>Add</p>
+				</Modal>
+				<Modal title="更加分类" visible={this.state.showStatus === 2} onOk={this.updateCategory} onCancel={this.handleCancel}>
+					<p>update</p>
+				</Modal>
 			</Card>
 		);
 	}
