@@ -40,13 +40,13 @@ export default class Login extends Component<LoginProps, {}> {
 		console.log('错了', errorInfo);
 	};
 
-	onFinish = async (values: { username: string; password: string }) => {
-		const response = await reqLogin(values.username, values.password);
+	onFinish = async (values: { name: string; password: string }) => {
+		const response = await reqLogin(values.name, values.password);
 
 		if (response.status === 0) {
 			message.success('登录成功');
-			const id = response.data._id;
-			const name = response.data.username;
+			const id = response.data.id;
+			const name = response.data.name;
 			MemeoryUtils.user.id = id;
 			MemeoryUtils.user.name = name;
 			StorageUtils.saveUser({ id, name });
@@ -60,7 +60,7 @@ export default class Login extends Component<LoginProps, {}> {
 		return (
 			<Form onFinish={this.onFinish} onFinishFailed={this.onFinishFailed} name="normal_login" className="login-form" initialValues={{ remember: true }}>
 				<Form.Item
-					name="username"
+					name="name"
 					rules={[
 						{ required: true, whitespace: true, message: '请输入您的用户名' },
 						{ max: 12, message: '用户名最多十二位' },
@@ -83,8 +83,8 @@ export default class Login extends Component<LoginProps, {}> {
 	}
 
 	render() {
-    const user = MemeoryUtils.user;
-    if (user.id !== undefined) {
+		const user = MemeoryUtils.user;
+		if (user.id !== undefined) {
 			return <Redirect to="/"></Redirect>;
 		}
 		return (

@@ -1,10 +1,10 @@
 import { message } from 'antd';
 import Axios from 'axios';
 
-export default function ajax<T>(url: string, data: {}, method: string = 'GET'): Promise<T> {
+export default function ajax<T>(url: string, data: {}={}, method: string = 'GET'): Promise<T> {
 	return new Promise((resolve, rejects) => {
 		let promise: Promise<T>;
-		if (method === 'get') {
+		if (method === 'GET') {
 			promise = Axios.get(url, { params: data });
 		} else {
 			promise = Axios.post(url, data);
