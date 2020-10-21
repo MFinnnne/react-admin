@@ -40,7 +40,7 @@
  * @Author: MFine
  * @Date: 2020-10-14 21:16:42
  * @LastEditors: MFine
- * @LastEditTime: 2020-10-20 17:22:10
+ * @LastEditTime: 2020-10-21 17:34:30
  */
 
 import { Button, Card, message, Table, Modal } from 'antd';
@@ -50,23 +50,8 @@ import LinkButton from '../../components/link-button';
 import { reqCategorys } from '../../api';
 import { ModalStatusCode } from './ModalStatusCode';
 import AddForm from './AddForm';
-
-interface ICategory {
-	parentId: string;
-	_id: string;
-	name: string;
-	__v: number;
-	categoryName: string;
-	parentName: string;
-}
-
-interface CategoryModel {
-	parentId: string;
-	id: number;
-	name: string;
-	categoryName: string;
-	parentName: string;
-}
+import UpdateFrom from './UpdateFrom';
+import { CategoryModel, ICategory } from './DataModel';
 
 interface ICategoryProps {}
 
@@ -80,7 +65,15 @@ interface ICategoryState {
 }
 
 export default class Category extends Component<ICategoryProps, ICategoryState> {
-	columns: any[] = [];
+	private columns: any[] = [];
+	private category: ICategory = {
+		parentId: '',
+		_id: '',
+		name: '',
+		__v: 0,
+		categoryName: '',
+		parentName: '',
+	};
 	constructor(props: ICategoryProps) {
 		super(props);
 		this.initColumns();
@@ -102,7 +95,6 @@ export default class Category extends Component<ICategoryProps, ICategoryState> 
 	private getCategory = async (parentId: string) => {
 		this.setLoading(true);
 		const result: any = await reqCategorys(parentId);
-		console.log(result);
 		this.setLoading(false);
 		if (result.status !== 0) {
 			message.error('获取分类列表失败');
@@ -216,7 +208,8 @@ export default class Category extends Component<ICategoryProps, ICategoryState> 
 		});
 	};
 
-	private showUpdateCategory = (): void => {
+	private showUpdateCategory = (category: ICategory): void => {
+		this.category = category;
 		this.showModalWithMutiForm(ModalStatusCode.Update);
 	};
 
@@ -237,7 +230,7 @@ export default class Category extends Component<ICategoryProps, ICategoryState> 
 				width: 300,
 				render: (category: ICategory) => (
 					<span>
-						<LinkButton onClick={this.showUpdateCategory}>修改分类</LinkButton>
+						<LinkButton onClick={() => this.showUpdateCategory(category)}>修改分类</LinkButton>
 						{this.state.parentId === '0' ? (
 							<LinkButton
 								onClick={() => {
@@ -280,10 +273,10 @@ export default class Category extends Component<ICategoryProps, ICategoryState> 
 			<Card title={title} extra={extra}>
 				<Table rowKey="_id" dataSource={categorys} columns={this.columns} bordered loading={loading} pagination={{ defaultPageSize: 10, showQuickJumper: true }} />
 				<Modal title="添加分类" visible={this.state.showStatus === 1} onOk={this.addCategory} onCancel={this.handleCancel}>
-					{<AddForm/>}
+					<AddForm />
 				</Modal>
-				<Modal title="更加分类" visible={this.state.showStatus === 2} onOk={this.updateCategory} onCancel={this.handleCancel}>
-					<p>update</p>
+				<Modal title="更新分类" visible={this.state.showStatus === 2} onOk={this.updateCategory} onCancel={this.handleCancel}>
+					<UpdateFrom category={this.category} />
 				</Modal>
 			</Card>
 		);
