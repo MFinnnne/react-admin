@@ -43,15 +43,14 @@
  * @LastEditTime: 2020-10-21 17:34:30
  */
 
-import { Button, Card, message, Table, Modal } from 'antd';
-import React, { Component } from 'react';
+import { Button, Card, message, Table, Modal, Form, Input } from 'antd';
+import React, { Component, useState } from 'react';
 import { PlusOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import LinkButton from '../../components/link-button';
 import { reqCategorys } from '../../api';
 import { ModalStatusCode } from './ModalStatusCode';
-import AddForm from './AddForm';
-import UpdateFrom from './UpdateFrom';
 import { CategoryModel, ICategory } from './DataModel';
+import ModalForm from './ModalForm';
 
 interface ICategoryProps {}
 
@@ -62,6 +61,18 @@ interface ICategoryState {
 	subCategorys: ICategory[];
 	parentName: string;
 	showStatus: number;
+}
+
+interface Values {
+	title: string;
+	description: string;
+	modifier: string;
+}
+
+interface CollectionCreateFormProps {
+	visible: boolean;
+	onCreate: (values: Values | any) => void;
+	onCancel: () => void;
 }
 
 export default class Category extends Component<ICategoryProps, ICategoryState> {
@@ -247,7 +258,7 @@ export default class Category extends Component<ICategoryProps, ICategoryState> 
 	};
 
 	render() {
-		const { categorys, loading, parentName, parentId } = this.state;
+		const { categorys, loading, parentName, parentId, showStatus } = this.state;
 		const title: any =
 			parentId === '0' ? (
 				'一级分类列表'
@@ -272,12 +283,27 @@ export default class Category extends Component<ICategoryProps, ICategoryState> 
 		return (
 			<Card title={title} extra={extra}>
 				<Table rowKey="_id" dataSource={categorys} columns={this.columns} bordered loading={loading} pagination={{ defaultPageSize: 10, showQuickJumper: true }} />
-				<Modal title="添加分类" visible={this.state.showStatus === 1} onOk={this.addCategory} onCancel={this.handleCancel}>
+				{/* <Modal title="添加分类" visible={this.state.showStatus === 1} onOk={this.addCategory} onCancel={this.handleCancel}>
 					<AddForm />
 				</Modal>
-				<Modal title="更新分类" visible={this.state.showStatus === 2} onOk={this.updateCategory} onCancel={this.handleCancel}>
+				<Modal
+					title="更新分类"
+					visible={this.state.showStatus === 2}
+					onOk={() => {
+						form
+							.validateFields()
+							.then((values) => {
+								form.resetFields();
+							})
+							.catch((info) => {
+								console.log(info);
+							});
+					}}
+					onCancel={this.handleCancel}
+				>
 					<UpdateFrom category={this.category} />
-				</Modal>
+				</Modal> */}
+				<ModalForm visible={2} />
 			</Card>
 		);
 	}
