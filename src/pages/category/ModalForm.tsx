@@ -42,6 +42,7 @@ class ModalForm extends Component<ModalFromProps, ModalState> {
 		const { title } = this.props;
 		return (
 			<Modal
+        destroyOnClose={true}
 				visible={this.props.showStatus === this.props.expectedStatus}
 				title={title}
 				okText="Ok"
@@ -59,7 +60,7 @@ class ModalForm extends Component<ModalFromProps, ModalState> {
 						});
 				}}
 			>
-				<Form form={form}>
+				<Form form={form} preserve={false}>
 					<Form.Item name="title" rules={[{ required: true, message: '请输入品类名称' }]} initialValue={this.props.category.name} >
 						{this.props.element}
 					</Form.Item>
