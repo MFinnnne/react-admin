@@ -1,15 +1,23 @@
 import { Select, Form, Input } from 'antd';
 import React, { Component } from 'react';
+import { ICategory } from './DataModel';
+import ModalForm from './ModalForm';
+import { ModalStatusCode } from './ModalStatusCode';
 
 const Option = Select.Option;
 const Item = Form.Item;
 
-export default class AddForm extends Component {
-	render() {
+interface IAddFormProps {
+	category: ICategory;
+	onCancel: () => void;
+	showStatus: ModalStatusCode;
+}
+export default class AddForm extends Component<IAddFormProps, {}> {
+	private addFromElement(): React.ReactNode {
 		return (
-			<Form>
+			<div>
 				<Item>
-					<Select style={{ width: '100%' }} defaultValue='0'>
+					<Select style={{ width: '100%' }} defaultValue="0">
 						<Option value="0">一级分类</Option>
 						<Option value="1">电脑</Option>
 						<Option value="2">图书</Option>
@@ -18,7 +26,11 @@ export default class AddForm extends Component {
 				<Item>
 					<Input placeholder="请输入分类名称"></Input>
 				</Item>
-			</Form>
+			</div>
 		);
+	}
+
+	render() {
+		return <ModalForm {...this.props} element={this.addFromElement()} expectedStatus={ModalStatusCode.Add} title='添加分类'></ModalForm>;
 	}
 }

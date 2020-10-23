@@ -40,17 +40,18 @@
  * @Author: MFine
  * @Date: 2020-10-14 21:16:42
  * @LastEditors: MFine
- * @LastEditTime: 2020-10-21 17:34:30
+ * @LastEditTime: 2020-10-23 15:39:27
  */
 
-import { Button, Card, message, Table, Modal, Form, Input } from 'antd';
-import React, { Component, useState } from 'react';
+import { Button, Card, message, Table } from 'antd';
+import React, { Component } from 'react';
 import { PlusOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import LinkButton from '../../components/link-button';
 import { reqCategorys } from '../../api';
 import { ModalStatusCode } from './ModalStatusCode';
 import { CategoryModel, ICategory } from './DataModel';
-import ModalForm from './ModalForm';
+import UpdateFrom from './UpdateFrom';
+import AddForm from './AddForm';
 
 interface ICategoryProps {}
 
@@ -283,27 +284,8 @@ export default class Category extends Component<ICategoryProps, ICategoryState> 
 		return (
 			<Card title={title} extra={extra}>
 				<Table rowKey="_id" dataSource={categorys} columns={this.columns} bordered loading={loading} pagination={{ defaultPageSize: 10, showQuickJumper: true }} />
-				{/* <Modal title="添加分类" visible={this.state.showStatus === 1} onOk={this.addCategory} onCancel={this.handleCancel}>
-					<AddForm />
-				</Modal>
-				<Modal
-					title="更新分类"
-					visible={this.state.showStatus === 2}
-					onOk={() => {
-						form
-							.validateFields()
-							.then((values) => {
-								form.resetFields();
-							})
-							.catch((info) => {
-								console.log(info);
-							});
-					}}
-					onCancel={this.handleCancel}
-				>
-					<UpdateFrom category={this.category} />
-				</Modal> */}
-				<ModalForm visible={2} />
+				<UpdateFrom showStatus={showStatus} onCancel={this.handleCancel} category={this.category} />
+				<AddForm showStatus={showStatus} onCancel={this.handleCancel} category={this.category} />
 			</Card>
 		);
 	}

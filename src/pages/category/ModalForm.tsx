@@ -1,6 +1,6 @@
-import { Form, Input, Modal, Radio } from 'antd';
-import React, { Component, ReactNode } from 'react';
-import { JsxElement } from 'typescript';
+import { Form, Modal } from 'antd';
+import React, { Component } from 'react';
+import { ICategory } from './DataModel';
 import { ModalStatusCode } from './ModalStatusCode';
 
 interface Values {
@@ -9,54 +9,59 @@ interface Values {
 	modifier: string;
 }
 
-interface CollectionCreateFormProps {
-	visible: number;
+interface ModalFromProps {
+	showStatus: ModalStatusCode;
+	onCancel: () => void;
+	category: ICategory;
+	element: React.ReactNode;
+	expectedStatus: ModalStatusCode;
+	title: string;
 }
 
 interface ModalState {
-	showStatus: ModalStatusCode;
+	name: string;
 }
 
-class ModalForm extends Component<CollectionCreateFormProps, ModalState> {
-	constructor(props: CollectionCreateFormProps) {
+class ModalForm extends Component<ModalFromProps, ModalState> {
+
+
+	constructor(props: ModalFromProps) {
 		super(props);
 		this.state = {
-			showStatus: 0,
+			name: '',
 		};
 	}
 
 	private onCancel = () => {
-		this.setState((state, props) => {
-			return {
-				showStatus: ModalStatusCode.Invisble,
-			};
-		});
+		this.props.onCancel();
 	};
 
+
 	private CreateModalFrom = (): any => {
-		const [form] = Form.useForm();
+    const [form] = Form.useForm();
+		const { title } = this.props;
 		return (
 			<Modal
-				visible={this.state.showStatus === this.props.visible}
-				title="更新分类"
+				visible={this.props.showStatus === this.props.expectedStatus}
+				title={title}
 				okText="Ok"
 				cancelText="Cancel"
 				onCancel={this.onCancel}
 				onOk={() => {
 					form
 						.validateFields()
-						.then(() => {
+						.then((values) => {
 							form.resetFields();
-							console.log('funck');
+							console.log(values);
 						})
 						.catch((info) => {
 							console.log('Validate Failed:', info);
 						});
 				}}
 			>
-				<Form form={form} layout="vertical" name="form_in_modal" initialValues={{ modifier: 'public' }}>
-					<Form.Item name="title" label="Title" rules={[{ required: true, message: 'Please input the title of collection!' }]}>
-						<Input />
+				<Form form={form}>
+					<Form.Item name="title" rules={[{ required: true, message: '请输入品类名称' }]} initialValue={this.props.category.name} >
+						{this.props.element}
 					</Form.Item>
 				</Form>
 			</Modal>

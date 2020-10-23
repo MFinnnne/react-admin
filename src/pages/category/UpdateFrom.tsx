@@ -1,30 +1,27 @@
-import { Form, Input } from 'antd';
+import { Input } from 'antd';
 import React, { Component } from 'react';
 import { ICategory } from './DataModel';
-const Item = Form.Item;
+import ModalForm from './ModalForm';
+import { ModalStatusCode } from './ModalStatusCode';
 
 interface IUpdateFormProps {
 	category: ICategory;
+	onCancel: () => void;
+	showStatus: ModalStatusCode;
 }
 
-interface IUpdateFormState {}
+interface IUpdateFormState {
+  name:string|null;
+}
 
 export default class UpdateFrom extends Component<IUpdateFormProps, IUpdateFormState> {
 
-	constructor(props: IUpdateFormProps) {
-    super(props);
-	}
+  
 
 	render() {
 
-    const {name}= this.props.category;
-
 		return (
-			<Form>
-				<Item>
-					<Input placeholder="请输入分类名称" defaultValue={name}></Input>
-				</Item>
-			</Form>
+			<ModalForm {...this.props} element={<Input placeholder="请输入分类名称"></Input>} expectedStatus={ModalStatusCode.Update} title='更新分类'></ModalForm>
 		);
 	}
 }
