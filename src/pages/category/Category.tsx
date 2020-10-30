@@ -40,7 +40,7 @@
  * @Author: MFine
  * @Date: 2020-10-14 21:16:42
  * @LastEditors: MFine
- * @LastEditTime: 2020-10-23 15:39:27
+ * @LastEditTime: 2020-10-30 15:37:12
  */
 
 import { Button, Card, message, Table } from 'antd';
@@ -175,28 +175,6 @@ export default class Category extends Component<ICategoryProps, ICategoryState> 
 	};
 
 	/**
-	 * @name: 增加品类
-	 * @test: test font
-	 * @msg:
-	 * @param {type}
-	 * @return {type}
-	 */
-	private addCategory = (): void => {
-		this.showModalWithMutiForm(ModalStatusCode.Invisble);
-	};
-
-	/**
-	 * @name: 更新品类
-	 * @test: test font
-	 * @msg:
-	 * @param {type}
-	 * @return {type}
-	 */
-	private updateCategory = (): void => {
-		this.showModalWithMutiForm(ModalStatusCode.Invisble);
-	};
-
-	/**
 	 * @name: 点击退出模态框
 	 * @test: test font
 	 * @msg:
@@ -259,7 +237,7 @@ export default class Category extends Component<ICategoryProps, ICategoryState> 
 	};
 
 	render() {
-		const { categorys, loading, parentName, parentId, showStatus } = this.state;
+		const { categorys, loading, parentName, parentId } = this.state;
 		const title: any =
 			parentId === '0' ? (
 				'一级分类列表'
@@ -284,8 +262,8 @@ export default class Category extends Component<ICategoryProps, ICategoryState> 
 		return (
 			<Card title={title} extra={extra}>
 				<Table rowKey="_id" dataSource={categorys} columns={this.columns} bordered loading={loading} pagination={{ defaultPageSize: 10, showQuickJumper: true }} />
-				<UpdateFrom showStatus={showStatus} onCancel={this.handleCancel} category={this.category} />
-				<AddForm showStatus={showStatus} onCancel={this.handleCancel} category={this.category} />
+				<AddForm category={this.category} showStatus={this.state.showStatus} onCancel={this.handleCancel}></AddForm>
+				<UpdateFrom category={this.category} showStatus={this.state.showStatus} onCancel={this.handleCancel}></UpdateFrom>
 			</Card>
 		);
 	}
