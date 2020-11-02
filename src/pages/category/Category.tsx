@@ -40,7 +40,7 @@
  * @Author: MFine
  * @Date: 2020-10-14 21:16:42
  * @LastEditors: MFine
- * @LastEditTime: 2020-11-02 17:22:16
+ * @LastEditTime: 2020-11-02 17:38:13
  */
 
 import { Button, Card, message, Table } from 'antd';
@@ -77,7 +77,7 @@ interface CollectionCreateFormProps {
 
 export default class Category extends Component<ICategoryProps, ICategoryState> {
 	private columns: any[] = [];
-	private category: ICategory = {
+	private defaultCategory: ICategory = {
 		parentId: '',
 		_id: '',
 		name: '',
@@ -142,7 +142,7 @@ export default class Category extends Component<ICategoryProps, ICategoryState> 
 	 * @return {void}
 	 */
 	private showSubCategorys = (category: ICategory): void => {
-    this.category = category;
+    this.defaultCategory = category;
 		this.setState(
 			() => {
 				return {
@@ -162,15 +162,19 @@ export default class Category extends Component<ICategoryProps, ICategoryState> 
 	 * @msg:
 	 * @return {type}
 	 */
-	private showCategorys = (): void => {
-		this.setState(
-			() => {
-				return { parentId: '0', parentName: '' };
-			},
-			() => {
-				this.getCategory(this.state.parentId);
-			}
-		);
+	private showCategorys = (category:ICategory=this.defaultCategory): void => {
+    if (category._id==='') {
+      this.setState(
+        () => {
+          return { parentId: '0', parentName: '' };
+        },
+        () => {
+          this.getCategory(this.state.parentId);
+        }
+      );
+    }else{
+      this.showSubCategorys(category);
+    }
 	};
 
 	/**
@@ -198,7 +202,7 @@ export default class Category extends Component<ICategoryProps, ICategoryState> 
 	};
 
 	private showUpdateCategory = (category: ICategory): void => {
-		this.category = category;
+		this.defaultCategory = category;
 		this.showModalWithMutiForm(ModalStatusCode.Update);
 	};
 
@@ -223,7 +227,7 @@ export default class Category extends Component<ICategoryProps, ICategoryState> 
 						{this.state.parentId === '0' ? (
 							<LinkButton
 								onClick={() => {
-									this.showSubCategorys(category);
+									this.showCategorys(category);
 								}}
 							>
 								查看子分类
@@ -261,8 +265,8 @@ export default class Category extends Component<ICategoryProps, ICategoryState> 
 		return (
 			<Card title={title} extra={extra}>
 				<Table rowKey="_id" dataSource={categorys} columns={this.columns} bordered loading={loading} pagination={{ defaultPageSize: 10, showQuickJumper: true }} />
-				<AddForm category={this.category} showStatus={this.state.showStatus} categorys={this.state.categorys} onCancel={this.handleCancel} updateCategory={this.showCategorys}></AddForm>
-				<UpdateFrom category={this.category} showStatus={this.state.showStatus} onCancel={this.handleCancel} updateCategory={this.showCategorys}></UpdateFrom>
+				<AddForm category={this.defaultCategory} showStatus={this.state.showStatus} categorys={this.state.categorys} onCancel={this.handleCancel} updateCategory={this.showCategorys}></AddForm>
+				<UpdateFrom category={this.defaultCategory} showStatus={this.state.showStatus} onCancel={this.handleCancel} updateCategory={this.showCategorys}></UpdateFrom>
 			</Card>
 		);
 	}
