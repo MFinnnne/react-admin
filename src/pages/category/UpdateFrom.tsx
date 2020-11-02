@@ -1,5 +1,7 @@
-import { Form, Input, Modal } from 'antd';
+import { Form, Input, message, Modal } from 'antd';
 import React, { Component } from 'react';
+import { reqUpdateCategory } from '../../api';
+import { ReponseValue } from '../../api/DataModel';
 import { ICategory } from './DataModel';
 import { ModalStatusCode } from './ModalStatusCode';
 
@@ -7,6 +9,7 @@ interface IUpdateFormProps {
 	category: ICategory;
 	showStatus: ModalStatusCode;
 	onCancel: () => void;
+	updateCategory: () => void;
 }
 
 interface IUpdateFormState {
@@ -14,14 +17,19 @@ interface IUpdateFormState {
 	status: ModalStatusCode;
 }
 
-export default class UpdateFrom extends Component<IUpdateFormProps, IUpdateFormState> {
+interface Values {
+	title?: string;
+	value?: string;
+}
 
+export default class UpdateFrom extends Component<IUpdateFormProps, IUpdateFormState> {
 	private onCancel = (): void => {
 		this.props.onCancel();
 	};
 
 	private CreateModalFrom = (): any => {
 		const [form] = Form.useForm();
+		const { category, updateCategory } = this.props;
 		return (
 			<Modal
 				destroyOnClose={true}
@@ -33,9 +41,16 @@ export default class UpdateFrom extends Component<IUpdateFormProps, IUpdateFormS
 				onOk={() => {
 					form
 						.validateFields()
-						.then((values) => {
-              console.log(values);
-              this.onCancel();
+						.then(async (values: Values) => {
+							const result: ReponseValue<any> = await reqUpdateCategory(category._id, category.parentId, values.title ?? ' ', category.categoryName);
+							if (result.status === 0) {
+								message.info('品类更新成功');
+								//更新列表
+								updateCategory();
+							} else {
+								message.error('品类更新失败');
+							}
+							this.onCancel();
 						})
 						.catch((info) => {
 							console.log('Validate Failed:', info);

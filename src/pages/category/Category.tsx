@@ -40,7 +40,7 @@
  * @Author: MFine
  * @Date: 2020-10-14 21:16:42
  * @LastEditors: MFine
- * @LastEditTime: 2020-10-30 15:37:12
+ * @LastEditTime: 2020-11-02 17:22:16
  */
 
 import { Button, Card, message, Table } from 'antd';
@@ -59,7 +59,6 @@ interface ICategoryState {
 	categorys: ICategory[];
 	loading: boolean;
 	parentId: string;
-	subCategorys: ICategory[];
 	parentName: string;
 	showStatus: number;
 }
@@ -92,7 +91,6 @@ export default class Category extends Component<ICategoryProps, ICategoryState> 
 		this.state = {
 			loading: false,
 			categorys: [],
-			subCategorys: [],
 			parentId: '0',
 			parentName: '',
 			showStatus: 0,
@@ -144,6 +142,7 @@ export default class Category extends Component<ICategoryProps, ICategoryState> 
 	 * @return {void}
 	 */
 	private showSubCategorys = (category: ICategory): void => {
+    this.category = category;
 		this.setState(
 			() => {
 				return {
@@ -262,8 +261,8 @@ export default class Category extends Component<ICategoryProps, ICategoryState> 
 		return (
 			<Card title={title} extra={extra}>
 				<Table rowKey="_id" dataSource={categorys} columns={this.columns} bordered loading={loading} pagination={{ defaultPageSize: 10, showQuickJumper: true }} />
-				<AddForm category={this.category} showStatus={this.state.showStatus} onCancel={this.handleCancel}></AddForm>
-				<UpdateFrom category={this.category} showStatus={this.state.showStatus} onCancel={this.handleCancel}></UpdateFrom>
+				<AddForm category={this.category} showStatus={this.state.showStatus} categorys={this.state.categorys} onCancel={this.handleCancel} updateCategory={this.showCategorys}></AddForm>
+				<UpdateFrom category={this.category} showStatus={this.state.showStatus} onCancel={this.handleCancel} updateCategory={this.showCategorys}></UpdateFrom>
 			</Card>
 		);
 	}

@@ -32,10 +32,24 @@ Content-Type: application/json
 
 ###
 
-POST http://localhost:5000/manage/category/add
+POST http://localhost:5000/api/category/add
 
 Content-Type: application/json
 {
   "categoryName":"一级分类100",
   "parentId":"0"
+}
+
+
+###
+
+PUT http://localhost:5000/api/category/update
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+
+{
+  "parentId": "0",
+  "categoryName":"一级分类",
+  "name": "乐器1"
 }

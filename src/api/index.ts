@@ -1,14 +1,20 @@
+/*
+ * @Descripttion:
+ * @version:
+ * @Author: MFine
+ * @Date: 2020-09-28 21:45:10
+ * @LastEditors: MFine
+ * @LastEditTime: 2020-11-02 15:26:09
+ */
 import { message } from 'antd';
 import jsonp from 'jsonp';
-/*
- * 所有接口请求函数模块
- */
-
 import ajax from './ajax';
+import { ReponseValue } from './DataModel';
+import { ReqMethodEnum } from './ReqMethodEnum';
 
-export const reqLogin = (name: string, password: string): Promise<any> => ajax<any>('/api/user/login', { name, password },'POST');
+export const reqLogin = (name: string, password: string): Promise<any> => ajax<any>('/api/user/login', { name, password }, ReqMethodEnum.POST);
 
-export const reqAddUser = (user: any) => ajax('/manage/user/add', user, 'POST');
+export const reqAddUser = (user: any) => ajax('/manage/user/add', user, ReqMethodEnum.POST);
 
 export const reqWheater = (city: string): Promise<{ dayPictureUrl: any; weather: any }> => {
 	return new Promise((resolve, reject) => {
@@ -23,6 +29,7 @@ export const reqWheater = (city: string): Promise<{ dayPictureUrl: any; weather:
 	});
 };
 
-export const reqCategorys = (parentId: string) => ajax<any>(`/api/category/list/${parentId}`);
-export const reqAddCategory = (parentId: string, categoryName: string, name: string) => ajax<any>('/api/category/add', { parentId, categoryName, name }, 'POST');
-export const reqUpdateCategory = (parentId: string, name: string, categoryName: string) => ajax<any>('api/category/update', { parentId, name, categoryName }, 'POST');
+export const reqCategorys = (parentId: string): Promise<ReponseValue<any>> => ajax<ReponseValue<any>>(`/api/category/list/${parentId}`);
+export const reqAddCategory = (parentId: string, categoryName: string, name: string): Promise<ReponseValue<any>> => ajax<ReponseValue<any>>('/api/category/add', { parentId, categoryName, name }, ReqMethodEnum.POST);
+export const reqUpdateCategory = (id: string, parentId: string, name: string, categoryName: string): Promise<ReponseValue<any>> =>
+	ajax<ReponseValue<any>>('/api/category/update', { id, parentId, name, categoryName }, ReqMethodEnum.PUT);
