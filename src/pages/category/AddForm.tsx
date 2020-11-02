@@ -81,7 +81,7 @@ export default class AddForm extends Component<IAddFormProps, {}> {
 						})}
 					</Select>
 				</Item>
-				<Item name="title">
+				<Item name="title" rules={[{ required: true, message: '请输入分类名称' }]}>
 					<Input placeholder="请输入分类名称"></Input>
 				</Item>
 			</div>
