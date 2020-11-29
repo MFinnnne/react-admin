@@ -1,7 +1,7 @@
 import { Select, Form, Input, Modal, message } from 'antd';
 import React, { Component } from 'react';
 import { reqAddCategory } from '../../api';
-import { ICategory } from './DataModel';
+import { ICategory } from './Model';
 import { ModalStatusCode } from './ModalStatusCode';
 
 const Option = Select.Option;

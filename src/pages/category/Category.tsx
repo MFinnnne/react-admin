@@ -49,7 +49,7 @@ import { PlusOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import LinkButton from '../../components/link-button';
 import { reqCategorys } from '../../api';
 import { ModalStatusCode } from './ModalStatusCode';
-import { CategoryModel, ICategory } from './DataModel';
+import { CategoryModel, ICategory } from './Model';
 import UpdateFrom from './UpdateFrom';
 import AddForm from './AddForm';
 

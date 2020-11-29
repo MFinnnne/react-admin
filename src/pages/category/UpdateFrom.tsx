@@ -1,8 +1,8 @@
 import { Form, Input, message, Modal } from 'antd';
 import React, { Component } from 'react';
 import { reqUpdateCategory } from '../../api';
-import { ReponseValue } from '../../api/DataModel';
-import { ICategory } from './DataModel';
+import { ReponseValue } from '../../api/Model';
+import { ICategory } from './Model';
 import { ModalStatusCode } from './ModalStatusCode';
 
 interface IUpdateFormProps {

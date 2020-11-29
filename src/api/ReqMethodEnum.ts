@@ -12,3 +12,5 @@ export enum ReqMethodEnum {
 	PUT = 'PUT',
 	DELETE = 'DELETE',
 }
+
+

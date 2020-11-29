@@ -1,4 +1,3 @@
-import { Select } from 'antd';
 import React, { Component } from 'react';
 import { Redirect, Route, Switch } from 'react-router';
 import ProductAddUpdate from './add-update';
