@@ -2,7 +2,7 @@ import { Button, Card, Input, Select, Table } from 'antd';
 import React, { Component } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import LinkButton from '../../components/link-button';
-import { reqProducts } from '../../api';
+import { reqProducts, reqProductsByDesc, reqProductsByName } from '../../api';
 import { ProductsModel } from './Model';
 import { PageSplitModel } from '../../api/Model';
 import { PAGE_SIZE } from '../../utils/Constants';
@@ -14,6 +14,8 @@ interface ProductHomeState {
 	products: ProductsModel[] | undefined;
 	total: number;
 	loading: boolean;
+	searchInfo: string;
+	searchType: string;
 }
 
 interface ProductHomeProps {}
@@ -27,7 +29,11 @@ export default class ProductHome extends Component<ProductHomeProps, ProductHome
 			products: [],
 			total: 0,
 			loading: false,
+			searchInfo: '',
+			searchType: 'searchByName',
 		};
+
+		this.initColumns();
 	}
 
 	/**
@@ -80,38 +86,60 @@ export default class ProductHome extends Component<ProductHomeProps, ProductHome
 		];
 	};
 
-	componentWillMount() {
-		this.initColumns();
-	}
-
 	componentDidMount() {
 		this.getDataSources(1);
 	}
 
-	private getDataSources = async (pageNum: number): Promise<any>=> {
+	private getDataSources = async (pageNum: number) => {
 		this.setState({ loading: true });
 		const result: PageSplitModel<ProductsModel> = await reqProducts(pageNum, PAGE_SIZE);
 		this.setState(() => {
 			return {
 				products: result.list,
-        total: result.total,
-        loading:false
+				total: result.total,
+				loading: false,
 			};
 		});
-		return result;
-	}
+	};
+
+	private searchByNameOrDesc = async (pageNum: number) => {
+		const { searchType, searchInfo } = this.state;
+		this.setState({ loading: true });
+		let result: PageSplitModel<ProductsModel>;
+		if (searchType === 'searchByName') {
+			result = await reqProductsByName(searchInfo, pageNum, PAGE_SIZE);
+		} else {
+			result = await reqProductsByDesc(searchInfo, pageNum, PAGE_SIZE);
+		}
+		this.setState({
+			loading: false,
+			products: result.list,
+		});
+	};
 
 	render() {
-		const { products, total, loading } = this.state;
+		const { products, total, loading, searchType, searchInfo } = this.state;
 		const title = (
 			<span>
-				<Select searchValue="1" defaultValue="1" style={{ width: 150 }}>
-					<Select.Option value="1">按名称搜索</Select.Option>
-					<Select.Option value="2">按描述搜索</Select.Option>
+				<Select value={searchType} style={{ width: 150 }} onChange={(value) => this.setState({ searchType: value })}>
+					<Select.Option value="searchByName">按名称搜索</Select.Option>
+					<Select.Option value="searchByDesc">按描述搜索</Select.Option>
 				</Select>
-				<Input placeholder="关键字" style={{ width: 150, margin: '0 15px' }}></Input>
-				<Button type="primary">搜索</Button>
-			</span
+				<Input
+					placeholder="关键字"
+					style={{ width: 150, margin: '0 15px' }}
+					value={searchInfo}
+					onChange={(e) => this.setState({ searchInfo: e.target.value })}
+				></Input>
+				<Button
+					type="primary"
+					onClick={() => {
+						this.searchByNameOrDesc(1);
+					}}
+				>
+					搜索
+				</Button>
+			</span>
 		);
 		const extra = (
 			<Button type="primary" icon={<PlusOutlined />}>

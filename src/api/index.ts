@@ -4,7 +4,7 @@
  * @Author: MFine
  * @Date: 2020-09-28 21:45:10
  * @LastEditors: MFine
- * @LastEditTime: 2020-11-29 16:11:12
+ * @LastEditTime: 2020-11-30 22:03:52
  */
 import { message } from 'antd';
 import jsonp from 'jsonp';
@@ -52,9 +52,30 @@ export const reqUpdateCategory = (
 export const reqProducts = (pageNum: number, pageSize: number): Promise<PageSplitModel<ProductsModel>> =>
 	ajax<PageSplitModel<ProductsModel>>('/api/products/list', { pageNum, pageSize }, ReqMethodEnum.POST);
 
+/**
+ * @name: 根据描述搜索商品
+ * @test: test font
+ * @msg: 
+ * @param {*}
+ * @return {*}
+ */
 export const reqProductsByDesc = (
 	desc: string,
 	pageNum: number,
 	pageSize: number
 ): Promise<PageSplitModel<ProductsModel>> =>
-	ajax<PageSplitModel<ProductsModel>>(`/api/products/searchByDesc/${desc}/${pageNum}/${pageSize}`, ReqMethodEnum.GET);
+  ajax<PageSplitModel<ProductsModel>>(`/api/products/searchByDesc/${desc}/${pageNum}/${pageSize}`, ReqMethodEnum.GET);
+
+/**
+ * @name: 根据名称搜索商品
+ * @test: test font
+ * @msg: 
+ * @param {*}
+ * @return {*}
+ */
+export const reqProductsByName = (
+	name: string,
+	pageNum: number,
+	pageSize: number
+): Promise<PageSplitModel<ProductsModel>> =>
+	ajax<PageSplitModel<ProductsModel>>(`/api/products/searchByName/${name}/${pageNum}/${pageSize}`, ReqMethodEnum.GET);
