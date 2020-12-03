@@ -73,3 +73,7 @@ GET http://localhost:5000/api/products/searchByDesc/一部手机而已/1/2
 ###
 
 GET http://localhost:5000/api/products/searchByName/小米8/1/2
+
+
+###
+GET http://localhost:5000/api/products/searchByName?name=8&pageNum=1&pageSize=3

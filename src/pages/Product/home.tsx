@@ -16,6 +16,7 @@ interface ProductHomeState {
 	loading: boolean;
 	searchInfo: string;
 	searchType: string;
+	pageNum: number;
 }
 
 interface ProductHomeProps {}
@@ -31,6 +32,7 @@ export default class ProductHome extends Component<ProductHomeProps, ProductHome
 			loading: false,
 			searchInfo: '',
 			searchType: 'searchByName',
+			pageNum: 1,
 		};
 
 		this.initColumns();
@@ -92,33 +94,33 @@ export default class ProductHome extends Component<ProductHomeProps, ProductHome
 
 	private getDataSources = async (pageNum: number) => {
 		this.setState({ loading: true });
-		const result: PageSplitModel<ProductsModel> = await reqProducts(pageNum, PAGE_SIZE);
+		let result: PageSplitModel<ProductsModel>;
+		if (this.state.searchInfo !== '') {
+			result = await this.searchByNameOrDesc(pageNum);
+		} else {
+			result = await reqProducts(pageNum, PAGE_SIZE);
+		}
 		this.setState(() => {
 			return {
 				products: result.list,
 				total: result.total,
 				loading: false,
+				pageNum: pageNum,
 			};
 		});
 	};
 
-	private searchByNameOrDesc = async (pageNum: number) => {
+	private searchByNameOrDesc = (pageNum: number): Promise<PageSplitModel<ProductsModel>> => {
 		const { searchType, searchInfo } = this.state;
-		this.setState({ loading: true });
-		let result: PageSplitModel<ProductsModel>;
 		if (searchType === 'searchByName') {
-			result = await reqProductsByName(searchInfo, pageNum, PAGE_SIZE);
+			return reqProductsByName(searchInfo, pageNum, PAGE_SIZE);
 		} else {
-			result = await reqProductsByDesc(searchInfo, pageNum, PAGE_SIZE);
+			return reqProductsByDesc(searchInfo, pageNum, PAGE_SIZE);
 		}
-		this.setState({
-			loading: false,
-			products: result.list,
-		});
 	};
 
 	render() {
-		const { products, total, loading, searchType, searchInfo } = this.state;
+		const { products, total, loading, searchType, searchInfo, pageNum } = this.state;
 		const title = (
 			<span>
 				<Select value={searchType} style={{ width: 150 }} onChange={(value) => this.setState({ searchType: value })}>
@@ -134,7 +136,7 @@ export default class ProductHome extends Component<ProductHomeProps, ProductHome
 				<Button
 					type="primary"
 					onClick={() => {
-						this.searchByNameOrDesc(1);
+						this.getDataSources(pageNum);
 					}}
 				>
 					搜索

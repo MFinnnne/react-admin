@@ -4,7 +4,7 @@
  * @Author: MFine
  * @Date: 2020-09-28 21:45:10
  * @LastEditors: MFine
- * @LastEditTime: 2020-11-30 22:03:52
+ * @LastEditTime: 2020-12-03 21:06:39
  */
 import { message } from 'antd';
 import jsonp from 'jsonp';
@@ -78,4 +78,8 @@ export const reqProductsByName = (
 	pageNum: number,
 	pageSize: number
 ): Promise<PageSplitModel<ProductsModel>> =>
-	ajax<PageSplitModel<ProductsModel>>(`/api/products/searchByName/${name}/${pageNum}/${pageSize}`, ReqMethodEnum.GET);
+	ajax<PageSplitModel<ProductsModel>>(`/api/products/searchByName`, {
+    name:name,
+    pageNum:pageNum,
+    pageSize:pageSize
+  },ReqMethodEnum.GET);
