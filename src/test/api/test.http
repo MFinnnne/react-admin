@@ -77,3 +77,7 @@ GET http://localhost:5000/api/products/searchByName/小米8/1/2
 
 ###
 GET http://localhost:5000/api/products/searchByName?name=8&pageNum=1&pageSize=3
+
+
+###
+GET http://wthrcdn.etouch.cn/weather_mini?citykey=101010100

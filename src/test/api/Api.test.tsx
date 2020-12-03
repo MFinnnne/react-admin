@@ -20,7 +20,6 @@ describe('test api', () => {
 				pageNum: 1,
 				pageSize: 3,
 			},
-			ReqMethodEnum.GET
 		);
 		if (result.total === 0) {
 			expect(result.list?.length).toEqual(0);

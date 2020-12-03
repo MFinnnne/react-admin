@@ -6,6 +6,7 @@ import { reqProducts, reqProductsByDesc, reqProductsByName } from '../../api';
 import { ProductsModel } from './Model';
 import { PageSplitModel } from '../../api/Model';
 import { PAGE_SIZE } from '../../utils/Constants';
+import { RouteComponentProps, withRouter } from 'react-router';
 /**
  * product的默认子路由组件
  */
@@ -21,10 +22,11 @@ interface ProductHomeState {
 
 interface ProductHomeProps {}
 
-export default class ProductHome extends Component<ProductHomeProps, ProductHomeState> {
+type ProductHomeRouteProps = ProductHomeProps & RouteComponentProps;
+class ProductHome extends Component<ProductHomeRouteProps, ProductHomeState> {
 	private columns: any[] = [];
 
-	constructor(props: ProductHomeProps) {
+	constructor(props: ProductHomeRouteProps) {
 		super(props);
 		this.state = {
 			products: [],
@@ -79,7 +81,13 @@ export default class ProductHome extends Component<ProductHomeProps, ProductHome
 				render: (product: any) => {
 					return (
 						<span>
-							<LinkButton>详情</LinkButton>
+							<LinkButton
+								onClick={() => {
+									this.props.history.push('/product/detail', product);
+								}}
+							>
+								详情
+							</LinkButton>
 							<LinkButton>修改</LinkButton>
 						</span>
 					);
@@ -162,3 +170,5 @@ export default class ProductHome extends Component<ProductHomeProps, ProductHome
 		);
 	}
 }
+
+export default withRouter(ProductHome);
