@@ -3,7 +3,7 @@ import { Redirect, Route, Switch } from 'react-router';
 import ProductAddUpdate from './add-update';
 import ProductDetail from './detail';
 import ProductHome from './home';
-import './product.less'
+import './product.scss'
 
 export default class Product extends Component {
 	render() {

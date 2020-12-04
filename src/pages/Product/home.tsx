@@ -78,12 +78,12 @@ class ProductHome extends Component<ProductHomeRouteProps, ProductHomeState> {
 			},
 			{
 				title: '操作',
-				render: (product: any) => {
+				render: (product: ProductsModel) => {
 					return (
 						<span>
 							<LinkButton
 								onClick={() => {
-									this.props.history.push('/product/detail', product);
+									this.props.history.push('/product/detail', {product});
 								}}
 							>
 								详情

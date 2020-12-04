@@ -4,11 +4,10 @@
  * @Author: MFine
  * @Date: 2020-11-30 22:46:31
  * @LastEditors: MFine
- * @LastEditTime: 2020-12-03 21:53:57
+ * @LastEditTime: 2020-12-05 00:45:51
  */
 import ajax from '../../api/ajax';
 import { PageSplitModel } from '../../api/Model';
-import { ReqMethodEnum } from '../../api/ReqMethodEnum';
 import { ProductsModel } from '../../pages/Product/Model';
 
 describe('test api', () => {
@@ -26,5 +25,5 @@ describe('test api', () => {
 		} else {
 			expect(result.list?.length).toBeGreaterThan(0);
 		}
-	});
+  });  
 });
