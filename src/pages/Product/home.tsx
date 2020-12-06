@@ -83,7 +83,7 @@ class ProductHome extends Component<ProductHomeRouteProps, ProductHomeState> {
 						<span>
 							<LinkButton
 								onClick={() => {
-									this.props.history.push('/product/detail', {product});
+									this.props.history.push('/product/detail', { product });
 								}}
 							>
 								详情
@@ -144,7 +144,7 @@ class ProductHome extends Component<ProductHomeRouteProps, ProductHomeState> {
 				<Button
 					type="primary"
 					onClick={() => {
-						this.getDataSources(pageNum);
+						this.getDataSources(1);
 					}}
 				>
 					搜索
@@ -164,7 +164,7 @@ class ProductHome extends Component<ProductHomeRouteProps, ProductHomeState> {
 					bordered
 					dataSource={products}
 					columns={this.columns}
-					pagination={{ defaultPageSize: PAGE_SIZE, total, showQuickJumper: true, onChange: this.getDataSources }}
+					pagination={{ defaultPageSize: PAGE_SIZE, total, showQuickJumper: true, onChange: this.getDataSources ,current:pageNum}}
 				/>
 			</Card>
 		);

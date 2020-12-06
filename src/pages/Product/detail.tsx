@@ -13,7 +13,8 @@ type ProductDetailRoutePros = ProductDetailProps & RouteComponentProps;
 
 class ProductDetail extends Component<ProductDetailRoutePros, ProductDetailState> {
 	render() {
-		const { desc, detail, images, price, name } = this.props.location.state as ProductsModel;
+    const { desc, detail, images, price, name } = this.props.location.state as ProductsModel;
+		const imageList = images.split(',');
 		const title = (
 			<span>
 				<LinkButton
@@ -37,11 +38,11 @@ class ProductDetail extends Component<ProductDetailRoutePros, ProductDetailState
 						</List.Item>
 						<List.Item className="item">
 							<span className="left">商品描述:</span>
-    <span>{desc}</span>
+							<span>{desc}</span>
 						</List.Item>
 						<List.Item className="item">
 							<span className="left">商品价格:</span>
-    <span>{price}</span>
+							<span>{price}</span>
 						</List.Item>
 						<List.Item className="item">
 							<span className="left">所属分类:</span>
@@ -50,15 +51,16 @@ class ProductDetail extends Component<ProductDetailRoutePros, ProductDetailState
 						<List.Item className="item">
 							<span className="left">商品图片:</span>
 							<span>
-								<img className="product-img" src={`http://localhost:5000/files/1.jpg`} alt="img"></img>
-							</span>
-							<span>
-								<img className="product-img" src={`http://localhost:5000/files/2.jpg`} alt="img"></img>
+								{imageList.map((img) => {
+									return (
+										<img key={img} className="product-img" src={`http://localhost:5000/files/${img}`} alt="img"></img>
+									);
+								})}
 							</span>
 						</List.Item>
 						<List.Item className="item">
 							<span className="left">商品详情:</span>
-							<span dangerouslySetInnerHTML={{ __html: '<h1 style="color:red">content</h1>' }}></span>
+							<span dangerouslySetInnerHTML={{ __html: detail }}></span>
 						</List.Item>
 					</List>
 				</Card>
