@@ -4,7 +4,7 @@
  * @Author: MFine
  * @Date: 2020-09-28 21:45:10
  * @LastEditors: MFine
- * @LastEditTime: 2020-12-03 21:06:39
+ * @LastEditTime: 2020-12-07 00:56:48
  */
 import { message } from 'antd';
 import jsonp from 'jsonp';
@@ -34,6 +34,8 @@ export const reqWheater = (city: string): Promise<{ dayPictureUrl: any; weather:
 		);
 	});
 };
+
+// export const reqCategoryById = (id:string):Promise<ReponseValue<any>>=>ajax<ReponseValue<any>>()
 
 export const reqCategorys = (parentId: string): Promise<ReponseValue<any>> =>
 	ajax<ReponseValue<any>>(`/api/category/list/${parentId}`);

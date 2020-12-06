@@ -12,9 +12,19 @@ interface ProductDetailProps {}
 type ProductDetailRoutePros = ProductDetailProps & RouteComponentProps;
 
 class ProductDetail extends Component<ProductDetailRoutePros, ProductDetailState> {
+
+  constructor(props:ProductDetailRoutePros) {
+    super(props);
+    
+  }
+  
+  componentDidMount(){
+    
+  }
+  
 	render() {
-    const { desc, detail, images, price, name } = this.props.location.state as ProductsModel;
-		const imageList = images.split(',');
+		const { desc, detail, images, price, name } = (this.props.location.state as any).product as ProductsModel;
+		const imageList: string[] = images?.split(',') ?? [];
 		const title = (
 			<span>
 				<LinkButton
