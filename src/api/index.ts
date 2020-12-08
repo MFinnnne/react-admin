@@ -1,10 +1,11 @@
+import { CategoryModel } from './../pages/category/Model';
 /*
  * @Descripttion:
  * @version:
  * @Author: MFine
  * @Date: 2020-09-28 21:45:10
  * @LastEditors: MFine
- * @LastEditTime: 2020-12-07 00:56:48
+ * @LastEditTime: 2020-12-08 21:34:31
  */
 import { message } from 'antd';
 import jsonp from 'jsonp';
@@ -35,7 +36,8 @@ export const reqWheater = (city: string): Promise<{ dayPictureUrl: any; weather:
 	});
 };
 
-// export const reqCategoryById = (id:string):Promise<ReponseValue<any>>=>ajax<ReponseValue<any>>()
+export const reqCategoryById = (id: string): Promise<CategoryModel> =>
+	ajax<CategoryModel>(`/api/category/findCategoryById/${id}`);
 
 export const reqCategorys = (parentId: string): Promise<ReponseValue<any>> =>
 	ajax<ReponseValue<any>>(`/api/category/list/${parentId}`);
@@ -57,7 +59,7 @@ export const reqProducts = (pageNum: number, pageSize: number): Promise<PageSpli
 /**
  * @name: 根据描述搜索商品
  * @test: test font
- * @msg: 
+ * @msg:
  * @param {*}
  * @return {*}
  */
@@ -66,12 +68,12 @@ export const reqProductsByDesc = (
 	pageNum: number,
 	pageSize: number
 ): Promise<PageSplitModel<ProductsModel>> =>
-  ajax<PageSplitModel<ProductsModel>>(`/api/products/searchByDesc/${desc}/${pageNum}/${pageSize}`, ReqMethodEnum.GET);
+	ajax<PageSplitModel<ProductsModel>>(`/api/products/searchByDesc/${desc}/${pageNum}/${pageSize}`, ReqMethodEnum.GET);
 
 /**
  * @name: 根据名称搜索商品
  * @test: test font
- * @msg: 
+ * @msg:
  * @param {*}
  * @return {*}
  */
@@ -80,8 +82,15 @@ export const reqProductsByName = (
 	pageNum: number,
 	pageSize: number
 ): Promise<PageSplitModel<ProductsModel>> =>
-	ajax<PageSplitModel<ProductsModel>>(`/api/products/searchByName`, {
-    name:name,
-    pageNum:pageNum,
-    pageSize:pageSize
-  },ReqMethodEnum.GET);
+	ajax<PageSplitModel<ProductsModel>>(
+		`/api/products/searchByName`,
+		{
+			name: name,
+			pageNum: pageNum,
+			pageSize: pageSize,
+		},
+		ReqMethodEnum.GET
+	);
+
+export const reqUpdateStatus = (id: number, status: number): Promise<number> =>
+	ajax<number>(`/api/products/updateStatus/${id}`, { status: status }, ReqMethodEnum.PUT);

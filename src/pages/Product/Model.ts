@@ -4,7 +4,7 @@
  * @Author: MFine
  * @Date: 2020-11-03 22:59:39
  * @LastEditors: MFine
- * @LastEditTime: 2020-11-29 15:47:13
+ * @LastEditTime: 2020-12-07 23:23:33
  */
 	export interface ProductsModel {
 		id: number;
@@ -15,7 +15,7 @@
 		desc: string;
 		detail: string;
 		categoryId: string;
-		pcatrgoryId: string;
+		pcategoryId: string;
 		price: string;
 		v: number;
 	}

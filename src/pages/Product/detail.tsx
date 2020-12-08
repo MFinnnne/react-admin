@@ -4,26 +4,52 @@ import { ArrowLeftOutlined } from '@ant-design/icons';
 import { RouteComponentProps, withRouter } from 'react-router';
 import LinkButton from '../../components/link-button';
 import { ProductsModel } from './Model';
+import { reqCategoryById } from '../../api';
 
-interface ProductDetailState {}
+interface ProductDetailState {
+	cName: string;
+	pName: string;
+}
 
 interface ProductDetailProps {}
 
 type ProductDetailRoutePros = ProductDetailProps & RouteComponentProps;
 
 class ProductDetail extends Component<ProductDetailRoutePros, ProductDetailState> {
+	constructor(props: ProductDetailRoutePros) {
+		super(props);
 
-  constructor(props:ProductDetailRoutePros) {
-    super(props);
-    
-  }
-  
-  componentDidMount(){
-    
-  }
-  
+		this.state = {
+			cName: '',
+			pName: '',
+		};
+	}
+
+	componentDidMount() {
+		this.getCategoryName();
+	}
+
+	private async getCategoryName() {
+		const { categoryId, pcategoryId } = (this.props.location.state as any).product as ProductsModel;
+		if (pcategoryId === '0') {
+			const cResult = await reqCategoryById(categoryId);
+			this.setState({
+				cName: cResult.name,
+			});
+		} else {
+			Promise.all([reqCategoryById(categoryId), reqCategoryById(pcategoryId)]).then((value) => {
+        this.setState({
+          cName: value[0].name,
+          pName: value[1].name,
+        });
+      });
+			
+		}
+	}
+
 	render() {
 		const { desc, detail, images, price, name } = (this.props.location.state as any).product as ProductsModel;
+		const { cName, pName } = this.state;
 		const imageList: string[] = images?.split(',') ?? [];
 		const title = (
 			<span>
@@ -56,7 +82,10 @@ class ProductDetail extends Component<ProductDetailRoutePros, ProductDetailState
 						</List.Item>
 						<List.Item className="item">
 							<span className="left">所属分类:</span>
-							<span>电脑--{'>'}笔记本</span>
+							<span>
+								{pName === '' ? '' : '-->'}
+								{cName}
+							</span>
 						</List.Item>
 						<List.Item className="item">
 							<span className="left">商品图片:</span>

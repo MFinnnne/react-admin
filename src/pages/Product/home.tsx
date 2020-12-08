@@ -1,8 +1,8 @@
-import { Button, Card, Input, Select, Table } from 'antd';
+import { Button, Card, Input, message, Select, Table } from 'antd';
 import React, { Component } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import LinkButton from '../../components/link-button';
-import { reqProducts, reqProductsByDesc, reqProductsByName } from '../../api';
+import { reqProducts, reqProductsByDesc, reqProductsByName, reqUpdateStatus } from '../../api';
 import { ProductsModel } from './Model';
 import { PageSplitModel } from '../../api/Model';
 import { PAGE_SIZE } from '../../utils/Constants';
@@ -25,7 +25,7 @@ interface ProductHomeProps {}
 type ProductHomeRouteProps = ProductHomeProps & RouteComponentProps;
 class ProductHome extends Component<ProductHomeRouteProps, ProductHomeState> {
 	private columns: any[] = [];
-
+	private pageNum: number = 1;
 	constructor(props: ProductHomeRouteProps) {
 		super(props);
 		this.state = {
@@ -66,12 +66,19 @@ class ProductHome extends Component<ProductHomeRouteProps, ProductHomeState> {
 			},
 			{
 				title: '状态',
-				dataIndex: 'status',
-				render: (status: any) => {
+				render: (product: ProductsModel) => {
+					const { status, id } = product;
 					return (
 						<span>
-							<Button type="primary">下架</Button>
-							<span>在售</span>
+							<Button
+								type="primary"
+								onClick={() => {
+									this.updateStatus(id, status === 1 ? 2 : 1);
+								}}
+							>
+								{status === 1 ? '下架' : '上架'}
+							</Button>
+							<span>{status === 1 ? '在售' : '已下架'}</span>
 						</span>
 					);
 				},
@@ -96,11 +103,20 @@ class ProductHome extends Component<ProductHomeRouteProps, ProductHomeState> {
 		];
 	};
 
+	private updateStatus = async (id: number, status: number) => {
+		const result = await reqUpdateStatus(id, status);
+		if (result ===1) {
+			message.success('更新商品成功');
+			this.getDataSources(this.pageNum);
+		}
+	};
+
 	componentDidMount() {
 		this.getDataSources(1);
 	}
 
 	private getDataSources = async (pageNum: number) => {
+		this.pageNum = pageNum;
 		this.setState({ loading: true });
 		let result: PageSplitModel<ProductsModel>;
 		if (this.state.searchInfo !== '') {
@@ -164,7 +180,13 @@ class ProductHome extends Component<ProductHomeRouteProps, ProductHomeState> {
 					bordered
 					dataSource={products}
 					columns={this.columns}
-					pagination={{ defaultPageSize: PAGE_SIZE, total, showQuickJumper: true, onChange: this.getDataSources ,current:pageNum}}
+					pagination={{
+						defaultPageSize: PAGE_SIZE,
+						total,
+						showQuickJumper: true,
+						onChange: this.getDataSources,
+						current: pageNum,
+					}}
 				/>
 			</Card>
 		);
