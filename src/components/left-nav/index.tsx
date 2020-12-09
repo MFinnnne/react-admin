@@ -25,7 +25,7 @@ class LeftNav extends Component<LeftNavProps, {}> {
 		const path: string = this.props.location.pathname;
 		return menuList.forEach((item) => {
 			if (item.children) {
-				const cItem = item.children.find((cItem) => cItem.key === path);
+				const cItem = item.children.find((cItem) => path.indexOf(cItem.key) === 0);
 				if (cItem) {
 					this.openKey = item.key;
 				}
@@ -71,7 +71,10 @@ class LeftNav extends Component<LeftNavProps, {}> {
 	};
 
 	render() {
-		const path = this.props.location.pathname;
+		let path = this.props.location.pathname;
+		if (path.indexOf('/product') === 0) {
+			path = '/product';
+		}
 		return (
 			<div className="left-nav">
 				<Link to="/" className="left-nav-header">

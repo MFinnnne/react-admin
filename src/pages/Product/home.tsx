@@ -1,4 +1,4 @@
-import { Button, Card, Input, message, Select, Table } from 'antd';
+import { Button, Card, Input, Select, Table } from 'antd';
 import React, { Component } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import LinkButton from '../../components/link-button';
@@ -105,8 +105,7 @@ class ProductHome extends Component<ProductHomeRouteProps, ProductHomeState> {
 
 	private updateStatus = async (id: number, status: number) => {
 		const result = await reqUpdateStatus(id, status);
-		if (result ===1) {
-			message.success('更新商品成功');
+		if (result === 1) {
 			this.getDataSources(this.pageNum);
 		}
 	};
@@ -168,7 +167,7 @@ class ProductHome extends Component<ProductHomeRouteProps, ProductHomeState> {
 			</span>
 		);
 		const extra = (
-			<Button type="primary" icon={<PlusOutlined />}>
+			<Button type="primary" icon={<PlusOutlined />} onClick={()=>{this.props.history.push("/product/add")}}>
 				添加商品
 			</Button>
 		);
