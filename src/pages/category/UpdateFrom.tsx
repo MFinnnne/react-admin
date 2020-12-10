@@ -1,7 +1,7 @@
 import { Form, Input, message, Modal } from 'antd';
 import React, { Component } from 'react';
 import { reqUpdateCategory } from '../../api';
-import { ReponseValue } from '../../api/Model';
+import { ResponseValue } from '../../api/Model';
 import { ICategory } from './Model';
 import { ModalStatusCode } from './ModalStatusCode';
 
@@ -42,7 +42,7 @@ export default class UpdateFrom extends Component<IUpdateFormProps, IUpdateFormS
 					form
 						.validateFields()
 						.then(async (values: Values) => {
-							const result: ReponseValue<any> = await reqUpdateCategory(category._id, category.parentId, values.title ?? ' ', category.categoryName);
+							const result: ResponseValue<any> = await reqUpdateCategory(category._id, category.parentId, values.title ?? ' ', category.categoryName);
 							if (result.status === 0) {
 								message.info('品类更新成功');
 								//更新列表

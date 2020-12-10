@@ -4,14 +4,14 @@
  * @Author: MFine
  * @Date: 2020-11-28 16:40:32
  * @LastEditors: MFine
- * @LastEditTime: 2020-11-29 16:07:11
+ * @LastEditTime: 2020-12-10 22:56:53
  */
 //自定义返回类型
-export interface ReponseValue<T> {
+export interface ResponseValue<T> {
 	flag?: boolean;
 	status?: number;
 	message?: string;
-	data?: T | T[];
+	data?: T[];
 }
 
 //分页数据模型

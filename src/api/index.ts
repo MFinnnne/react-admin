@@ -1,16 +1,17 @@
-import { CategoryModel } from './../pages/category/Model';
+
 /*
  * @Descripttion:
  * @version:
  * @Author: MFine
  * @Date: 2020-09-28 21:45:10
  * @LastEditors: MFine
- * @LastEditTime: 2020-12-08 21:34:31
+ * @LastEditTime: 2020-12-10 23:56:16
  */
+import { CategoryModel } from './../pages/category/Model';
 import { message } from 'antd';
 import jsonp from 'jsonp';
 import ajax from './ajax';
-import { ReponseValue } from './Model';
+import { ResponseValue as ResponseValue } from './Model';
 import { ReqMethodEnum } from './ReqMethodEnum';
 import { PageSplitModel } from './Model';
 import { ProductsModel } from './../pages/Product/Model';
@@ -39,19 +40,19 @@ export const reqWheater = (city: string): Promise<{ dayPictureUrl: any; weather:
 export const reqCategoryById = (id: string): Promise<CategoryModel> =>
 	ajax<CategoryModel>(`/api/category/findCategoryById/${id}`);
 
-export const reqCategorys = (parentId: string): Promise<ReponseValue<any>> =>
-	ajax<ReponseValue<any>>(`/api/category/list/${parentId}`);
+export const reqCategorys = (parentId: string): Promise<ResponseValue<any>> =>
+	ajax<ResponseValue<any>>(`/api/category/list/${parentId}`);
 
-export const reqAddCategory = (parentId: string, categoryName: string, name: string): Promise<ReponseValue<any>> =>
-	ajax<ReponseValue<any>>('/api/category/add', { parentId, categoryName, name }, ReqMethodEnum.POST);
+export const reqAddCategory = (parentId: string, categoryName: string, name: string): Promise<ResponseValue<any>> =>
+	ajax<ResponseValue<any>>('/api/category/add', { parentId, categoryName, name }, ReqMethodEnum.POST);
 
 export const reqUpdateCategory = (
 	id: string,
 	parentId: string,
 	name: string,
 	categoryName: string
-): Promise<ReponseValue<any>> =>
-	ajax<ReponseValue<any>>('/api/category/update', { id, parentId, name, categoryName }, ReqMethodEnum.PUT);
+): Promise<ResponseValue<any>> =>
+	ajax<ResponseValue<any>>('/api/category/update', { id, parentId, name, categoryName }, ReqMethodEnum.PUT);
 
 export const reqProducts = (pageNum: number, pageSize: number): Promise<PageSplitModel<ProductsModel>> =>
 	ajax<PageSplitModel<ProductsModel>>('/api/products/list', { pageNum, pageSize }, ReqMethodEnum.POST);
