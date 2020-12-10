@@ -1,0 +1,12 @@
+[1020/160854.899:ERROR:directory_reader_win.cc(43)] FindFirstFile: 系统找不到指定的路径。 (0x3)
+[1021/173218.725:ERROR:crash_report_database_win.cc(498)] failed to stat report
+[1023/154014.113:ERROR:crash_report_database_win.cc(498)] failed to stat report
+[1023/155014.113:ERROR:crash_report_database_win.cc(498)] failed to stat report
+[1023/155014.113:ERROR:filesystem_win.cc(116)] GetFileAttributes C:\Users\ADMINI~1\AppData\Local\Temp\.profile\Crashpad\reports\8d3815a0-1f41-48ae-acba-531d08c04898.dmp: 系统找不到指定的文件。 (0x2)
+[1023/155014.114:ERROR:directory_reader_win.cc(43)] FindFirstFile: 系统找不到指定的路径。 (0x3)
+[1023/165547.179:ERROR:directory_reader_win.cc(43)] FindFirstFile: 系统找不到指定的路径。 (0x3)
+[1030/154813.033:ERROR:directory_reader_win.cc(43)] FindFirstFile: 系统找不到指定的路径。 (0x3)
+[1102/141456.465:ERROR:directory_reader_win.cc(43)] FindFirstFile: 系统找不到指定的路径。 (0x3)
+[1102/205826.968:ERROR:directory_reader_win.cc(43)] FindFirstFile: 系统找不到指定的路径。 (0x3)
+[1207/003122.895:ERROR:directory_reader_win.cc(43)] FindFirstFile: 系统找不到指定的路径。 (0x3)
+[1207/232607.500:ERROR:directory_reader_win.cc(43)] FindFirstFile: 系统找不到指定的路径。 (0x3)
