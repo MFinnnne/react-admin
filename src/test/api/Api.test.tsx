@@ -4,7 +4,7 @@
  * @Author: MFine
  * @Date: 2020-11-30 22:46:31
  * @LastEditors: MFine
- * @LastEditTime: 2020-12-07 22:45:48
+ * @LastEditTime: 2020-12-11 23:43:17
  */
 import ajax from '../../api/ajax';
 import { PageSplitModel } from '../../api/Model';
@@ -12,7 +12,7 @@ import { CategoryModel } from '../../pages/category/Model';
 import { ProductsModel } from '../../pages/Product/Model';
 
 describe('test api', () => {
-	test('test reqByProductsbyName', async () => {
+	test('test reqByProductsByName', async () => {
 		const result = await ajax<PageSplitModel<ProductsModel>>(
 			'http://localhost:5000/api/products/searchByName',
 			{

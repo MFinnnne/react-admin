@@ -1,17 +1,16 @@
-
 /*
  * @Descripttion:
  * @version:
  * @Author: MFine
  * @Date: 2020-09-28 21:45:10
  * @LastEditors: MFine
- * @LastEditTime: 2020-12-10 23:56:16
+ * @LastEditTime: 2020-12-11 23:38:58
  */
 import { CategoryModel } from './../pages/category/Model';
 import { message } from 'antd';
 import jsonp from 'jsonp';
 import ajax from './ajax';
-import { ResponseValue as ResponseValue } from './Model';
+import { ResponseValue } from './Model';
 import { ReqMethodEnum } from './ReqMethodEnum';
 import { PageSplitModel } from './Model';
 import { ProductsModel } from './../pages/Product/Model';
