@@ -1,3 +1,11 @@
+/*
+ * @Descripttion: 
+ * @version: 
+ * @Author: MFine
+ * @Date: 2020-11-28 16:32:54
+ * @LastEditors: MFine
+ * @LastEditTime: 2020-12-14 22:03:11
+ */
 import { StringValidator } from './Model';
 
 

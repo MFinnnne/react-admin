@@ -1,3 +1,4 @@
+
 import React, { Component } from 'react';
 import LinkButton from '../../components/link-button';
 import { ArrowLeftOutlined } from '@ant-design/icons';
@@ -10,6 +11,7 @@ import { CategoryModel } from '../category/Model';
 import { reqCategorys } from '../../api';
 import { ResponseValue } from '../../api/Model';
 import { ProductsModel } from './Model';
+import PicturesWall from './pictures-wall';
 
 interface Options {
 	value: string;
@@ -38,6 +40,7 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 		const product: undefined | ProductsModel = (this.props.location.state as any)?.product as ProductsModel;
 		this.isUpdate = !!product;
 		this.product = product;
+		this.getCategorys('0');
 	}
 
 	/**
@@ -169,6 +172,9 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 				if (targetOption !== undefined) {
 					targetOption.children = subOptions;
 				}
+				this.defaultCategory.push(this.product?.pcategoryId ?? '', this.product?.categoryId ?? '');
+			} else {
+				this.defaultCategory.push(this.product.categoryId);
 			}
 		}
 		return options;
@@ -176,15 +182,6 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 	render() {
 		const { options } = this.state;
 		const { isUpdate, product } = this;
-
-		if (isUpdate) {
-			if (product?.categoryId !== '0') {
-				this.defaultCategory.push(product?.pcategoryId ?? '', product?.categoryId ?? '');
-			} else {
-				this.defaultCategory.push(product.categoryId);
-			}
-		}
-
 		const formItemLayout = {
 			labelCol: { span: 1 },
 			wrapperCol: { span: 8 },
@@ -254,8 +251,10 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 								placeholder="请选择"
 							></Cascader>
 						</Form.Item>
-						<Form.Item name="picture" label="商品图片"></Form.Item>
-						<Form.Item name="detail" label="商品详情">
+						<Form.Item label="商品图片">
+							<PicturesWall></PicturesWall>
+						</Form.Item>
+						<Form.Item label="商品详情">
 							<div>商品详情</div>
 						</Form.Item>
 						<Form.Item>

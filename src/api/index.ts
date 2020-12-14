@@ -13,7 +13,7 @@ import ajax from './ajax';
 import { ResponseValue } from './Model';
 import { ReqMethodEnum } from './ReqMethodEnum';
 import { PageSplitModel } from './Model';
-import { ProductsModel } from './../pages/Product/Model';
+import { ProductsModel } from '../pages/product/Model';
 
 export const reqLogin = (name: string, password: string): Promise<any> =>
 	ajax<any>('/api/user/login', { name, password }, ReqMethodEnum.POST);

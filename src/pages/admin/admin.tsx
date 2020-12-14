@@ -4,7 +4,7 @@ import LeftNav from '../../components/left-nav';
 import Header from '../../components/header';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import Category from '../category/Category';
-import Product from '../Product/Product';
+import Product from '../product/Product';
 import Role from '../role/Role';
 import User from '../user/User';
 import Bar from '../chars/Bar';

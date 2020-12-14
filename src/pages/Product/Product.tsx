@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Redirect, Route, Switch } from 'react-router';
+import ProductHome from './home';
 import ProductAddUpdate from './add-update';
 import ProductDetail from './detail';
-import ProductHome from './home';
-import './product.scss'
+import './product.scss';
 
 export default class Product extends Component {
 	render() {
@@ -17,4 +17,3 @@ export default class Product extends Component {
 		);
 	}
 }
- 
