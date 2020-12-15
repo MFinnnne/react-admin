@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react';
 import LinkButton from '../../components/link-button';
 import { ArrowLeftOutlined } from '@ant-design/icons';
@@ -28,6 +27,14 @@ interface ProductAddUpdateProps {}
 
 type ProductAddUpdateRouteProps = ProductAddUpdateProps & RouteComponentProps;
 
+const formItemLayout = {
+	labelCol: { span: 1 },
+	wrapperCol: { span: 8 },
+};
+
+const formTailLayout = {
+	wrapperCol: { span: 8, offset: 1 },
+};
 class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddUpdateState> {
 	isUpdate: boolean = false;
 	product: ProductsModel | undefined;
@@ -110,7 +117,7 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 	private onChange = (value: CascaderValueType, selectedOptions?: CascaderOptionType[]): void => {};
 
 	private getCategorys = async (parentId: string): Promise<CategoryModel[] | undefined> => {
-		const result: ResponseValue<CategoryModel> = await reqCategorys(parentId);
+		const result: ResponseValue<CategoryModel[]> = await reqCategorys(parentId);
 		if (result.status === 0) {
 			const categorys: CategoryModel[] | undefined = result.data;
 			if (parentId === '0') {
@@ -182,10 +189,6 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 	render() {
 		const { options } = this.state;
 		const { isUpdate, product } = this;
-		const formItemLayout = {
-			labelCol: { span: 1 },
-			wrapperCol: { span: 8 },
-		};
 		const title = (
 			<span>
 				<LinkButton
@@ -206,11 +209,13 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 						{...formItemLayout}
 						initialValues={{ remember: true }}
 						onFinish={this.onFinish}
+						className="add-update-from"
 						onFinishFailed={this.onFinishFailed}
 					>
 						<Form.Item
 							name="name"
 							label="商品名称"
+							className="item"
 							initialValue={product?.name}
 							rules={[{ required: true, message: '必须输入商品名称' }]}
 						>
@@ -220,6 +225,7 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 							initialValue={product?.desc}
 							name="desc"
 							label="商品描述"
+							className="item"
 							rules={[{ required: true, message: '必须输入商品描述' }]}
 						>
 							<Input.TextArea placeholder="请输入商品描述" autoSize />
@@ -228,6 +234,7 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 							name="price"
 							initialValue={product?.price}
 							label="商品价格"
+							className="item"
 							rules={[
 								{ required: true, message: '必须输入商品价格' },
 								{
@@ -240,6 +247,7 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 						<Form.Item
 							name="category"
 							label="商品分类"
+							className="item"
 							initialValue={this.defaultCategory}
 							rules={[{ required: true, message: '必须制定商品分类' }]}
 						>
@@ -251,13 +259,15 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 								placeholder="请选择"
 							></Cascader>
 						</Form.Item>
-						<Form.Item label="商品图片">
+						<Form.Item label="商品图片" className="item">
 							<PicturesWall></PicturesWall>
 						</Form.Item>
-						<Form.Item label="商品详情">
+						<Form.Item label="商品详情"
+              className="item"
+            >
 							<div>商品详情</div>
 						</Form.Item>
-						<Form.Item>
+						<Form.Item {...formTailLayout}>
 							<Button type="primary" htmlType="submit">
 								提交
 							</Button>

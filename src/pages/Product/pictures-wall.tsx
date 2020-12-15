@@ -1,8 +1,10 @@
-import { Upload, Modal } from 'antd';
+import { Upload, Modal, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import React, { Component } from 'react';
 import { UploadChangeParam } from 'antd/lib/upload';
 import { UploadFile } from 'antd/lib/upload/interface';
+import { BASE_URL } from '../../utils/Constants';
+import { ResponseValue } from '../../api/Model';
 
 function getBase64(file: any): Promise<any> {
 	return new Promise((resolve, reject) => {
@@ -11,6 +13,10 @@ function getBase64(file: any): Promise<any> {
 		reader.onload = () => resolve(reader.result);
 		reader.onerror = (error) => reject(error);
 	});
+}
+interface FileUploadResponseModel {
+	url: string;
+	name: string;
 }
 
 interface PicturesWallState {
@@ -27,21 +33,13 @@ export default class PicturesWall extends Component<{}, PicturesWallState> {
 			previewVisible: false,
 			previewImage: '',
 			previewTitle: '',
-			fileList: [
-				{
-					uid: '-1',
-					size: 0,
-					name: 'image.png',
-					url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-					type: '',
-				},
-			],
+			fileList: [],
 		};
 	}
 
-	handleCancel = () => this.setState({ previewVisible: false });
+	private handleCancel = () => this.setState({ previewVisible: false });
 
-	handlePreview = async (file: UploadFile<any>) => {
+	private handlePreview = async (file: UploadFile<any>) => {
 		if (!file.url && !file.preview) {
 			file.preview = await getBase64(file.originFileObj);
 		}
@@ -53,7 +51,24 @@ export default class PicturesWall extends Component<{}, PicturesWallState> {
 		});
 	};
 
-	handleChange = ({ fileList }: UploadChangeParam) => this.setState({ fileList });
+	private handleChange = ({ file, fileList, event }: UploadChangeParam) => {
+		if (file.status === 'done') {
+			const result: ResponseValue<FileUploadResponseModel> = file.response as ResponseValue<FileUploadResponseModel>;
+			if (result.status === 0 && result.data) {
+				message.success('上传图片成功');
+				fileList.map((item) => {
+					item.name = result.data?.name ?? item.name;
+					item.url = result.data?.url + '/files/' + result.data?.name ?? item.url;
+				});
+				console.log(fileList);
+				this.setState({
+					fileList,
+				});
+			} else {
+				message.error('上传失败');
+			}
+		}
+	};
 
 	render() {
 		const { previewVisible, previewImage, fileList, previewTitle } = this.state;
@@ -64,20 +79,23 @@ export default class PicturesWall extends Component<{}, PicturesWallState> {
 			</div>
 		);
 		return (
-			<>
+			<div>
 				<Upload
-					action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+					action={BASE_URL + '/uploadFile'}
+					accept="image/*"
 					listType="picture-card"
+					name="image"
 					fileList={fileList}
 					onPreview={this.handlePreview}
 					onChange={this.handleChange}
+					multiple
 				>
-					{fileList.length >= 8 ? null : uploadButton}
+					{fileList.length >= 3 ? null : uploadButton}
 				</Upload>
 				<Modal visible={previewVisible} title={previewTitle} footer={null} onCancel={this.handleCancel}>
 					<img alt="example" style={{ width: '100%' }} src={previewImage} />
 				</Modal>
-			</>
+			</div>
 		);
 	}
 }
