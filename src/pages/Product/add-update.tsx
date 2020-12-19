@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, RefObject } from 'react';
 import LinkButton from '../../components/link-button';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { Button, Card, Cascader, Form, Input } from 'antd';
@@ -39,6 +39,7 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 	isUpdate: boolean = false;
 	product: ProductsModel | undefined;
 	defaultCategory: string[] = [];
+	picturesWallRef: RefObject<PicturesWall>;
 	constructor(props: ProductAddUpdateRouteProps) {
 		super(props);
 		this.state = {
@@ -48,6 +49,7 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 		this.isUpdate = !!product;
 		this.product = product;
 		this.getCategorys('0');
+		this.picturesWallRef = React.createRef();
 	}
 
 	/**
@@ -59,6 +61,8 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 	 */
 	private onFinish = (values: any): void => {
 		console.log(values);
+    const imagesName: string[] = this.picturesWallRef.current?.getImages() ?? [];
+    console.log(imagesName)
 	};
 
 	/**
@@ -260,11 +264,9 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 							></Cascader>
 						</Form.Item>
 						<Form.Item label="商品图片" className="item">
-							<PicturesWall></PicturesWall>
+							<PicturesWall ref={this.picturesWallRef}></PicturesWall>
 						</Form.Item>
-						<Form.Item label="商品详情"
-              className="item"
-            >
+						<Form.Item label="商品详情" className="item">
 							<div>商品详情</div>
 						</Form.Item>
 						<Form.Item {...formTailLayout}>

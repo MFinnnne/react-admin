@@ -26,8 +26,11 @@ interface PicturesWallState {
 	fileList: UploadFile<any>[];
 }
 
-export default class PicturesWall extends Component<{}, PicturesWallState> {
-	constructor(props: {}) {
+interface PicturesWallProps {
+}
+
+export default class PicturesWall extends Component<PicturesWallProps, PicturesWallState> {
+	constructor(props: PicturesWallProps) {
 		super(props);
 		this.state = {
 			previewVisible: false,
@@ -56,11 +59,10 @@ export default class PicturesWall extends Component<{}, PicturesWallState> {
 			const result: ResponseValue<FileUploadResponseModel> = file.response as ResponseValue<FileUploadResponseModel>;
 			if (result.status === 0 && result.data) {
 				message.success('上传图片成功');
-				fileList.map((item) => {
+				fileList.forEach((item) => {
 					item.name = result.data?.name ?? item.name;
 					item.url = result.data?.url + '/files/' + result.data?.name ?? item.url;
 				});
-				console.log(fileList);
 				this.setState({
 					fileList,
 				});
@@ -68,6 +70,10 @@ export default class PicturesWall extends Component<{}, PicturesWallState> {
 				message.error('上传失败');
 			}
 		}
+	};
+
+	public getImages = (): string[] => {
+		return this.state.fileList.map((file) => file.name ?? '');
 	};
 
 	render() {
