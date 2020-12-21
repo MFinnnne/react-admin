@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, RefObject } from 'react';
 import LinkButton from '../../components/link-button';
 import { ArrowLeftOutlined } from '@ant-design/icons';
-import { Button, Card, Cascader, Form, Input, message } from 'antd';
+import { Button, Card, Cascader, Form, Input } from 'antd';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { RuleObject } from 'antd/lib/form';
 import { StoreValue } from 'antd/lib/form/interface';
@@ -9,11 +9,14 @@ import { CascaderOptionType, CascaderValueType } from 'antd/lib/cascader';
 import { CategoryModel } from '../category/Model';
 import { reqCategorys } from '../../api';
 import { ResponseValue } from '../../api/Model';
+import { ProductsModel } from './Model';
+import PicturesWall from './pictures-wall';
 
 interface Options {
 	value: string;
 	label: string;
 	isLeaf: boolean;
+	children?: Options[] | undefined;
 }
 
 interface ProductAddUpdateState {
@@ -24,13 +27,29 @@ interface ProductAddUpdateProps {}
 
 type ProductAddUpdateRouteProps = ProductAddUpdateProps & RouteComponentProps;
 
+const formItemLayout = {
+	labelCol: { span: 1 },
+	wrapperCol: { span: 8 },
+};
+
+const formTailLayout = {
+	wrapperCol: { span: 8, offset: 1 },
+};
 class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddUpdateState> {
+	isUpdate: boolean = false;
+	product: ProductsModel | undefined;
+	defaultCategory: string[] = [];
+	picturesWallRef: RefObject<PicturesWall>;
 	constructor(props: ProductAddUpdateRouteProps) {
 		super(props);
-
 		this.state = {
 			options: [],
 		};
+		const product: undefined | ProductsModel = (this.props.location.state as any)?.product as ProductsModel;
+		this.isUpdate = !!product;
+		this.product = product;
+		this.getCategorys('0');
+		this.picturesWallRef = React.createRef();
 	}
 
 	/**
@@ -40,7 +59,11 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 	 * @param {any}
 	 * @return {void}
 	 */
-	private onFinish = (values: any): void => {};
+	private onFinish = (values: any): void => {
+		console.log(values);
+    const imagesName: string[] = this.picturesWallRef.current?.getImages() ?? [];
+    console.log(imagesName)
+	};
 
 	/**
 	 * @name: From提交失败回调
@@ -79,7 +102,7 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 		const targetOption = selectedOptions[0];
 		targetOption.loading = true;
 		const subCategorys = await this.getCategorys(targetOption.value as string);
-		targetOption.loading = false; 
+		targetOption.loading = false;
 		if (subCategorys && subCategorys.length > 0) {
 			const childOptions = subCategorys.map((c) => ({
 				value: String(c.id),
@@ -98,7 +121,7 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 	private onChange = (value: CascaderValueType, selectedOptions?: CascaderOptionType[]): void => {};
 
 	private getCategorys = async (parentId: string): Promise<CategoryModel[] | undefined> => {
-		const result: ResponseValue<CategoryModel> = await reqCategorys(parentId);
+		const result: ResponseValue<CategoryModel[]> = await reqCategorys(parentId);
 		if (result.status === 0) {
 			const categorys: CategoryModel[] | undefined = result.data;
 			if (parentId === '0') {
@@ -116,14 +139,18 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 	 * @param {*}
 	 * @return {*}
 	 */
-	private initOptions = (categorys: CategoryModel[] | undefined) => {
+	private initOptions = async (categorys: CategoryModel[] | undefined): Promise<any> => {
 		const options: Options[] | undefined = categorys?.map((c) => ({
 			value: String(c.id),
 			label: c.name,
 			isLeaf: false,
 		}));
+		if (options === undefined) {
+			return;
+		}
+		const targetOptions = await this.setCascaderDefaultValue(options);
 		this.setState({
-			options: options ?? [],
+			options: targetOptions ?? [],
 		});
 	};
 
@@ -131,14 +158,41 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 		this.getCategorys('0');
 	}
 
+	/**
+	 * @name: 设置Cascader默认值
+	 * @test: test font
+	 * @msg: 传入options对option进行判断如果选项父类不为第第一级分类则设置其children
+	 * @param { Options[]}
+	 * @return {Promise<Options[]>}
+	 */
+	private async setCascaderDefaultValue(options: Options[]): Promise<Options[]> {
+		if (this.product === undefined || options === undefined) {
+			return options;
+		}
+		const { pcategoryId, categoryId } = this.product;
+		if (this.isUpdate) {
+			if (categoryId !== '0') {
+				const subCategorys: CategoryModel[] | undefined = await this.getCategorys(pcategoryId ?? '0');
+				const subOptions: Options[] =
+					subCategorys?.map((cItem) => ({
+						value: String(cItem.id),
+						label: cItem.name,
+						isLeaf: false,
+					})) ?? [];
+				const targetOption: Options | undefined = options.find((option) => option.value === pcategoryId);
+				if (targetOption !== undefined) {
+					targetOption.children = subOptions;
+				}
+				this.defaultCategory.push(this.product?.pcategoryId ?? '', this.product?.categoryId ?? '');
+			} else {
+				this.defaultCategory.push(this.product.categoryId);
+			}
+		}
+		return options;
+	}
 	render() {
 		const { options } = this.state;
-
-		const formItemLayout = {
-			labelCol: { span: 1 },
-			wrapperCol: { span: 8 },
-		};
-
+		const { isUpdate, product } = this;
 		const title = (
 			<span>
 				<LinkButton
@@ -149,7 +203,7 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 				>
 					<ArrowLeftOutlined style={{ margin: 5 }} />
 				</LinkButton>
-				<span>添加商品</span>
+				<span>{isUpdate ? '修改商品' : '添加商品'}</span>
 			</span>
 		);
 		return (
@@ -159,17 +213,32 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 						{...formItemLayout}
 						initialValues={{ remember: true }}
 						onFinish={this.onFinish}
+						className="add-update-from"
 						onFinishFailed={this.onFinishFailed}
 					>
-						<Form.Item name="name" label="商品名称" rules={[{ required: true, message: '必须输入商品名称' }]}>
+						<Form.Item
+							name="name"
+							label="商品名称"
+							className="item"
+							initialValue={product?.name}
+							rules={[{ required: true, message: '必须输入商品名称' }]}
+						>
 							<Input placeholder="请输入商品名称"></Input>
 						</Form.Item>
-						<Form.Item name="desc" label="商品描述" rules={[{ required: true, message: '必须输入商品描述' }]}>
+						<Form.Item
+							initialValue={product?.desc}
+							name="desc"
+							label="商品描述"
+							className="item"
+							rules={[{ required: true, message: '必须输入商品描述' }]}
+						>
 							<Input.TextArea placeholder="请输入商品描述" autoSize />
 						</Form.Item>
 						<Form.Item
 							name="price"
+							initialValue={product?.price}
 							label="商品价格"
+							className="item"
 							rules={[
 								{ required: true, message: '必须输入商品价格' },
 								{
@@ -179,7 +248,13 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 						>
 							<Input type="number" placeholder="请输入商品价格" addonAfter="元"></Input>
 						</Form.Item>
-						<Form.Item name="category" label="商品分类">
+						<Form.Item
+							name="category"
+							label="商品分类"
+							className="item"
+							initialValue={this.defaultCategory}
+							rules={[{ required: true, message: '必须制定商品分类' }]}
+						>
 							<Cascader
 								options={options}
 								loadData={this.loadData}
@@ -188,11 +263,13 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 								placeholder="请选择"
 							></Cascader>
 						</Form.Item>
-						<Form.Item name="picture" label="商品图片"></Form.Item>
-						<Form.Item name="detail" label="商品详情">
+						<Form.Item label="商品图片" className="item">
+							<PicturesWall ref={this.picturesWallRef}></PicturesWall>
+						</Form.Item>
+						<Form.Item label="商品详情" className="item">
 							<div>商品详情</div>
 						</Form.Item>
-						<Form.Item>
+						<Form.Item {...formTailLayout}>
 							<Button type="primary" htmlType="submit">
 								提交
 							</Button>

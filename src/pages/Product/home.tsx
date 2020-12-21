@@ -37,7 +37,7 @@ class ProductHome extends Component<ProductHomeRouteProps, ProductHomeState> {
 			pageNum: 1,
 		};
 
-		this.initColumns();
+    this.initColumns();
 	}
 
 	/**
@@ -95,7 +95,15 @@ class ProductHome extends Component<ProductHomeRouteProps, ProductHomeState> {
 							>
 								详情
 							</LinkButton>
-							<LinkButton>修改</LinkButton>
+							<LinkButton
+								onClick={
+									(() => {
+										this.props.history.push('/product/add',{ product});
+									})
+								}
+							>
+								修改
+							</LinkButton>
 						</span>
 					);
 				},
@@ -167,7 +175,13 @@ class ProductHome extends Component<ProductHomeRouteProps, ProductHomeState> {
 			</span>
 		);
 		const extra = (
-			<Button type="primary" icon={<PlusOutlined />} onClick={()=>{this.props.history.push("/product/add")}}>
+			<Button
+				type="primary"
+				icon={<PlusOutlined />}
+				onClick={() => {
+					this.props.history.push('/product/add');
+				}}
+			>
 				添加商品
 			</Button>
 		);
