@@ -26,8 +26,7 @@ interface PicturesWallState {
 	fileList: UploadFile<any>[];
 }
 
-interface PicturesWallProps {
-}
+interface PicturesWallProps {}
 
 export default class PicturesWall extends Component<PicturesWallProps, PicturesWallState> {
 	constructor(props: PicturesWallProps) {
@@ -69,6 +68,8 @@ export default class PicturesWall extends Component<PicturesWallProps, PicturesW
 			} else {
 				message.error('上传失败');
 			}
+		} else if (file.status === 'removed') {
+     
 		}
 	};
 

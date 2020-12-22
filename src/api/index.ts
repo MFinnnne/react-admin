@@ -4,7 +4,7 @@
  * @Author: MFine
  * @Date: 2020-09-28 21:45:10
  * @LastEditors: MFine
- * @LastEditTime: 2020-12-11 23:38:58
+ * @LastEditTime: 2020-12-22 23:21:03
  */
 import { CategoryModel } from './../pages/category/Model';
 import { message } from 'antd';
@@ -94,3 +94,11 @@ export const reqProductsByName = (
 
 export const reqUpdateStatus = (id: number, status: number): Promise<number> =>
 	ajax<number>(`/api/products/updateStatus/${id}`, { status: status }, ReqMethodEnum.PUT);
+export const reqUpdateProductsImages = (id: number, images: string[]): Promise<number> =>
+	ajax<number>(
+		`/api/products/updateImages/${id}`,
+		{
+			images,
+		},
+		ReqMethodEnum.PUT
+	);

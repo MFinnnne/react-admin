@@ -36,10 +36,12 @@ const formTailLayout = {
 	wrapperCol: { span: 8, offset: 1 },
 };
 class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddUpdateState> {
+
 	isUpdate: boolean = false;
 	product: ProductsModel | undefined;
 	defaultCategory: string[] = [];
-	picturesWallRef: RefObject<PicturesWall>;
+  picturesWallRef: RefObject<PicturesWall>;
+
 	constructor(props: ProductAddUpdateRouteProps) {
 		super(props);
 		this.state = {
