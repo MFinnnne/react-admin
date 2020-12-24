@@ -3,8 +3,9 @@ import { PlusOutlined } from '@ant-design/icons';
 import React, { Component } from 'react';
 import { UploadChangeParam } from 'antd/lib/upload';
 import { UploadFile } from 'antd/lib/upload/interface';
-import { BASE_URL } from '../../utils/Constants';
+import { BASE_IMAGES_URL, BASE_URL } from '../../utils/Constants';
 import { ResponseValue } from '../../api/Model';
+import { nanoid } from 'nanoid';
 
 function getBase64(file: any): Promise<any> {
 	return new Promise((resolve, reject) => {
@@ -26,7 +27,9 @@ interface PicturesWallState {
 	fileList: UploadFile<any>[];
 }
 
-interface PicturesWallProps {}
+interface PicturesWallProps {
+	images: string;
+}
 
 export default class PicturesWall extends Component<PicturesWallProps, PicturesWallState> {
 	constructor(props: PicturesWallProps) {
@@ -38,6 +41,23 @@ export default class PicturesWall extends Component<PicturesWallProps, PicturesW
 			fileList: [],
 		};
 	}
+
+	private initPreviewImages = (): void => {
+		const fileList: UploadFile<any>[] = [];
+		this.props.images.split(',').forEach((item: string) => {
+			fileList.push({
+				uid: nanoid(),
+				url: BASE_IMAGES_URL + item,
+				name: item,
+				size: 0,
+				type: 'image/webp',
+			});
+		});
+
+		this.setState({
+			fileList,
+		});
+	};
 
 	private handleCancel = () => this.setState({ previewVisible: false });
 
@@ -58,10 +78,9 @@ export default class PicturesWall extends Component<PicturesWallProps, PicturesW
 			const result: ResponseValue<FileUploadResponseModel> = file.response as ResponseValue<FileUploadResponseModel>;
 			if (result.status === 0 && result.data) {
 				message.success('上传图片成功');
-				fileList.forEach((item) => {
-					item.name = result.data?.name ?? item.name;
-					item.url = result.data?.url + '/files/' + result.data?.name ?? item.url;
-				});
+				let currentIndex = fileList.length - 1;
+				fileList[currentIndex].name = result.data?.name;
+				fileList[currentIndex].url = BASE_IMAGES_URL + result.data?.name;
 				this.setState({
 					fileList,
 				});
@@ -69,13 +88,16 @@ export default class PicturesWall extends Component<PicturesWallProps, PicturesW
 				message.error('上传失败');
 			}
 		} else if (file.status === 'removed') {
-     
 		}
 	};
 
 	public getImages = (): string[] => {
 		return this.state.fileList.map((file) => file.name ?? '');
 	};
+
+	componentDidMount() {
+		this.initPreviewImages();
+	}
 
 	render() {
 		const { previewVisible, previewImage, fileList, previewTitle } = this.state;

@@ -266,7 +266,7 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 							></Cascader>
 						</Form.Item>
 						<Form.Item label="商品图片" className="item">
-							<PicturesWall ref={this.picturesWallRef}></PicturesWall>
+							<PicturesWall ref={this.picturesWallRef} images={product?.images??""}></PicturesWall>
 						</Form.Item>
 						<Form.Item label="商品详情" className="item">
 							<div>商品详情</div>
