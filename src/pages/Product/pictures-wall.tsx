@@ -6,6 +6,7 @@ import { UploadFile } from 'antd/lib/upload/interface';
 import { BASE_IMAGES_URL, BASE_URL } from '../../utils/Constants';
 import { ResponseValue } from '../../api/Model';
 import { nanoid } from 'nanoid';
+import { reqDeleteProductsImages } from '../../api';
 
 function getBase64(file: any): Promise<any> {
 	return new Promise((resolve, reject) => {
@@ -73,7 +74,7 @@ export default class PicturesWall extends Component<PicturesWallProps, PicturesW
 		});
 	};
 
-	private handleChange = ({ file, fileList, event }: UploadChangeParam) => {
+	private handleChange = async ({ file, fileList, event }: UploadChangeParam) => {
 		if (file.status === 'done') {
 			const result: ResponseValue<FileUploadResponseModel> = file.response as ResponseValue<FileUploadResponseModel>;
 			if (result.status === 0 && result.data) {
@@ -86,8 +87,12 @@ export default class PicturesWall extends Component<PicturesWallProps, PicturesW
 				});
 			} else {
 				message.error('上传失败');
-			}
+      }
 		} else if (file.status === 'removed') {
+      const result: ResponseValue<number>= await reqDeleteProductsImages(file.name??"");
+      if (result.status=== 0) {
+        message.success(file.fileName+"已经成功删除")
+      }
 		}
 	};
 

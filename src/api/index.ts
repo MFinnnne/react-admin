@@ -4,7 +4,7 @@
  * @Author: MFine
  * @Date: 2020-09-28 21:45:10
  * @LastEditors: MFine
- * @LastEditTime: 2020-12-22 23:21:03
+ * @LastEditTime: 2020-12-26 00:08:36
  */
 import { CategoryModel } from './../pages/category/Model';
 import { message } from 'antd';
@@ -14,6 +14,7 @@ import { ResponseValue } from './Model';
 import { ReqMethodEnum } from './ReqMethodEnum';
 import { PageSplitModel } from './Model';
 import { ProductsModel } from '../pages/product/Model';
+import { BASE_URL } from '../utils/Constants';
 
 export const reqLogin = (name: string, password: string): Promise<any> =>
 	ajax<any>('/api/user/login', { name, password }, ReqMethodEnum.POST);
@@ -102,3 +103,6 @@ export const reqUpdateProductsImages = (id: number, images: string[]): Promise<n
 		},
 		ReqMethodEnum.PUT
 	);
+
+export const reqDeleteProductsImages = (fileName: string): Promise<ResponseValue<number>> =>
+	ajax<ResponseValue<number>>(`${BASE_URL}/deleteFile/${fileName}`, ReqMethodEnum.DELETE);

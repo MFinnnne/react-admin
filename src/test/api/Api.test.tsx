@@ -4,7 +4,7 @@
  * @Author: MFine
  * @Date: 2020-11-30 22:46:31
  * @LastEditors: MFine
- * @LastEditTime: 2020-12-22 23:14:30
+ * @LastEditTime: 2020-12-26 00:30:26
  */
 import ajax from '../../api/ajax';
 import { PageSplitModel, ResponseValue } from '../../api/Model';
@@ -38,5 +38,10 @@ describe('test api', () => {
 			images: data.images.split(",")
 		},ReqMethodEnum.PUT);
 		expect(result.data).toEqual(1);
-	});
+  });
+  
+  test('test delete images',async ()=>{
+    const result = await ajax<ResponseValue<number>>(BASE_URL+"/deleteFile/imag.jpg",ReqMethodEnum.DELETE);
+    console.log(result);
+  })
 });
