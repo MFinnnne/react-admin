@@ -82,9 +82,7 @@ export default class PicturesWall extends Component<PicturesWallProps, PicturesW
 				let currentIndex = fileList.length - 1;
 				fileList[currentIndex].name = result.data?.name;
 				fileList[currentIndex].url = BASE_IMAGES_URL + result.data?.name;
-				this.setState({
-					fileList,
-				});
+			
 			} else {
 				message.error('上传失败');
       }
@@ -93,7 +91,10 @@ export default class PicturesWall extends Component<PicturesWallProps, PicturesW
       if (result.status=== 0) {
         message.success(file.fileName+"已经成功删除")
       }
-		}
+    }
+    this.setState({
+      fileList,
+    });
 	};
 
 	public getImages = (): string[] => {
