@@ -47,5 +47,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/draft-js": "^0.10.44",
+    "@types/draftjs-to-html": "^0.8.0",
+    "@types/react-draft-wysiwyg": "^1.13.0"
   }
 }

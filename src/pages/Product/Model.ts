@@ -20,6 +20,11 @@
 		v: number;
 	}
 
+  export interface FileUploadResponseModel {
+    url: string;
+    name: string;
+  }
+  
 	export interface StringValidator {
 		isAcceptable(s: string): boolean;
 	}

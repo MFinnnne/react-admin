@@ -7,6 +7,7 @@ import { BASE_IMAGES_URL, BASE_URL } from '../../utils/Constants';
 import { ResponseValue } from '../../api/Model';
 import { nanoid } from 'nanoid';
 import { reqDeleteProductsImages } from '../../api';
+import { FileUploadResponseModel } from './Model';
 
 function getBase64(file: any): Promise<any> {
 	return new Promise((resolve, reject) => {
@@ -16,10 +17,7 @@ function getBase64(file: any): Promise<any> {
 		reader.onerror = (error) => reject(error);
 	});
 }
-interface FileUploadResponseModel {
-	url: string;
-	name: string;
-}
+
 
 interface PicturesWallState {
 	previewVisible: boolean;
@@ -45,6 +43,9 @@ export default class PicturesWall extends Component<PicturesWallProps, PicturesW
 
 	private initPreviewImages = (): void => {
 		const fileList: UploadFile<any>[] = [];
+		if (this.props.images === '') {
+			return;
+		}
 		this.props.images.split(',').forEach((item: string) => {
 			fileList.push({
 				uid: nanoid(),
@@ -52,6 +53,7 @@ export default class PicturesWall extends Component<PicturesWallProps, PicturesW
 				name: item,
 				size: 0,
 				type: 'image/webp',
+				status: 'done',
 			});
 		});
 
@@ -82,19 +84,20 @@ export default class PicturesWall extends Component<PicturesWallProps, PicturesW
 				let currentIndex = fileList.length - 1;
 				fileList[currentIndex].name = result.data?.name;
 				fileList[currentIndex].url = BASE_IMAGES_URL + result.data?.name;
-			
 			} else {
 				message.error('上传失败');
-      }
+			}
 		} else if (file.status === 'removed') {
-      const result: ResponseValue<number>= await reqDeleteProductsImages(file.name??"");
-      if (result.status=== 0) {
-        message.success(file.fileName+"已经成功删除")
-      }
-    }
-    this.setState({
-      fileList,
-    });
+			const result: ResponseValue<number> = await reqDeleteProductsImages(file.name ?? '');
+			if (result.status === 0) {
+				message.success(file.fileName + '已经成功删除');
+			} else {
+				message.error('删除图片失败');
+			}
+		}
+		this.setState({
+			fileList,
+		});
 	};
 
 	public getImages = (): string[] => {

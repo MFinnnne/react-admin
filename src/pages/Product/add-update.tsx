@@ -11,6 +11,7 @@ import { reqCategorys } from '../../api';
 import { ResponseValue } from '../../api/Model';
 import { ProductsModel } from './Model';
 import PicturesWall from './pictures-wall';
+import RichTextEditor from './rich-text-editor';
 
 interface Options {
 	value: string;
@@ -36,12 +37,11 @@ const formTailLayout = {
 	wrapperCol: { span: 8, offset: 1 },
 };
 class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddUpdateState> {
-
 	isUpdate: boolean = false;
 	product: ProductsModel | undefined;
 	defaultCategory: string[] = [];
-  picturesWallRef: RefObject<PicturesWall>;
-
+	picturesWallRef: RefObject<PicturesWall>;
+	richTextEditorRef: RefObject<RichTextEditor>;
 	constructor(props: ProductAddUpdateRouteProps) {
 		super(props);
 		this.state = {
@@ -52,6 +52,7 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 		this.product = product;
 		this.getCategorys('0');
 		this.picturesWallRef = React.createRef();
+		this.richTextEditorRef = React.createRef();
 	}
 
 	/**
@@ -62,9 +63,9 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 	 * @return {void}
 	 */
 	private onFinish = (values: any): void => {
-		console.log(values);
     const imagesName: string[] = this.picturesWallRef.current?.getImages() ?? [];
-    console.log(imagesName)
+    const rawContent: string = this.richTextEditorRef.current?.getDetail() ?? '';
+    
 	};
 
 	/**
@@ -266,10 +267,15 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 							></Cascader>
 						</Form.Item>
 						<Form.Item label="商品图片" className="item">
-							<PicturesWall ref={this.picturesWallRef} images={product?.images??""}></PicturesWall>
+							<PicturesWall
+								ref={this.picturesWallRef}
+								images={product?.images ?? ''}
+							></PicturesWall>
 						</Form.Item>
-						<Form.Item label="商品详情" className="item">
-							<div>商品详情</div>
+						<Form.Item label="商品详情" className="item" labelCol={{ span: 1 }} wrapperCol={{ span: 12 }}>
+              <RichTextEditor 
+              ref={this.richTextEditorRef}
+              detail={product?.detail ?? ''} />
 						</Form.Item>
 						<Form.Item {...formTailLayout}>
 							<Button type="primary" htmlType="submit">
