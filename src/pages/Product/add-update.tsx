@@ -7,7 +7,7 @@ import { RuleObject } from 'antd/lib/form';
 import { StoreValue } from 'antd/lib/form/interface';
 import { CascaderOptionType, CascaderValueType } from 'antd/lib/cascader';
 import { CategoryModel } from '../category/Model';
-import { reqCategorys } from '../../api';
+import { reqAddProduct, reqCategorys, reqUpdateProduct } from '../../api';
 import { ResponseValue } from '../../api/Model';
 import { ProductsModel } from './Model';
 import PicturesWall from './pictures-wall';
@@ -18,6 +18,13 @@ interface Options {
 	label: string;
 	isLeaf: boolean;
 	children?: Options[] | undefined;
+}
+
+interface ValuesModel {
+	category: string[];
+	desc: string;
+	name: string;
+	price: string;
 }
 
 interface ProductAddUpdateState {
@@ -62,10 +69,34 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 	 * @param {any}
 	 * @return {void}
 	 */
-	private onFinish = (values: any): void => {
-    const imagesName: string[] = this.picturesWallRef.current?.getImages() ?? [];
-    const rawContent: string = this.richTextEditorRef.current?.getDetail() ?? '';
-    
+	private onFinish = (values: ValuesModel): void => {
+		const imagesName: string[] = this.picturesWallRef.current?.getImages() ?? [];
+		const rawContent: string = this.richTextEditorRef.current?.getDetail() ?? '';
+		if (this.product && this.product.id) {
+			//更新
+			this.product.images = imagesName.join();
+			this.product.desc = values.desc;
+			this.product.name = values.name;
+			this.product.price = values.price;
+			this.product.detail = rawContent;
+			this.product.categoryId = values.category[1];
+			this.product.pcategoryId = values.category[0];
+			reqUpdateProduct(this.product.id, this.product);
+		} else {
+			//新增
+			const product: ProductsModel = {
+				images: imagesName.join(),
+				status: 1,
+				name: values.name,
+				desc: values.desc,
+				detail: rawContent,
+				categoryId: values.category[1],
+				pcategoryId: values.category[0],
+				price: values.price,
+				v: 0,
+			};
+			reqAddProduct(product);
+		}
 	};
 
 	/**
@@ -267,15 +298,10 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 							></Cascader>
 						</Form.Item>
 						<Form.Item label="商品图片" className="item">
-							<PicturesWall
-								ref={this.picturesWallRef}
-								images={product?.images ?? ''}
-							></PicturesWall>
+							<PicturesWall ref={this.picturesWallRef} images={product?.images ?? ''}></PicturesWall>
 						</Form.Item>
 						<Form.Item label="商品详情" className="item" labelCol={{ span: 1 }} wrapperCol={{ span: 12 }}>
-              <RichTextEditor 
-              ref={this.richTextEditorRef}
-              detail={product?.detail ?? ''} />
+							<RichTextEditor ref={this.richTextEditorRef} detail={product?.detail ?? ''} />
 						</Form.Item>
 						<Form.Item {...formTailLayout}>
 							<Button type="primary" htmlType="submit">

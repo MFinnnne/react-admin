@@ -4,7 +4,7 @@
  * @Author: MFine
  * @Date: 2020-09-28 21:45:10
  * @LastEditors: MFine
- * @LastEditTime: 2020-12-26 16:07:57
+ * @LastEditTime: 2020-12-30 00:07:41
  */
 import { CategoryModel } from './../pages/category/Model';
 import { message } from 'antd';
@@ -105,4 +105,10 @@ export const reqUpdateProductsImages = (id: number, images: string[]): Promise<n
 	);
 
 export const reqDeleteProductsImages = (fileName: string): Promise<ResponseValue<number>> =>
-	ajax<ResponseValue<number>>(`${BASE_URL}/deleteFile/${fileName}`,{},ReqMethodEnum.DELETE);
+	ajax<ResponseValue<number>>(`${BASE_URL}/deleteFile/${fileName}`, {}, ReqMethodEnum.DELETE);
+
+export const reqAddProduct = (product: ProductsModel): Promise<ResponseValue<number>> =>
+	ajax<ResponseValue<number>>(`/api/products/addProduct`, product, ReqMethodEnum.POST);
+
+export const reqUpdateProduct = (id: number, product: ProductsModel): Promise<ResponseValue<number>> =>
+	ajax<ResponseValue<number>>(`/api/products/updateProduct/${id}`, product, ReqMethodEnum.PUT);

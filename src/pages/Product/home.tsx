@@ -1,4 +1,4 @@
-import { Button, Card, Input, Select, Table } from 'antd';
+import { Button, Card, Input, message, Select, Table } from 'antd';
 import React, { Component } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import LinkButton from '../../components/link-button';
@@ -73,6 +73,10 @@ class ProductHome extends Component<ProductHomeRouteProps, ProductHomeState> {
 							<Button
 								type="primary"
 								onClick={() => {
+                  if (id===undefined) {
+                    message.error("id为空");
+                    return;
+                  }
 									this.updateStatus(id, status === 1 ? 2 : 1);
 								}}
 							>
