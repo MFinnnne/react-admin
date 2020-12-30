@@ -76,6 +76,10 @@ export default class PicturesWall extends Component<PicturesWallProps, PicturesW
 		});
 	};
 
+  private beforeUpload = ():boolean => {
+    return true;
+  }
+
 	private handleChange = async ({ file, fileList, event }: UploadChangeParam) => {
 		if (file.status === 'done') {
 			const result: ResponseValue<FileUploadResponseModel> = file.response as ResponseValue<FileUploadResponseModel>;
@@ -121,7 +125,7 @@ export default class PicturesWall extends Component<PicturesWallProps, PicturesW
 				<Upload
 					action={BASE_URL + '/uploadFile'}
 					accept="image/*"
-					listType="picture-card"
+          listType="picture-card"
 					name="image"
 					fileList={fileList}
 					onPreview={this.handlePreview}

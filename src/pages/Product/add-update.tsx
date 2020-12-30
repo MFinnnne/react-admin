@@ -1,7 +1,7 @@
 import React, { Component, RefObject } from 'react';
 import LinkButton from '../../components/link-button';
 import { ArrowLeftOutlined } from '@ant-design/icons';
-import { Button, Card, Cascader, Form, Input } from 'antd';
+import { Button, Card, Cascader, Form, Input, message } from 'antd';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { RuleObject } from 'antd/lib/form';
 import { StoreValue } from 'antd/lib/form/interface';
@@ -69,9 +69,10 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 	 * @param {any}
 	 * @return {void}
 	 */
-	private onFinish = (values: ValuesModel): void => {
+	private onFinish = async (values: ValuesModel): Promise<any> => {
 		const imagesName: string[] = this.picturesWallRef.current?.getImages() ?? [];
 		const rawContent: string = this.richTextEditorRef.current?.getDetail() ?? '';
+		let result;
 		if (this.product && this.product.id) {
 			//更新
 			this.product.images = imagesName.join();
@@ -81,7 +82,7 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 			this.product.detail = rawContent;
 			this.product.categoryId = values.category[1];
 			this.product.pcategoryId = values.category[0];
-			reqUpdateProduct(this.product.id, this.product);
+			result = await reqUpdateProduct(this.product.id, this.product);
 		} else {
 			//新增
 			const product: ProductsModel = {
@@ -95,7 +96,12 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 				price: values.price,
 				v: 0,
 			};
-			reqAddProduct(product);
+			result = await reqAddProduct(product);
+		}
+		if (result.status === 0) {
+			message.success('更新成功');
+		} else {
+			message.error('更新失败');
 		}
 	};
 

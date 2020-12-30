@@ -7,6 +7,7 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { BASE_URL } from '../../utils/Constants';
 import { ResponseValue } from '../../api/Model';
 import { FileUploadResponseModel } from './Model';
+import { myBlockRenderer } from './media';
 
 interface State {
 	editorState: EditorState;
@@ -23,6 +24,8 @@ export default class RichTextEditor extends Component<Props, State> {
 			editorState: this.initContent(),
 		};
 	}
+
+ 
 
 	private initContent = (): any => {
 		if (this.props.detail !== '') {
@@ -53,7 +56,7 @@ export default class RichTextEditor extends Component<Props, State> {
 				) as ResponseValue<FileUploadResponseModel>;
 				const url = response.data?.url ?? '';
 				const name = response.data?.name ?? '';
-				resolve({ data: { link: url +'/files/'+ name } });
+				resolve({ data: { link: url + '/files/' + name } });
 			});
 			xhr.addEventListener('error', () => {
 				const error = JSON.parse(xhr.responseText);
@@ -68,21 +71,25 @@ export default class RichTextEditor extends Component<Props, State> {
 	};
 
 	render() {
-		const { editorState } = this.state;
+    const { editorState } = this.state;
+    
 		return (
-			<Editor
-				editorState={editorState}
-				editorStyle={{ border: '1px solid black', minHeight: 200 }}
-				onEditorStateChange={this.onEditorStateChange}
-				toolbar={{
-					inline: { inDropdown: true },
-					list: { inDropdown: true },
-					textAlign: { inDropdown: true },
-					link: { inDropdown: true },
-					history: { inDropdown: true },
-					image: { uploadCallback: this.uploadImageCallBack, alt: { present: true, mandatory: true } },
-				}}
-			/>
+			<div>
+ 				<Editor
+					editorState={editorState}
+					editorStyle={{ border: '1px solid black', minHeight: 200 }}
+          onEditorStateChange={this.onEditorStateChange}
+          customBlockRenderFunc={myBlockRenderer}
+					toolbar={{
+						inline: { inDropdown: true },
+						list: { inDropdown: true },
+						textAlign: { inDropdown: true },
+						link: { inDropdown: true },
+						history: { inDropdown: true },
+						image: { uploadCallback: this.uploadImageCallBack, alt: { present: true, mandatory: true } },
+					}}
+				/>
+			</div>
 		);
 	}
 }
