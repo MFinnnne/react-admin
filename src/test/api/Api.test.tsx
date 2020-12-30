@@ -4,12 +4,14 @@
  * @Author: MFine
  * @Date: 2020-11-30 22:46:31
  * @LastEditors: MFine
- * @LastEditTime: 2020-12-14 21:37:33
+ * @LastEditTime: 2020-12-26 00:30:26
  */
 import ajax from '../../api/ajax';
-import { PageSplitModel } from '../../api/Model';
+import { PageSplitModel, ResponseValue } from '../../api/Model';
+import { ReqMethodEnum } from '../../api/ReqMethodEnum';
 import { CategoryModel } from '../../pages/category/Model';
 import { ProductsModel } from '../../pages/product/Model';
+import { BASE_URL } from '../../utils/Constants';
 
 describe('test api', () => {
 	test('test reqByProductsByName', async () => {
@@ -29,4 +31,17 @@ describe('test api', () => {
 		const result = await ajax<CategoryModel>('http://localhost:5000/api/category/findCategoryById/5');
 		expect(result.name).toEqual('手机');
 	});
+
+	test('update product images', async () => {
+		const data = await ajax<ProductsModel>(BASE_URL + '/api/products/findById/1', ReqMethodEnum.GET);
+		const result = await ajax<ResponseValue<number>>(BASE_URL + '/api/products/updateImages/1',{
+			images: data.images.split(",")
+		},ReqMethodEnum.PUT);
+		expect(result.data).toEqual(1);
+  });
+  
+  test('test delete images',async ()=>{
+    const result = await ajax<ResponseValue<number>>(BASE_URL+"/deleteFile/imag.jpg",ReqMethodEnum.DELETE);
+    console.log(result);
+  })
 });

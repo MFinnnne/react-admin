@@ -1,22 +1,30 @@
 import React, { Component, RefObject } from 'react';
 import LinkButton from '../../components/link-button';
 import { ArrowLeftOutlined } from '@ant-design/icons';
-import { Button, Card, Cascader, Form, Input } from 'antd';
+import { Button, Card, Cascader, Form, Input, message } from 'antd';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { RuleObject } from 'antd/lib/form';
 import { StoreValue } from 'antd/lib/form/interface';
 import { CascaderOptionType, CascaderValueType } from 'antd/lib/cascader';
 import { CategoryModel } from '../category/Model';
-import { reqCategorys } from '../../api';
+import { reqAddProduct, reqCategorys, reqUpdateProduct } from '../../api';
 import { ResponseValue } from '../../api/Model';
 import { ProductsModel } from './Model';
 import PicturesWall from './pictures-wall';
+import RichTextEditor from './rich-text-editor';
 
 interface Options {
 	value: string;
 	label: string;
 	isLeaf: boolean;
 	children?: Options[] | undefined;
+}
+
+interface ValuesModel {
+	category: string[];
+	desc: string;
+	name: string;
+	price: string;
 }
 
 interface ProductAddUpdateState {
@@ -40,6 +48,7 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 	product: ProductsModel | undefined;
 	defaultCategory: string[] = [];
 	picturesWallRef: RefObject<PicturesWall>;
+	richTextEditorRef: RefObject<RichTextEditor>;
 	constructor(props: ProductAddUpdateRouteProps) {
 		super(props);
 		this.state = {
@@ -50,6 +59,7 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 		this.product = product;
 		this.getCategorys('0');
 		this.picturesWallRef = React.createRef();
+		this.richTextEditorRef = React.createRef();
 	}
 
 	/**
@@ -59,10 +69,40 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 	 * @param {any}
 	 * @return {void}
 	 */
-	private onFinish = (values: any): void => {
-		console.log(values);
-    const imagesName: string[] = this.picturesWallRef.current?.getImages() ?? [];
-    console.log(imagesName)
+	private onFinish = async (values: ValuesModel): Promise<any> => {
+		const imagesName: string[] = this.picturesWallRef.current?.getImages() ?? [];
+		const rawContent: string = this.richTextEditorRef.current?.getDetail() ?? '';
+		let result;
+		if (this.product && this.product.id) {
+			//更新
+			this.product.images = imagesName.join();
+			this.product.desc = values.desc;
+			this.product.name = values.name;
+			this.product.price = values.price;
+			this.product.detail = rawContent;
+			this.product.categoryId = values.category[1];
+			this.product.pcategoryId = values.category[0];
+			result = await reqUpdateProduct(this.product.id, this.product);
+		} else {
+			//新增
+			const product: ProductsModel = {
+				images: imagesName.join(),
+				status: 1,
+				name: values.name,
+				desc: values.desc,
+				detail: rawContent,
+				categoryId: values.category[1],
+				pcategoryId: values.category[0],
+				price: values.price,
+				v: 0,
+			};
+			result = await reqAddProduct(product);
+		}
+		if (result.status === 0) {
+			message.success('更新成功');
+		} else {
+			message.error('更新失败');
+		}
 	};
 
 	/**
@@ -264,10 +304,10 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 							></Cascader>
 						</Form.Item>
 						<Form.Item label="商品图片" className="item">
-							<PicturesWall ref={this.picturesWallRef}></PicturesWall>
+							<PicturesWall ref={this.picturesWallRef} images={product?.images ?? ''}></PicturesWall>
 						</Form.Item>
-						<Form.Item label="商品详情" className="item">
-							<div>商品详情</div>
+						<Form.Item label="商品详情" className="item" labelCol={{ span: 1 }} wrapperCol={{ span: 12 }}>
+							<RichTextEditor ref={this.richTextEditorRef} detail={product?.detail ?? ''} />
 						</Form.Item>
 						<Form.Item {...formTailLayout}>
 							<Button type="primary" htmlType="submit">

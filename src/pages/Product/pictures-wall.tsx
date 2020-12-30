@@ -3,8 +3,11 @@ import { PlusOutlined } from '@ant-design/icons';
 import React, { Component } from 'react';
 import { UploadChangeParam } from 'antd/lib/upload';
 import { UploadFile } from 'antd/lib/upload/interface';
-import { BASE_URL } from '../../utils/Constants';
+import { BASE_IMAGES_URL, BASE_URL } from '../../utils/Constants';
 import { ResponseValue } from '../../api/Model';
+import { nanoid } from 'nanoid';
+import { reqDeleteProductsImages } from '../../api';
+import { FileUploadResponseModel } from './Model';
 
 function getBase64(file: any): Promise<any> {
 	return new Promise((resolve, reject) => {
@@ -14,10 +17,7 @@ function getBase64(file: any): Promise<any> {
 		reader.onerror = (error) => reject(error);
 	});
 }
-interface FileUploadResponseModel {
-	url: string;
-	name: string;
-}
+
 
 interface PicturesWallState {
 	previewVisible: boolean;
@@ -27,6 +27,7 @@ interface PicturesWallState {
 }
 
 interface PicturesWallProps {
+	images: string;
 }
 
 export default class PicturesWall extends Component<PicturesWallProps, PicturesWallState> {
@@ -39,6 +40,27 @@ export default class PicturesWall extends Component<PicturesWallProps, PicturesW
 			fileList: [],
 		};
 	}
+
+	private initPreviewImages = (): void => {
+		const fileList: UploadFile<any>[] = [];
+		if (this.props.images === '') {
+			return;
+		}
+		this.props.images.split(',').forEach((item: string) => {
+			fileList.push({
+				uid: nanoid(),
+				url: BASE_IMAGES_URL + item,
+				name: item,
+				size: 0,
+				type: 'image/webp',
+				status: 'done',
+			});
+		});
+
+		this.setState({
+			fileList,
+		});
+	};
 
 	private handleCancel = () => this.setState({ previewVisible: false });
 
@@ -54,27 +76,41 @@ export default class PicturesWall extends Component<PicturesWallProps, PicturesW
 		});
 	};
 
-	private handleChange = ({ file, fileList, event }: UploadChangeParam) => {
+  private beforeUpload = ():boolean => {
+    return true;
+  }
+
+	private handleChange = async ({ file, fileList, event }: UploadChangeParam) => {
 		if (file.status === 'done') {
 			const result: ResponseValue<FileUploadResponseModel> = file.response as ResponseValue<FileUploadResponseModel>;
 			if (result.status === 0 && result.data) {
 				message.success('上传图片成功');
-				fileList.forEach((item) => {
-					item.name = result.data?.name ?? item.name;
-					item.url = result.data?.url + '/files/' + result.data?.name ?? item.url;
-				});
-				this.setState({
-					fileList,
-				});
+				let currentIndex = fileList.length - 1;
+				fileList[currentIndex].name = result.data?.name;
+				fileList[currentIndex].url = BASE_IMAGES_URL + result.data?.name;
 			} else {
 				message.error('上传失败');
 			}
+		} else if (file.status === 'removed') {
+			const result: ResponseValue<number> = await reqDeleteProductsImages(file.name ?? '');
+			if (result.status === 0) {
+				message.success(file.fileName + '已经成功删除');
+			} else {
+				message.error('删除图片失败');
+			}
 		}
+		this.setState({
+			fileList,
+		});
 	};
 
 	public getImages = (): string[] => {
 		return this.state.fileList.map((file) => file.name ?? '');
 	};
+
+	componentDidMount() {
+		this.initPreviewImages();
+	}
 
 	render() {
 		const { previewVisible, previewImage, fileList, previewTitle } = this.state;
@@ -89,7 +125,7 @@ export default class PicturesWall extends Component<PicturesWallProps, PicturesW
 				<Upload
 					action={BASE_URL + '/uploadFile'}
 					accept="image/*"
-					listType="picture-card"
+          listType="picture-card"
 					name="image"
 					fileList={fileList}
 					onPreview={this.handlePreview}

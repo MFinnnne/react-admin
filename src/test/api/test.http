@@ -82,5 +82,10 @@ GET http://localhost:5000/api/products/searchByName?name=8&pageNum=1&pageSize=3
 GET http://wthrcdn.etouch.cn/weather_mini?citykey=101010100
 
 ###
-GET http://localhost:5000/files/1.jpg
+GET http://localhost:5000/files/1.jpV
 
+###
+GET http://localhost:5000/api/products/findById/1
+
+###
+DELETE  http://localhost:5000/deleteFile/1.jpg

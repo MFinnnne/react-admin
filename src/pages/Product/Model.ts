@@ -4,13 +4,13 @@
  * @Author: MFine
  * @Date: 2020-11-03 22:59:39
  * @LastEditors: MFine
- * @LastEditTime: 2020-12-07 23:23:33
+ * @LastEditTime: 2020-12-29 23:42:19
  */
 	export interface ProductsModel {
-		id: number;
+		id?: number;
 		images: string;
 		status: number;
-		idStr: string;
+		idStr?: string;
 		name: string;
 		desc: string;
 		detail: string;
@@ -20,6 +20,11 @@
 		v: number;
 	}
 
+  export interface FileUploadResponseModel {
+    url: string;
+    name: string;
+  }
+  
 	export interface StringValidator {
 		isAcceptable(s: string): boolean;
 	}

@@ -4,7 +4,7 @@
  * @Author: MFine
  * @Date: 2020-09-28 21:45:10
  * @LastEditors: MFine
- * @LastEditTime: 2020-12-11 23:38:58
+ * @LastEditTime: 2020-12-30 00:07:41
  */
 import { CategoryModel } from './../pages/category/Model';
 import { message } from 'antd';
@@ -14,6 +14,7 @@ import { ResponseValue } from './Model';
 import { ReqMethodEnum } from './ReqMethodEnum';
 import { PageSplitModel } from './Model';
 import { ProductsModel } from '../pages/product/Model';
+import { BASE_URL } from '../utils/Constants';
 
 export const reqLogin = (name: string, password: string): Promise<any> =>
 	ajax<any>('/api/user/login', { name, password }, ReqMethodEnum.POST);
@@ -94,3 +95,20 @@ export const reqProductsByName = (
 
 export const reqUpdateStatus = (id: number, status: number): Promise<number> =>
 	ajax<number>(`/api/products/updateStatus/${id}`, { status: status }, ReqMethodEnum.PUT);
+export const reqUpdateProductsImages = (id: number, images: string[]): Promise<number> =>
+	ajax<number>(
+		`/api/products/updateImages/${id}`,
+		{
+			images,
+		},
+		ReqMethodEnum.PUT
+	);
+
+export const reqDeleteProductsImages = (fileName: string): Promise<ResponseValue<number>> =>
+	ajax<ResponseValue<number>>(`${BASE_URL}/deleteFile/${fileName}`, {}, ReqMethodEnum.DELETE);
+
+export const reqAddProduct = (product: ProductsModel): Promise<ResponseValue<number>> =>
+	ajax<ResponseValue<number>>(`/api/products/addProduct`, product, ReqMethodEnum.POST);
+
+export const reqUpdateProduct = (id: number, product: ProductsModel): Promise<ResponseValue<number>> =>
+	ajax<ResponseValue<number>>(`/api/products/updateProduct/${id}`, product, ReqMethodEnum.PUT);

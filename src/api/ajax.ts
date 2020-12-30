@@ -5,7 +5,7 @@ import { ReqMethodEnum } from './ReqMethodEnum';
  * @Author: MFine
  * @Date: 2020-09-28 21:45:10
  * @LastEditors: MFine
- * @LastEditTime: 2020-12-08 21:08:32
+ * @LastEditTime: 2020-12-26 15:59:07
  */
 import { message } from 'antd';
 import Axios from 'axios';
@@ -18,13 +18,16 @@ export default function ajax<T>(url: string, data: {} = {}, method: ReqMethodEnu
 				promise = Axios.get(url, { params: data });
 				break;
 			case ReqMethodEnum.POST:
-        promise = Axios.post(url, data);
-        break;
+				promise = Axios.post(url, data);
+				break;
 			case ReqMethodEnum.PUT:
 				promise = Axios.put(url, data);
-        break;
-      default:
-        promise = Axios.get(url, { params: data });
+				break;
+			case ReqMethodEnum.DELETE:
+				promise = Axios.delete(url, { data });
+				break;
+			default:
+				promise = Axios.get(url, { params: data });
 				break;
 		}
 		promise

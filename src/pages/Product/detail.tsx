@@ -83,7 +83,7 @@ class ProductDetail extends Component<ProductDetailRoutePros, ProductDetailState
 						<List.Item className="item">
 							<span className="left">所属分类:</span>
 							<span>
-								{pName === '' ? '' : '-->'}
+								{pName === '' ? '' : `${pName}-->`}
 								{cName}
 							</span>
 						</List.Item>
