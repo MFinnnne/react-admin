@@ -10,7 +10,6 @@ import './index.less';
 import StorageUtils from '../../utils/StorageUtils';
 import LinkButton from '../link-button';
 
-
 interface HeaderState {
 	currentTime: string;
 	dayPictureUrl: string;
@@ -61,7 +60,7 @@ class Header extends Component<HeaderProps, HeaderState> {
 				title = item.title;
 				return;
 			} else {
-				const cItem = item.children?.find((cItem) => cItem.key === path);
+				const cItem = item.children?.find((cItem) => path.indexOf(cItem.key) === 0);
 				title = cItem?.title ?? title;
 			}
 		});
