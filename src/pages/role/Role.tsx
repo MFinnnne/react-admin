@@ -1,6 +1,7 @@
 import { Button, Card, Table } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import React, { Component } from 'react';
+import { PAGE_SIZE } from '../../utils/Constants';
 import { RoleModel } from './Model';
 
 interface State {
@@ -17,7 +18,35 @@ export default class Role extends Component<Props, State> {
 		this.columns = [];
 		this.initColumns();
 		this.state = {
-			roles: [{}, {}, {}],
+			roles: [
+				{
+					menus: ['/home', '/products', '/category'],
+					id: 1,
+					name: '角色1',
+					create_time: new Date(1554639552758).toLocaleString('zh',{hour12:false}),
+					auth_time: new Date(1554639552758).toLocaleString('zh',{hour12:false}),
+					auth_name: 'admin',
+					__v: 0,
+				},
+				{
+					menus: ['/home', '/products', '/category'],
+					id: 2,
+					name: '测试',
+					create_time: new Date(1554639552758).toLocaleString('zh',{hour12:false}),
+					auth_time: new Date(1554639552758).toLocaleString('zh',{hour12:false}),
+					auth_name: 'admin1',
+					__v: 0,
+				},
+				{
+					menus: ['/home', '/products', '/category'],
+					id: 3,
+					name: '开发',
+					create_time: new Date(1554639552758).toLocaleString('zh',{hour12:false}),
+					auth_time: new Date(1554639552758).toLocaleString('zh',{hour12:false}),
+					auth_name: 'admin2',
+					__v: 0,
+				},
+			],
 		};
 	}
 
@@ -42,6 +71,14 @@ export default class Role extends Component<Props, State> {
 		];
 	};
 
+	private onRowClick = (data: any, number?: any): React.HTMLAttributes<HTMLElement> => {
+		return {
+			onClick: (event) => {
+				console.log(data, number);
+			}, // 点击行
+		};
+	};
+
 	componentWillMount() {}
 
 	render() {
@@ -60,12 +97,14 @@ export default class Role extends Component<Props, State> {
 			<div>
 				<Card title={title}>
 					<Table
-						rowKey="_id"
+						rowKey="id"
 						dataSource={roles}
 						columns={this.columns}
 						bordered
 						loading={false}
-						pagination={{ defaultPageSize: 10, showQuickJumper: true }}
+						rowSelection={{ type: 'radio' }}
+						pagination={{ defaultPageSize: PAGE_SIZE, showQuickJumper: true }}
+						onRow={this.onRowClick}
 					></Table>
 				</Card>
 			</div>
