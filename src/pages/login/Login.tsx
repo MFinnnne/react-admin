@@ -52,7 +52,7 @@ export default class Login extends Component<LoginProps, {}> {
 			StorageUtils.saveUser({ id, name });
 			this.props.history.replace('/');
 		} else {
-			message.error(response.msg);
+			message.error("登录失败");
 		}
 	};
 
