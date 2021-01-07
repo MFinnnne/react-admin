@@ -4,14 +4,14 @@
  * @Author: MFine
  * @Date: 2021-01-04 22:54:12
  * @LastEditors: MFine
- * @LastEditTime: 2021-01-06 00:17:15
+ * @LastEditTime: 2021-01-07 22:46:08
  */
 export interface RoleModel {
 	menus: string[];
 	id: number;
 	name: string;
-	create_time: string;
+	createTime: Date;
 	__v: number;
-	auth_time: string;
-	auth_name: string;
+	authTime: Date;
+	authName: string;
 }

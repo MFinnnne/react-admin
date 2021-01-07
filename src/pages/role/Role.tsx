@@ -1,11 +1,16 @@
-import { Button, Card, Table } from 'antd';
+import { Button, Card, Modal, Table } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import React, { Component } from 'react';
+import { reqRoles } from '../../api';
+import { ResponseValue } from '../../api/Model';
 import { PAGE_SIZE } from '../../utils/Constants';
+import AddForm from './add-form';
 import { RoleModel } from './Model';
 
 interface State {
 	roles: RoleModel[];
+	role: RoleModel | null;
+	isShowAdd: number;
 }
 
 interface Props {}
@@ -18,35 +23,9 @@ export default class Role extends Component<Props, State> {
 		this.columns = [];
 		this.initColumns();
 		this.state = {
-			roles: [
-				{
-					menus: ['/home', '/products', '/category'],
-					id: 1,
-					name: '角色1',
-					create_time: new Date(1554639552758).toLocaleString('zh',{hour12:false}),
-					auth_time: new Date(1554639552758).toLocaleString('zh',{hour12:false}),
-					auth_name: 'admin',
-					__v: 0,
-				},
-				{
-					menus: ['/home', '/products', '/category'],
-					id: 2,
-					name: '测试',
-					create_time: new Date(1554639552758).toLocaleString('zh',{hour12:false}),
-					auth_time: new Date(1554639552758).toLocaleString('zh',{hour12:false}),
-					auth_name: 'admin1',
-					__v: 0,
-				},
-				{
-					menus: ['/home', '/products', '/category'],
-					id: 3,
-					name: '开发',
-					create_time: new Date(1554639552758).toLocaleString('zh',{hour12:false}),
-					auth_time: new Date(1554639552758).toLocaleString('zh',{hour12:false}),
-					auth_name: 'admin2',
-					__v: 0,
-				},
-			],
+			roles: [],
+			role: null,
+			isShowAdd: 0,
 		};
 	}
 
@@ -58,36 +37,50 @@ export default class Role extends Component<Props, State> {
 			},
 			{
 				title: '创建时间',
-				dataIndex: 'create_time',
+				dataIndex: 'createTime',
 			},
 			{
 				title: '授权时间',
-				dataIndex: 'auth_time',
+				dataIndex: 'authTime',
 			},
 			{
 				title: '授权人',
-				dataIndex: 'auth_name',
+				dataIndex: 'authName',
 			},
 		];
 	};
 
-	private onRowClick = (data: any, number?: any): React.HTMLAttributes<HTMLElement> => {
+	private addRole = () => {};
+
+	private handleCancel = () => {};
+
+	private onRowClick = (data: RoleModel, number?: number): React.HTMLAttributes<HTMLElement> => {
 		return {
 			onClick: (event) => {
-				console.log(data, number);
+				this.setState({
+					role: data,
+				});
 			}, // 点击行
 		};
 	};
 
-	componentWillMount() {}
+	async componentDidMount() {
+		const result: ResponseValue<RoleModel[]> = await reqRoles();
+
+		if (result.status === 0 && result.data) {
+			this.setState({
+				roles: result.data,
+			});
+		}
+	}
 
 	render() {
-		const { roles } = this.state;
+		const { roles, role, isShowAdd } = this.state;
 
 		const title = (
 			<span>
 				<Button type="primary">创建角色</Button> &nbsp;&nbsp;
-				<Button type="primary" disabled>
+				<Button type="primary" disabled={role === null}>
 					设置角色权限
 				</Button>
 			</span>
@@ -102,10 +95,16 @@ export default class Role extends Component<Props, State> {
 						columns={this.columns}
 						bordered
 						loading={false}
-						rowSelection={{ type: 'radio' }}
+						rowSelection={{ type: 'radio', selectedRowKeys: [role?.id ?? -1] }}
 						pagination={{ defaultPageSize: PAGE_SIZE, showQuickJumper: true }}
 						onRow={this.onRowClick}
 					></Table>
+
+					<Modal title="添加角色" visible={isShowAdd} onOk={this.addRole} onCancel={this.handleCancel}>
+            <AddForm setFrom={(form)=>this.form=form}>
+              
+            </AddForm>
+          </Modal>
 				</Card>
 			</div>
 		);
