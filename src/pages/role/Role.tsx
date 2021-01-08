@@ -1,16 +1,15 @@
-import { Button, Card, Modal, Table } from 'antd';
+import { Button, Card, message, Modal, Table } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import React, { Component } from 'react';
 import { reqRoles } from '../../api';
 import { ResponseValue } from '../../api/Model';
 import { PAGE_SIZE } from '../../utils/Constants';
-import AddForm from './add-form';
 import { RoleModel } from './Model';
-
+import ProForm, { ModalForm, ProFormText, ProFormDateRangePicker, ProFormSelect } from '@ant-design/pro-form';
 interface State {
 	roles: RoleModel[];
 	role: RoleModel | null;
-	isShowAdd: number;
+	isShowAdd: boolean;
 }
 
 interface Props {}
@@ -25,7 +24,7 @@ export default class Role extends Component<Props, State> {
 		this.state = {
 			roles: [],
 			role: null,
-			isShowAdd: 0,
+			isShowAdd: false,
 		};
 	}
 
@@ -79,10 +78,40 @@ export default class Role extends Component<Props, State> {
 
 		const title = (
 			<span>
-				<Button type="primary">创建角色</Button> &nbsp;&nbsp;
-				<Button type="primary" disabled={role === null}>
-					设置角色权限
-				</Button>
+				<ModalForm
+					title="添加角色"
+					trigger={<Button type="primary">创建角色 </Button>}
+					modalProps={{
+						onCancel: () => console.log('run1'),
+					}}
+					onFinish={async (values: Record<string, any>): Promise<boolean> => {
+						message.success('提交成功');
+						console.log(values);
+						return true;
+					}}
+				>
+					<ProForm.Group style={{ display: 'flex', justifyContent: 'space-around' }}>
+						<ProFormText
+							className="add-role-from-text"
+							width={700}
+							name="name"
+							tooltip="最长为 24 位"
+							placeholder="请输入角色名称"
+						/>
+					</ProForm.Group>
+				</ModalForm>
+				&nbsp;&nbsp;
+				<ModalForm
+					title="设置角色权限"
+					trigger={
+						<Button type="primary" disabled={role === null}>
+							设置角色权限
+						</Button>
+					}
+					modalProps={{
+						onCancel: () => console.log('run'),
+					}}
+				></ModalForm>
 			</span>
 		);
 
@@ -99,12 +128,6 @@ export default class Role extends Component<Props, State> {
 						pagination={{ defaultPageSize: PAGE_SIZE, showQuickJumper: true }}
 						onRow={this.onRowClick}
 					></Table>
-
-					<Modal title="添加角色" visible={isShowAdd} onOk={this.addRole} onCancel={this.handleCancel}>
-            <AddForm setFrom={(form)=>this.form=form}>
-              
-            </AddForm>
-          </Modal>
 				</Card>
 			</div>
 		);
