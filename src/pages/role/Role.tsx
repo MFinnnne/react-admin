@@ -14,6 +14,10 @@ interface State {
 
 interface Props {}
 
+const layout = {
+  labelCol: { span: 8 },
+  wrapperCol: { span: 16 },
+};
 export default class Role extends Component<Props, State> {
 	columns: ColumnsType<any>;
 
@@ -79,6 +83,7 @@ export default class Role extends Component<Props, State> {
 		const title = (
 			<span>
 				<ModalForm
+        
 					title="添加角色"
 					trigger={<Button type="primary">创建角色 </Button>}
 					modalProps={{
@@ -90,10 +95,12 @@ export default class Role extends Component<Props, State> {
 						return true;
 					}}
 				>
-					<ProForm.Group style={{ display: 'flex', justifyContent: 'space-around' }}>
+					<ProForm.Group style={{ display: 'flex', justifyContent: 'center' }} >            
 						<ProFormText
-							className="add-role-from-text"
-							width={700}
+              label='角色名称'
+              required
+              className="add-role-input"
+							width='xl'
 							name="name"
 							tooltip="最长为 24 位"
 							placeholder="请输入角色名称"
