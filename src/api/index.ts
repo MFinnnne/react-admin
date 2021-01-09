@@ -4,7 +4,7 @@
  * @Author: MFine
  * @Date: 2020-09-28 21:45:10
  * @LastEditors: MFine
- * @LastEditTime: 2020-12-30 00:07:41
+ * @LastEditTime: 2021-01-07 22:36:56
  */
 import { CategoryModel } from './../pages/category/Model';
 import { message } from 'antd';
@@ -15,6 +15,7 @@ import { ReqMethodEnum } from './ReqMethodEnum';
 import { PageSplitModel } from './Model';
 import { ProductsModel } from '../pages/product/Model';
 import { BASE_URL } from '../utils/Constants';
+import { RoleModel } from '../pages/role/Model';
 
 export const reqLogin = (name: string, password: string): Promise<any> =>
 	ajax<any>('/api/user/login', { name, password }, ReqMethodEnum.POST);
@@ -112,3 +113,6 @@ export const reqAddProduct = (product: ProductsModel): Promise<ResponseValue<num
 
 export const reqUpdateProduct = (id: number, product: ProductsModel): Promise<ResponseValue<number>> =>
 	ajax<ResponseValue<number>>(`/api/products/updateProduct/${id}`, product, ReqMethodEnum.PUT);
+
+export const reqRoles = (): Promise<ResponseValue<RoleModel[]>> =>
+	ajax<ResponseValue<RoleModel[]>>('/api/role/getRoles', {}, ReqMethodEnum.GET);
