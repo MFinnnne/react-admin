@@ -1,4 +1,4 @@
-import { Button, Card, message, Modal, Table } from 'antd';
+import { Button, Card, Form, message, Modal, Table } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import React, { Component } from 'react';
 import { reqRoles } from '../../api';
@@ -15,8 +15,8 @@ interface State {
 interface Props {}
 
 const layout = {
-  labelCol: { span: 8 },
-  wrapperCol: { span: 16 },
+	labelCol: { span: 8 },
+	wrapperCol: { span: 16 },
 };
 export default class Role extends Component<Props, State> {
 	columns: ColumnsType<any>;
@@ -83,7 +83,6 @@ export default class Role extends Component<Props, State> {
 		const title = (
 			<span>
 				<ModalForm
-        
 					title="添加角色"
 					trigger={<Button type="primary">创建角色 </Button>}
 					modalProps={{
@@ -95,12 +94,12 @@ export default class Role extends Component<Props, State> {
 						return true;
 					}}
 				>
-					<ProForm.Group style={{ display: 'flex', justifyContent: 'center' }} >            
+					<ProForm.Group style={{ display: 'flex', justifyContent: 'space-around' }}>
 						<ProFormText
-              label='角色名称'
-              required
-              className="add-role-input"
-							width='xl'
+							rules={[{ required:true}]}
+							label="添加角色"
+							required
+							width="xl"
 							name="name"
 							tooltip="最长为 24 位"
 							placeholder="请输入角色名称"
