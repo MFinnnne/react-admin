@@ -1,7 +1,7 @@
 import { Button, Card, Form, message, Modal, Table } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import React, { Component } from 'react';
-import { reqRoles } from '../../api';
+import { reqCreateRole, reqRoles } from '../../api';
 import { ResponseValue } from '../../api/Model';
 import { PAGE_SIZE } from '../../utils/Constants';
 import { RoleModel } from './Model';
@@ -68,8 +68,11 @@ export default class Role extends Component<Props, State> {
 	};
 
 	async componentDidMount() {
-		const result: ResponseValue<RoleModel[]> = await reqRoles();
+		this.initDataSource();
+	}
 
+	private async initDataSource(): Promise<void> {
+		const result: ResponseValue<RoleModel[]> = await reqRoles();
 		if (result.status === 0 && result.data) {
 			this.setState({
 				roles: result.data,
@@ -79,7 +82,6 @@ export default class Role extends Component<Props, State> {
 
 	render() {
 		const { roles, role, isShowAdd } = this.state;
-
 		const title = (
 			<span>
 				<ModalForm
@@ -89,14 +91,24 @@ export default class Role extends Component<Props, State> {
 						onCancel: () => console.log('run1'),
 					}}
 					onFinish={async (values: Record<string, any>): Promise<boolean> => {
-						message.success('提交成功');
-						console.log(values);
+            const result = await reqCreateRole(values.name);
+            
+						if (result === 'success') {
+							message.success('提交成功');
+							this.setState((state) => {
+								return {
+                    roles:[...state.roles]
+                };
+							});
+						} else {
+							message.error('提交失败');
+						}
 						return true;
 					}}
 				>
 					<ProForm.Group style={{ display: 'flex', justifyContent: 'space-around' }}>
 						<ProFormText
-							rules={[{ required:true}]}
+							rules={[{ required: true }]}
 							label="添加角色"
 							required
 							width="xl"

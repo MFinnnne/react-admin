@@ -4,7 +4,7 @@
  * @Author: MFine
  * @Date: 2020-09-28 21:45:10
  * @LastEditors: MFine
- * @LastEditTime: 2021-01-07 22:36:56
+ * @LastEditTime: 2021-01-12 23:59:20
  */
 import { CategoryModel } from './../pages/category/Model';
 import { message } from 'antd';
@@ -116,3 +116,6 @@ export const reqUpdateProduct = (id: number, product: ProductsModel): Promise<Re
 
 export const reqRoles = (): Promise<ResponseValue<RoleModel[]>> =>
 	ajax<ResponseValue<RoleModel[]>>('/api/role/getRoles', {}, ReqMethodEnum.GET);
+
+export const reqCreateRole = (name: string): Promise<string> =>
+	ajax<string>('/api/role/createRole',  name, ReqMethodEnum.POST);
