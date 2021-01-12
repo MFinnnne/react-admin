@@ -91,10 +91,15 @@ export default class Role extends Component<Props, State> {
 						onCancel: () => console.log('run1'),
 					}}
 					onFinish={async (values: Record<string, any>): Promise<boolean> => {
-						const result = await reqCreateRole(values.name);
+            const result = await reqCreateRole(values.name);
+            
 						if (result === 'success') {
-              message.success('提交成功');
-              this.initDataSource();
+							message.success('提交成功');
+							this.setState((state) => {
+								return {
+                    roles:[...state.roles]
+                };
+							});
 						} else {
 							message.error('提交失败');
 						}
