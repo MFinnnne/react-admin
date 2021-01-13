@@ -1,7 +1,7 @@
 import { Button, Card, Form, message, Modal, Table } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import React, { Component } from 'react';
-import { reqCreateRole, reqRoles } from '../../api';
+import { reqCreateRole, reqCreateRoleByName, reqRoles } from '../../api';
 import { ResponseValue } from '../../api/Model';
 import { PAGE_SIZE } from '../../utils/Constants';
 import { RoleModel } from './Model';
@@ -14,10 +14,6 @@ interface State {
 
 interface Props {}
 
-const layout = {
-	labelCol: { span: 8 },
-	wrapperCol: { span: 16 },
-};
 export default class Role extends Component<Props, State> {
 	columns: ColumnsType<any>;
 
@@ -53,10 +49,6 @@ export default class Role extends Component<Props, State> {
 		];
 	};
 
-	private addRole = () => {};
-
-	private handleCancel = () => {};
-
 	private onRowClick = (data: RoleModel, number?: number): React.HTMLAttributes<HTMLElement> => {
 		return {
 			onClick: (event) => {
@@ -91,14 +83,22 @@ export default class Role extends Component<Props, State> {
 						onCancel: () => console.log('run1'),
 					}}
 					onFinish={async (values: Record<string, any>): Promise<boolean> => {
-            const result = await reqCreateRole(values.name);
-            
+						const role: RoleModel = {
+							id: null,
+							menus: [''].join(','),
+							name: values.name,
+							createTime: new Date().toLocaleString('zh', { hour12: false }),
+							v: 0,
+							authName: '',
+							authTime: null,
+						};
+						const result = await reqCreateRole(role);
 						if (result === 'success') {
 							message.success('提交成功');
 							this.setState((state) => {
 								return {
-                    roles:[...state.roles]
-                };
+									roles: [...state.roles],
+								};
 							});
 						} else {
 							message.error('提交失败');
@@ -129,7 +129,9 @@ export default class Role extends Component<Props, State> {
 					modalProps={{
 						onCancel: () => console.log('run'),
 					}}
-				></ModalForm>
+				>
+					<ProForm.Group></ProForm.Group>
+				</ModalForm>
 			</span>
 		);
 
