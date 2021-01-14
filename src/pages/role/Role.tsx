@@ -6,6 +6,7 @@ import { ResponseValue } from '../../api/Model';
 import { PAGE_SIZE } from '../../utils/Constants';
 import { RoleModel } from './Model';
 import ProForm, { ModalForm, ProFormText, ProFormDateRangePicker, ProFormSelect } from '@ant-design/pro-form';
+import { formatDate } from '../../utils/DateUtils';
 interface State {
 	roles: RoleModel[];
 	role: RoleModel | null;
@@ -84,20 +85,16 @@ export default class Role extends Component<Props, State> {
 					}}
 					onFinish={async (values: Record<string, any>): Promise<boolean> => {
 						const role: RoleModel = {
-							id: null,
 							menus: [''].join(','),
 							name: values.name,
-							createTime: new Date().toLocaleString('zh', { hour12: false }),
-							v: 0,
-							authName: '',
-							authTime: null,
+							createTime: new Date().format("yyyy-MM-dd hh:mm:ss"),
 						};
 						const result = await reqCreateRole(role);
 						if (result === 'success') {
 							message.success('提交成功');
 							this.setState((state) => {
 								return {
-									roles: [...state.roles],
+									roles: [...state.roles,role],
 								};
 							});
 						} else {
