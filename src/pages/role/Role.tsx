@@ -1,12 +1,13 @@
-import { Button, Card, Form, message, Modal, Table } from 'antd';
+import { Button, Card, Form, message, Modal, Table, Tree } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
-import React, { Component } from 'react';
+import React, { Component, ReactText } from 'react';
 import { reqCreateRole, reqCreateRoleByName, reqRoles } from '../../api';
 import { ResponseValue } from '../../api/Model';
 import { PAGE_SIZE } from '../../utils/Constants';
 import { RoleModel } from './Model';
 import ProForm, { ModalForm, ProFormText, ProFormDateRangePicker, ProFormSelect } from '@ant-design/pro-form';
 import { formatDate } from '../../utils/DateUtils';
+import { Key } from 'antd/lib/table/interface';
 interface State {
 	roles: RoleModel[];
 	role: RoleModel | null;
@@ -75,9 +76,49 @@ export default class Role extends Component<Props, State> {
 
 	render() {
 		const { roles, role, isShowAdd } = this.state;
+
+		const onSelect = (selectedKeys: React.Key[], info: any) => {
+			console.log('selected', selectedKeys, info);
+		};
+
+		const onCheck = (checkedKeys: React.Key[], info:  any) => {
+			console.log('onCheck', checkedKeys, info);
+		};
+
+		const treeData = [
+			{
+				title: 'parent 1',
+				key: '0-0',
+				children: [
+					{
+						title: 'parent 1-0',
+						key: '0-0-0',
+						disabled: true,
+						children: [
+							{
+								title: 'leaf',
+								key: '0-0-0-0',
+								disableCheckbox: true,
+							},
+							{
+								title: 'leaf',
+								key: '0-0-0-1',
+							},
+						],
+					},
+					{
+						title: 'parent 1-1',
+						key: '0-0-1',
+						children: [{ title: <span style={{ color: '#1890ff' }}>sss</span>, key: '0-0-1-0' }],
+					},
+				],
+			},
+		];
+
 		const title = (
 			<span>
 				<ModalForm
+					layout="horizontal"
 					title="添加角色"
 					trigger={<Button type="primary">创建角色 </Button>}
 					modalProps={{
@@ -87,14 +128,14 @@ export default class Role extends Component<Props, State> {
 						const role: RoleModel = {
 							menus: [''].join(','),
 							name: values.name,
-							createTime: new Date().format("yyyy-MM-dd hh:mm:ss"),
+							createTime: new Date().format('yyyy-MM-dd hh:mm:ss'),
 						};
 						const result = await reqCreateRole(role);
 						if (result === 'success') {
 							message.success('提交成功');
 							this.setState((state) => {
 								return {
-									roles: [...state.roles,role],
+									roles: [...state.roles, role],
 								};
 							});
 						} else {
@@ -103,7 +144,7 @@ export default class Role extends Component<Props, State> {
 						return true;
 					}}
 				>
-					<ProForm.Group style={{ display: 'flex', justifyContent: 'space-around' }}>
+					<ProForm.Group style={{ display: 'flex', justifyContent: 'space-between' }}>
 						<ProFormText
 							rules={[{ required: true }]}
 							label="添加角色"
@@ -117,6 +158,7 @@ export default class Role extends Component<Props, State> {
 				</ModalForm>
 				&nbsp;&nbsp;
 				<ModalForm
+					layout="horizontal"
 					title="设置角色权限"
 					trigger={
 						<Button type="primary" disabled={role === null}>
@@ -127,7 +169,20 @@ export default class Role extends Component<Props, State> {
 						onCancel: () => console.log('run'),
 					}}
 				>
-					<ProForm.Group></ProForm.Group>
+					<ProForm.Group>
+						<ProFormText name="auth" disabled label="角色名称" width="lg" initialValue={role?.name}></ProFormText>
+					</ProForm.Group>
+					<ProForm.Group>
+						<Tree
+							checkable
+							defaultExpandedKeys={['0-0-0', '0-0-1']}
+							defaultSelectedKeys={['0-0-0', '0-0-1']}
+							defaultCheckedKeys={['0-0-0', '0-0-1']}
+              onSelect={onSelect}
+              onCheck={onCheck as any}
+							treeData={treeData}
+						/>
+					</ProForm.Group>
 				</ModalForm>
 			</span>
 		);
