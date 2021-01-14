@@ -89,3 +89,17 @@ GET http://localhost:5000/api/products/findById/1
 
 ###
 DELETE  http://localhost:5000/deleteFile/1.jpg
+
+###
+POST http://localhost:5000/api/role/createRole HTTP/1.1
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+
+{
+  "authName": "admin",
+  "menus": "" ,
+  "name": "asdasda",
+  "v": 0,
+
+}
