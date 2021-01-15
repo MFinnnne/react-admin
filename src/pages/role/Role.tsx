@@ -15,6 +15,7 @@ interface State {
 	roles: RoleModel[];
 	role: RoleModel | null;
 	treeData: DataNode[];
+	selectedKeys: string[];
 }
 
 interface Props {}
@@ -30,6 +31,7 @@ export default class Role extends Component<Props, State> {
 			roles: [],
 			role: null,
 			treeData: [],
+			selectedKeys: [],
 		};
 	}
 
@@ -55,10 +57,12 @@ export default class Role extends Component<Props, State> {
 	};
 
 	private onRowClick = (data: RoleModel, number?: number): React.HTMLAttributes<HTMLElement> => {
+    console.log(data);
 		return {
 			onClick: (event) => {
 				this.setState({
 					role: data,
+					selectedKeys: data.menus?.split(',') ?? [],
 				});
 			}, // 点击行
 		};
@@ -77,7 +81,6 @@ export default class Role extends Component<Props, State> {
 				children: this.getDateNode(menuList),
 			},
 		];
-
 		this.setState({
 			treeData: treeData,
 		});
@@ -93,18 +96,18 @@ export default class Role extends Component<Props, State> {
 	}
 
 	private getDateNode = (menuList: MenuConfig[]): DataNode[] => {
-		return menuList.reduce((pre: DataNode[], curValue: MenuConfig): DataNode[] => {
+		return menuList.reduce((acc: DataNode[], curValue: MenuConfig): DataNode[] => {
 			if (curValue.children) {
-				pre.push({ key: curValue.key, title: curValue.title, children: this.getDateNode(curValue.children) });
+				acc.push({ key: curValue.key, title: curValue.title, children: this.getDateNode(curValue.children) });
 			} else {
-				pre.push({ key: curValue.key, title: curValue.title });
+				acc.push({ key: curValue.key, title: curValue.title });
 			}
-			return pre;
+			return acc;
 		}, []);
-  };
-  
+	};
+
 	render() {
-		const { roles, role, treeData } = this.state;
+		const { roles, role, treeData ,selectedKeys} = this.state;
 
 		const onSelect = (selectedKeys: React.Key[], info: any) => {
 			console.log('selected', selectedKeys, info);
@@ -172,7 +175,14 @@ export default class Role extends Component<Props, State> {
 						<ProFormText name="auth" disabled label="角色名称" width="lg" initialValue={role?.name}></ProFormText>
 					</ProForm.Group>
 					<ProForm.Group>
-						<Tree defaultExpandAll checkable onSelect={onSelect} onCheck={onCheck as any} treeData={treeData} />
+						<Tree
+							defaultExpandAll
+							checkable
+							defaultCheckedKeys={selectedKeys}
+							onSelect={onSelect}
+							onCheck={onCheck as any}
+							treeData={treeData}
+						/>
 					</ProForm.Group>
 				</ModalForm>
 			</span>
