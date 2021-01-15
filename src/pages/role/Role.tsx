@@ -8,10 +8,13 @@ import { RoleModel } from './Model';
 import ProForm, { ModalForm, ProFormText, ProFormDateRangePicker, ProFormSelect } from '@ant-design/pro-form';
 import { formatDate } from '../../utils/DateUtils';
 import { Key } from 'antd/lib/table/interface';
+import { DataNode } from 'antd/lib/tree';
+import { MenuConfig, menuList } from '../../config/menuConfig';
+
 interface State {
 	roles: RoleModel[];
 	role: RoleModel | null;
-	isShowAdd: boolean;
+	treeData: DataNode[];
 }
 
 interface Props {}
@@ -26,7 +29,7 @@ export default class Role extends Component<Props, State> {
 		this.state = {
 			roles: [],
 			role: null,
-			isShowAdd: false,
+			treeData: [],
 		};
 	}
 
@@ -63,7 +66,22 @@ export default class Role extends Component<Props, State> {
 
 	async componentDidMount() {
 		this.initDataSource();
+		this.initDataNode();
 	}
+
+	private initDataNode = () => {
+		const treeData: DataNode[] = [
+			{
+				title: '平台权限',
+				key: '0-0',
+				children: this.getDateNode(menuList),
+			},
+		];
+
+		this.setState({
+			treeData: treeData,
+		});
+	};
 
 	private async initDataSource(): Promise<void> {
 		const result: ResponseValue<RoleModel[]> = await reqRoles();
@@ -74,46 +92,27 @@ export default class Role extends Component<Props, State> {
 		}
 	}
 
+	private getDateNode = (menuList: MenuConfig[]): DataNode[] => {
+		return menuList.reduce((pre: DataNode[], curValue: MenuConfig): DataNode[] => {
+			if (curValue.children) {
+				pre.push({ key: curValue.key, title: curValue.title, children: this.getDateNode(curValue.children) });
+			} else {
+				pre.push({ key: curValue.key, title: curValue.title });
+			}
+			return pre;
+		}, []);
+  };
+  
 	render() {
-		const { roles, role, isShowAdd } = this.state;
+		const { roles, role, treeData } = this.state;
 
 		const onSelect = (selectedKeys: React.Key[], info: any) => {
 			console.log('selected', selectedKeys, info);
 		};
 
-		const onCheck = (checkedKeys: React.Key[], info:  any) => {
+		const onCheck = (checkedKeys: React.Key[], info: any) => {
 			console.log('onCheck', checkedKeys, info);
 		};
-
-		const treeData = [
-			{
-				title: 'parent 1',
-				key: '0-0',
-				children: [
-					{
-						title: 'parent 1-0',
-						key: '0-0-0',
-						disabled: true,
-						children: [
-							{
-								title: 'leaf',
-								key: '0-0-0-0',
-								disableCheckbox: true,
-							},
-							{
-								title: 'leaf',
-								key: '0-0-0-1',
-							},
-						],
-					},
-					{
-						title: 'parent 1-1',
-						key: '0-0-1',
-						children: [{ title: <span style={{ color: '#1890ff' }}>sss</span>, key: '0-0-1-0' }],
-					},
-				],
-			},
-		];
 
 		const title = (
 			<span>
@@ -173,15 +172,7 @@ export default class Role extends Component<Props, State> {
 						<ProFormText name="auth" disabled label="角色名称" width="lg" initialValue={role?.name}></ProFormText>
 					</ProForm.Group>
 					<ProForm.Group>
-						<Tree
-							checkable
-							defaultExpandedKeys={['0-0-0', '0-0-1']}
-							defaultSelectedKeys={['0-0-0', '0-0-1']}
-							defaultCheckedKeys={['0-0-0', '0-0-1']}
-              onSelect={onSelect}
-              onCheck={onCheck as any}
-							treeData={treeData}
-						/>
+						<Tree defaultExpandAll checkable onSelect={onSelect} onCheck={onCheck as any} treeData={treeData} />
 					</ProForm.Group>
 				</ModalForm>
 			</span>
