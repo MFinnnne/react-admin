@@ -4,7 +4,7 @@
  * @Author: MFine
  * @Date: 2020-09-28 21:45:10
  * @LastEditors: MFine
- * @LastEditTime: 2021-01-17 00:36:53
+ * @LastEditTime: 2021-01-17 00:39:59
  */
 import { CategoryModel } from './../pages/category/Model';
 import { message } from 'antd';
@@ -235,3 +235,14 @@ export const reqCreateRole = (role: RoleModel): Promise<string> =>
  */
 export const reqCreateRoleByName = (name: string): Promise<string> =>
 	ajax<string>('/api/role/createRoleByName', name, ReqMethodEnum.POST);
+
+/**
+ * @name: reqUpdateRole  
+ * @test: test font
+ * @msg: 根据更新用户
+ * @param {string} id
+ * @param {RoleModel} role
+ * @return {*}
+ */
+export const reqUpdateRole = (id: string, role: RoleModel): Promise<string> =>
+	ajax<string>(`/api/role/updateRole/${id}`, role, ReqMethodEnum.PUT);
