@@ -6,8 +6,6 @@ import { ResponseValue } from '../../api/Model';
 import { PAGE_SIZE } from '../../utils/Constants';
 import { RoleModel } from './Model';
 import ProForm, { ModalForm, ProFormText, ProFormDateRangePicker, ProFormSelect } from '@ant-design/pro-form';
-import { formatDate } from '../../utils/DateUtils';
-import { Key } from 'antd/lib/table/interface';
 import { DataNode } from 'antd/lib/tree';
 import { MenuConfig, menuList } from '../../config/menuConfig';
 
@@ -57,14 +55,13 @@ export default class Role extends Component<Props, State> {
 	};
 
 	private onRowClick = (data: RoleModel, number?: number): React.HTMLAttributes<HTMLElement> => {
-    console.log(data);
 		return {
 			onClick: (event) => {
 				this.setState({
 					role: data,
 					selectedKeys: data.menus?.split(',') ?? [],
 				});
-			}, // 点击行
+			},
 		};
 	};
 
@@ -107,7 +104,7 @@ export default class Role extends Component<Props, State> {
 	};
 
 	render() {
-		const { roles, role, treeData ,selectedKeys} = this.state;
+		const { roles, role, treeData, selectedKeys } = this.state;
 
 		const onSelect = (selectedKeys: React.Key[], info: any) => {
 			console.log('selected', selectedKeys, info);
