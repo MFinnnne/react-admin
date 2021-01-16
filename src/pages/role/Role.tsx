@@ -8,6 +8,7 @@ import { RoleModel } from './Model';
 import ProForm, { ModalForm, ProFormText, ProFormDateRangePicker, ProFormSelect } from '@ant-design/pro-form';
 import { DataNode } from 'antd/lib/tree';
 import { MenuConfig, menuList } from '../../config/menuConfig';
+import { formatDateByString } from '../../utils/DateUtils';
 
 interface State {
 	roles: RoleModel[];
@@ -20,10 +21,12 @@ interface Props {}
 
 export default class Role extends Component<Props, State> {
 	columns: ColumnsType<any>;
-
+	menus: String[];
+	state: State;
 	constructor(props: Props) {
 		super(props);
 		this.columns = [];
+		this.menus = [];
 		this.initColumns();
 		this.state = {
 			roles: [],
@@ -102,17 +105,15 @@ export default class Role extends Component<Props, State> {
 			return acc;
 		}, []);
 	};
+	private onSelect = (selectedKeys: React.Key[], info: any) => {
+		console.log('selected', selectedKeys, info);
+	};
 
+	private onCheck = (checkedKeys: React.Key[], info: any) => {
+		console.log('onCheck', checkedKeys, info);
+	};
 	render() {
 		const { roles, role, treeData, selectedKeys } = this.state;
-
-		const onSelect = (selectedKeys: React.Key[], info: any) => {
-			console.log('selected', selectedKeys, info);
-		};
-
-		const onCheck = (checkedKeys: React.Key[], info: any) => {
-			console.log('onCheck', checkedKeys, info);
-		};
 
 		const title = (
 			<span>
@@ -127,7 +128,7 @@ export default class Role extends Component<Props, State> {
 						const role: RoleModel = {
 							menus: [''].join(','),
 							name: values.name,
-							createTime: new Date().format('yyyy-MM-dd hh:mm:ss'),
+							createTime: formatDateByString(new Date(), 'yyyy-MM-dd hh:mm:ss'),
 						};
 						const result = await reqCreateRole(role);
 						if (result === 'success') {
@@ -167,6 +168,9 @@ export default class Role extends Component<Props, State> {
 					modalProps={{
 						onCancel: () => console.log('run'),
 					}}
+					onFinish={async (): Promise<boolean> => {
+						return true;
+					}}
 				>
 					<ProForm.Group>
 						<ProFormText name="auth" disabled label="角色名称" width="lg" initialValue={role?.name}></ProFormText>
@@ -176,8 +180,8 @@ export default class Role extends Component<Props, State> {
 							defaultExpandAll
 							checkable
 							defaultCheckedKeys={selectedKeys}
-							onSelect={onSelect}
-							onCheck={onCheck as any}
+							onSelect={this.onSelect}
+							onCheck={this.onCheck as any}
 							treeData={treeData}
 						/>
 					</ProForm.Group>
