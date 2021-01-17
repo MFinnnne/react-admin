@@ -1,7 +1,7 @@
 import { Button, Card, Form, message, Modal, Table, Tree } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import React, { Component, ReactText } from 'react';
-import { reqCreateRole, reqCreateRoleByName, reqRoles } from '../../api';
+import { reqCreateRole, reqCreateRoleByName, reqRoles, reqUpdateRole } from '../../api';
 import { ResponseValue } from '../../api/Model';
 import { PAGE_SIZE } from '../../utils/Constants';
 import { RoleModel } from './Model';
@@ -12,7 +12,7 @@ import { formatDateByString } from '../../utils/DateUtils';
 
 interface State {
 	roles: RoleModel[];
-	role: RoleModel | null;
+	role: RoleModel;
 	treeData: DataNode[];
 	selectedKeys: string[];
 }
@@ -21,16 +21,21 @@ interface Props {}
 
 export default class Role extends Component<Props, State> {
 	columns: ColumnsType<any>;
-	menus: String[];
 	state: State;
 	constructor(props: Props) {
 		super(props);
 		this.columns = [];
-		this.menus = [];
 		this.initColumns();
 		this.state = {
 			roles: [],
-			role: null,
+			role: {
+				name: '',
+				createTime: '',
+        menus:undefined,
+				v: 0,
+				authName: '',
+				authTime: '',
+			},
 			treeData: [],
 			selectedKeys: [],
 		};
@@ -57,13 +62,15 @@ export default class Role extends Component<Props, State> {
 		];
 	};
 
-	private onRowClick = (data: RoleModel, number?: number): React.HTMLAttributes<HTMLElement> => {
+	private onRowClick = (role: RoleModel, number?: number): React.HTMLAttributes<HTMLElement> => {
 		return {
 			onClick: (event) => {
-				this.setState({
-					role: data,
-					selectedKeys: data.menus?.split(',') ?? [],
-				});
+        if (role.menus!==undefined) {
+          this.setState({
+            role: role,
+            selectedKeys: role.menus===''?[]:role?.menus.split(','),
+          });
+        }
 			},
 		};
 	};
@@ -104,13 +111,14 @@ export default class Role extends Component<Props, State> {
 			}
 			return acc;
 		}, []);
-	};
+  };
+  
 	private onSelect = (selectedKeys: React.Key[], info: any) => {
-		console.log('selected', selectedKeys, info);
 	};
 
 	private onCheck = (checkedKeys: React.Key[], info: any) => {
-		console.log('onCheck', checkedKeys, info);
+		const { role } = this.state;
+		role.menus = (checkedKeys as string[]).join(',');
 	};
 	render() {
 		const { roles, role, treeData, selectedKeys } = this.state;
@@ -126,18 +134,17 @@ export default class Role extends Component<Props, State> {
 					}}
 					onFinish={async (values: Record<string, any>): Promise<boolean> => {
 						const role: RoleModel = {
-							menus: [''].join(','),
 							name: values.name,
 							createTime: formatDateByString(new Date(), 'yyyy-MM-dd hh:mm:ss'),
 						};
 						const result = await reqCreateRole(role);
 						if (result === 'success') {
-							message.success('提交成功');
-							this.setState((state) => {
+              this.setState((state) => {
 								return {
-									roles: [...state.roles, role],
+                  roles: [...state.roles, role],
 								};
 							});
+              message.success('提交成功');
 						} else {
 							message.error('提交失败');
 						}
@@ -168,7 +175,22 @@ export default class Role extends Component<Props, State> {
 					modalProps={{
 						onCancel: () => console.log('run'),
 					}}
-					onFinish={async (): Promise<boolean> => {
+					onFinish={async (values: Record<string, any>): Promise<boolean> => {
+						if (role.id !== undefined) {
+              role.authTime = formatDateByString(new Date(), 'yyyy-MM-dd hh:mm:ss');
+              const result: string = await reqUpdateRole(role.id, role);
+							if (result === 'success') {
+								let findRole: RoleModel | undefined = this.state.roles.find((item, index) => item.id === role.id);
+								if (!findRole === undefined) {
+									findRole = role;
+                }
+                this.setState({
+                  roles:roles
+                })
+								message.success('更新成功');
+							}
+						}
+
 						return true;
 					}}
 				>
