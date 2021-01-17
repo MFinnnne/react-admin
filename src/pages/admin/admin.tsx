@@ -11,15 +11,15 @@ import Bar from '../chars/Bar';
 import Line from '../chars/Line';
 import Pie from '../chars/Pie';
 import Home from '../home/Home';
+import MemeoryUtils from '../../utils/MemeoryUtils';
 const { Footer, Sider, Content } = Layout;
 
 export default class admin extends Component {
 	render() {
-		// const user = MemeoryUtils.user;
-		// if (user === undefined || user.id === undefined) {
-		// 	return <Redirect to="/login"></Redirect>;
-		// }
-		// return <div>Hello:{user.name}</div>;
+		const user = MemeoryUtils.user;
+		if (user === undefined || user.id === undefined) {
+			return <Redirect to="/login"></Redirect>;
+		}
 		return (
 			<Layout style={{ height: '100%' }}>
 				<Sider>
