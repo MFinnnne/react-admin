@@ -9,6 +9,8 @@ import ProForm, { ModalForm, ProFormText, ProFormDateRangePicker, ProFormSelect 
 import { DataNode } from 'antd/lib/tree';
 import { MenuConfig, menuList } from '../../config/menuConfig';
 import { formatDateByString } from '../../utils/DateUtils';
+import StorageUtils from '../../utils/StorageUtils';
+import MemeoryUtils from '../../utils/MemeoryUtils';
 
 interface State {
 	roles: RoleModel[];
@@ -177,6 +179,7 @@ export default class Role extends Component<Props, State> {
 					}}
 					onFinish={async (values: Record<string, any>): Promise<boolean> => {
 						if (role.id !== undefined) {
+              role.authName = MemeoryUtils.user.name;
               role.authTime = formatDateByString(new Date(), 'yyyy-MM-dd hh:mm:ss');
               const result: string = await reqUpdateRole(role.id, role);
 							if (result === 'success') {
