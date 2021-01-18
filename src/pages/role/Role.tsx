@@ -1,15 +1,14 @@
-import { Button, Card, Form, message, Modal, Table, Tree } from 'antd';
+import { Button, Card, message, Table, Tree } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
-import React, { Component, ReactText } from 'react';
-import { reqCreateRole, reqCreateRoleByName, reqRoles, reqUpdateRole } from '../../api';
+import React, { Component } from 'react';
+import { reqCreateRole, reqRoles, reqUpdateRole } from '../../api';
 import { ResponseValue } from '../../api/Model';
 import { PAGE_SIZE } from '../../utils/Constants';
 import { RoleModel } from './Model';
-import ProForm, { ModalForm, ProFormText, ProFormDateRangePicker, ProFormSelect } from '@ant-design/pro-form';
+import ProForm, { ModalForm, ProFormText } from '@ant-design/pro-form';
 import { DataNode } from 'antd/lib/tree';
 import { MenuConfig, menuList } from '../../config/menuConfig';
 import { formatDateByString } from '../../utils/DateUtils';
-import StorageUtils from '../../utils/StorageUtils';
 import MemeoryUtils from '../../utils/MemeoryUtils';
 import { SelectionSelectFn } from 'antd/lib/table/interface';
 
@@ -123,16 +122,16 @@ export default class Role extends Component<Props, State> {
 		role.menus = (checkedKeys as string[]).join(',');
 	};
 
-  private checkBoxOnSelect: SelectionSelectFn<RoleModel> = (
-    record: RoleModel,
-    selected: boolean,
-    selectedRows: RoleModel[],
-    nativeEvent: Event
-  ) => {
-    this.setState({
-      role:record
-    })
-  };
+	private checkBoxOnSelect: SelectionSelectFn<RoleModel> = (
+		record: RoleModel,
+		selected: boolean,
+		selectedRows: RoleModel[],
+		nativeEvent: Event
+	) => {
+		this.setState({
+			role: record,
+		});
+	};
 
 	render() {
 		const { roles, role, treeData, selectedKeys } = this.state;
@@ -225,8 +224,6 @@ export default class Role extends Component<Props, State> {
 				</ModalForm>
 			</span>
 		);
-
-	
 
 		return (
 			<div>
