@@ -1,32 +1,45 @@
 import { Button, Card, Form, message, Modal, Table, Tree } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import React, { Component, ReactText } from 'react';
-import { reqCreateRole, reqCreateRoleByName, reqRoles } from '../../api';
+import { reqCreateRole, reqCreateRoleByName, reqRoles, reqUpdateRole } from '../../api';
 import { ResponseValue } from '../../api/Model';
 import { PAGE_SIZE } from '../../utils/Constants';
 import { RoleModel } from './Model';
 import ProForm, { ModalForm, ProFormText, ProFormDateRangePicker, ProFormSelect } from '@ant-design/pro-form';
-import { formatDate } from '../../utils/DateUtils';
-import { Key } from 'antd/lib/table/interface';
+import { DataNode } from 'antd/lib/tree';
+import { MenuConfig, menuList } from '../../config/menuConfig';
+import { formatDateByString } from '../../utils/DateUtils';
+import StorageUtils from '../../utils/StorageUtils';
+import MemeoryUtils from '../../utils/MemeoryUtils';
+
 interface State {
 	roles: RoleModel[];
-	role: RoleModel | null;
-	isShowAdd: boolean;
+	role: RoleModel;
+	treeData: DataNode[];
+	selectedKeys: string[];
 }
 
 interface Props {}
 
 export default class Role extends Component<Props, State> {
 	columns: ColumnsType<any>;
-
+	state: State;
 	constructor(props: Props) {
 		super(props);
 		this.columns = [];
 		this.initColumns();
 		this.state = {
 			roles: [],
-			role: null,
-			isShowAdd: false,
+			role: {
+				name: '',
+				createTime: '',
+        menus:undefined,
+				v: 0,
+				authName: '',
+				authTime: '',
+			},
+			treeData: [],
+			selectedKeys: [],
 		};
 	}
 
@@ -51,19 +64,36 @@ export default class Role extends Component<Props, State> {
 		];
 	};
 
-	private onRowClick = (data: RoleModel, number?: number): React.HTMLAttributes<HTMLElement> => {
+	private onRowClick = (role: RoleModel, number?: number): React.HTMLAttributes<HTMLElement> => {
 		return {
 			onClick: (event) => {
-				this.setState({
-					role: data,
-				});
-			}, // 点击行
+        if (role.menus!==undefined) {
+          this.setState({
+            role: role,
+            selectedKeys: role.menus===''?[]:role?.menus.split(','),
+          });
+        }
+			},
 		};
 	};
 
 	async componentDidMount() {
 		this.initDataSource();
+		this.initDataNode();
 	}
+
+	private initDataNode = () => {
+		const treeData: DataNode[] = [
+			{
+				title: '平台权限',
+				key: '0-0',
+				children: this.getDateNode(menuList),
+			},
+		];
+		this.setState({
+			treeData: treeData,
+		});
+	};
 
 	private async initDataSource(): Promise<void> {
 		const result: ResponseValue<RoleModel[]> = await reqRoles();
@@ -74,46 +104,26 @@ export default class Role extends Component<Props, State> {
 		}
 	}
 
+	private getDateNode = (menuList: MenuConfig[]): DataNode[] => {
+		return menuList.reduce((acc: DataNode[], curValue: MenuConfig): DataNode[] => {
+			if (curValue.children) {
+				acc.push({ key: curValue.key, title: curValue.title, children: this.getDateNode(curValue.children) });
+			} else {
+				acc.push({ key: curValue.key, title: curValue.title });
+			}
+			return acc;
+		}, []);
+  };
+  
+	private onSelect = (selectedKeys: React.Key[], info: any) => {
+	};
+
+	private onCheck = (checkedKeys: React.Key[], info: any) => {
+		const { role } = this.state;
+		role.menus = (checkedKeys as string[]).join(',');
+	};
 	render() {
-		const { roles, role, isShowAdd } = this.state;
-
-		const onSelect = (selectedKeys: React.Key[], info: any) => {
-			console.log('selected', selectedKeys, info);
-		};
-
-		const onCheck = (checkedKeys: React.Key[], info:  any) => {
-			console.log('onCheck', checkedKeys, info);
-		};
-
-		const treeData = [
-			{
-				title: 'parent 1',
-				key: '0-0',
-				children: [
-					{
-						title: 'parent 1-0',
-						key: '0-0-0',
-						disabled: true,
-						children: [
-							{
-								title: 'leaf',
-								key: '0-0-0-0',
-								disableCheckbox: true,
-							},
-							{
-								title: 'leaf',
-								key: '0-0-0-1',
-							},
-						],
-					},
-					{
-						title: 'parent 1-1',
-						key: '0-0-1',
-						children: [{ title: <span style={{ color: '#1890ff' }}>sss</span>, key: '0-0-1-0' }],
-					},
-				],
-			},
-		];
+		const { roles, role, treeData, selectedKeys } = this.state;
 
 		const title = (
 			<span>
@@ -126,18 +136,17 @@ export default class Role extends Component<Props, State> {
 					}}
 					onFinish={async (values: Record<string, any>): Promise<boolean> => {
 						const role: RoleModel = {
-							menus: [''].join(','),
 							name: values.name,
-							createTime: new Date().format('yyyy-MM-dd hh:mm:ss'),
+							createTime: formatDateByString(new Date(), 'yyyy-MM-dd hh:mm:ss'),
 						};
 						const result = await reqCreateRole(role);
 						if (result === 'success') {
-							message.success('提交成功');
-							this.setState((state) => {
+              this.setState((state) => {
 								return {
-									roles: [...state.roles, role],
+                  roles: [...state.roles, role],
 								};
 							});
+              message.success('提交成功');
 						} else {
 							message.error('提交失败');
 						}
@@ -168,18 +177,36 @@ export default class Role extends Component<Props, State> {
 					modalProps={{
 						onCancel: () => console.log('run'),
 					}}
+					onFinish={async (values: Record<string, any>): Promise<boolean> => {
+						if (role.id !== undefined) {
+              role.authName = MemeoryUtils.user.name;
+              role.authTime = formatDateByString(new Date(), 'yyyy-MM-dd hh:mm:ss');
+              const result: string = await reqUpdateRole(role.id, role);
+							if (result === 'success') {
+								let findRole: RoleModel | undefined = this.state.roles.find((item, index) => item.id === role.id);
+								if (!findRole === undefined) {
+									findRole = role;
+                }
+                this.setState({
+                  roles:roles
+                })
+								message.success('更新成功');
+							}
+						}
+
+						return true;
+					}}
 				>
 					<ProForm.Group>
 						<ProFormText name="auth" disabled label="角色名称" width="lg" initialValue={role?.name}></ProFormText>
 					</ProForm.Group>
 					<ProForm.Group>
 						<Tree
+							defaultExpandAll
 							checkable
-							defaultExpandedKeys={['0-0-0', '0-0-1']}
-							defaultSelectedKeys={['0-0-0', '0-0-1']}
-							defaultCheckedKeys={['0-0-0', '0-0-1']}
-              onSelect={onSelect}
-              onCheck={onCheck as any}
+							defaultCheckedKeys={selectedKeys}
+							onSelect={this.onSelect}
+							onCheck={this.onCheck as any}
 							treeData={treeData}
 						/>
 					</ProForm.Group>

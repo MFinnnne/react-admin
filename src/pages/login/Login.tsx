@@ -42,7 +42,6 @@ export default class Login extends Component<LoginProps, {}> {
 
 	onFinish = async (values: { name: string; password: string }) => {
 		const response = await reqLogin(values.name, values.password);
-
 		if (response.status === 0) {
 			message.success('登录成功');
 			const id = response.data.id;
