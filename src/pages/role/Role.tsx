@@ -16,7 +16,6 @@ interface State {
 	roles: RoleModel[];
 	role: RoleModel;
 	treeData: DataNode[];
-	selectedKeys: string[];
 }
 
 interface Props {}
@@ -39,7 +38,6 @@ export default class Role extends Component<Props, State> {
 				authTime: '',
 			},
 			treeData: [],
-			selectedKeys: [],
 		};
 	}
 
@@ -70,7 +68,6 @@ export default class Role extends Component<Props, State> {
 				if (role.menus !== undefined) {
 					this.setState({
 						role: role,
-						selectedKeys: role.menus === '' ? [] : role?.menus.split(','),
 					});
 				}
 			},
@@ -127,14 +124,14 @@ export default class Role extends Component<Props, State> {
 		selected: boolean,
 		selectedRows: RoleModel[],
 		nativeEvent: Event
-	) => {
+	): void => {
 		this.setState({
 			role: record,
 		});
 	};
 
 	render() {
-		const { roles, role, treeData, selectedKeys } = this.state;
+		const { roles, role, treeData } = this.state;
 
 		const title = (
 			<span>
@@ -204,7 +201,6 @@ export default class Role extends Component<Props, State> {
 								message.success('更新成功');
 							}
 						}
-
 						return true;
 					}}
 				>
@@ -215,7 +211,7 @@ export default class Role extends Component<Props, State> {
 						<Tree
 							defaultExpandAll
 							checkable
-							defaultCheckedKeys={selectedKeys}
+							defaultCheckedKeys={role.menus?.split(',') ?? []}
 							onSelect={this.onSelect}
 							onCheck={this.onCheck as any}
 							treeData={treeData}
