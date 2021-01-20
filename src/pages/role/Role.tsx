@@ -1,22 +1,21 @@
-import { Button, Card, Form, message, Modal, Table, Tree } from 'antd';
+import { Button, Card, message, Table, Tree } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
-import React, { Component, ReactText } from 'react';
-import { reqCreateRole, reqCreateRoleByName, reqRoles, reqUpdateRole } from '../../api';
+import React, { Component } from 'react';
+import { reqCreateRole, reqRoles, reqUpdateRole } from '../../api';
 import { ResponseValue } from '../../api/Model';
 import { PAGE_SIZE } from '../../utils/Constants';
 import { RoleModel } from './Model';
-import ProForm, { ModalForm, ProFormText, ProFormDateRangePicker, ProFormSelect } from '@ant-design/pro-form';
+import ProForm, { ModalForm, ProFormText } from '@ant-design/pro-form';
 import { DataNode } from 'antd/lib/tree';
 import { MenuConfig, menuList } from '../../config/menuConfig';
 import { formatDateByString } from '../../utils/DateUtils';
-import StorageUtils from '../../utils/StorageUtils';
 import MemeoryUtils from '../../utils/MemeoryUtils';
+import { SelectionSelectFn } from 'antd/lib/table/interface';
 
 interface State {
 	roles: RoleModel[];
 	role: RoleModel;
 	treeData: DataNode[];
-	selectedKeys: string[];
 }
 
 interface Props {}
@@ -33,13 +32,12 @@ export default class Role extends Component<Props, State> {
 			role: {
 				name: '',
 				createTime: '',
-        menus:undefined,
+				menus: undefined,
 				v: 0,
 				authName: '',
 				authTime: '',
 			},
 			treeData: [],
-			selectedKeys: [],
 		};
 	}
 
@@ -67,12 +65,11 @@ export default class Role extends Component<Props, State> {
 	private onRowClick = (role: RoleModel, number?: number): React.HTMLAttributes<HTMLElement> => {
 		return {
 			onClick: (event) => {
-        if (role.menus!==undefined) {
-          this.setState({
-            role: role,
-            selectedKeys: role.menus===''?[]:role?.menus.split(','),
-          });
-        }
+				if (role.menus !== undefined) {
+					this.setState({
+						role: role,
+					});
+				}
 			},
 		};
 	};
@@ -113,17 +110,28 @@ export default class Role extends Component<Props, State> {
 			}
 			return acc;
 		}, []);
-  };
-  
-	private onSelect = (selectedKeys: React.Key[], info: any) => {
 	};
+
+	private onSelect = (selectedKeys: React.Key[], info: any) => {};
 
 	private onCheck = (checkedKeys: React.Key[], info: any) => {
 		const { role } = this.state;
 		role.menus = (checkedKeys as string[]).join(',');
 	};
+
+	private checkBoxOnSelect: SelectionSelectFn<RoleModel> = (
+		record: RoleModel,
+		selected: boolean,
+		selectedRows: RoleModel[],
+		nativeEvent: Event
+	): void => {
+		this.setState({
+			role: record,
+		});
+	};
+
 	render() {
-		const { roles, role, treeData, selectedKeys } = this.state;
+		const { roles, role, treeData } = this.state;
 
 		const title = (
 			<span>
@@ -141,12 +149,12 @@ export default class Role extends Component<Props, State> {
 						};
 						const result = await reqCreateRole(role);
 						if (result === 'success') {
-              this.setState((state) => {
+							this.setState((state) => {
 								return {
-                  roles: [...state.roles, role],
+									roles: [...state.roles, role],
 								};
 							});
-              message.success('提交成功');
+							message.success('提交成功');
 						} else {
 							message.error('提交失败');
 						}
@@ -170,7 +178,7 @@ export default class Role extends Component<Props, State> {
 					layout="horizontal"
 					title="设置角色权限"
 					trigger={
-						<Button type="primary" disabled={role === null}>
+						<Button type="primary" disabled={role.authName === ''}>
 							设置角色权限
 						</Button>
 					}
@@ -179,21 +187,20 @@ export default class Role extends Component<Props, State> {
 					}}
 					onFinish={async (values: Record<string, any>): Promise<boolean> => {
 						if (role.id !== undefined) {
-              role.authName = MemeoryUtils.user.name;
-              role.authTime = formatDateByString(new Date(), 'yyyy-MM-dd hh:mm:ss');
-              const result: string = await reqUpdateRole(role.id, role);
+							role.authName = MemeoryUtils.user.name;
+							role.authTime = formatDateByString(new Date(), 'yyyy-MM-dd hh:mm:ss');
+							const result: string = await reqUpdateRole(role.id, role);
 							if (result === 'success') {
-								let findRole: RoleModel | undefined = this.state.roles.find((item, index) => item.id === role.id);
+								let findRole: RoleModel | undefined = this.state.roles.find((item) => item.id === role.id);
 								if (!findRole === undefined) {
 									findRole = role;
-                }
-                this.setState({
-                  roles:roles
-                })
+								}
+								this.setState({
+									roles: roles,
+								});
 								message.success('更新成功');
 							}
 						}
-
 						return true;
 					}}
 				>
@@ -204,7 +211,7 @@ export default class Role extends Component<Props, State> {
 						<Tree
 							defaultExpandAll
 							checkable
-							defaultCheckedKeys={selectedKeys}
+							defaultCheckedKeys={role.menus?.split(',') ?? []}
 							onSelect={this.onSelect}
 							onCheck={this.onCheck as any}
 							treeData={treeData}
@@ -223,7 +230,7 @@ export default class Role extends Component<Props, State> {
 						columns={this.columns}
 						bordered
 						loading={false}
-						rowSelection={{ type: 'radio', selectedRowKeys: [role?.id ?? -1] }}
+						rowSelection={{ type: 'radio', selectedRowKeys: [role?.id ?? -1], onSelect: this.checkBoxOnSelect }}
 						pagination={{ defaultPageSize: PAGE_SIZE, showQuickJumper: true }}
 						onRow={this.onRowClick}
 					></Table>
