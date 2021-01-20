@@ -6,12 +6,12 @@ import { Redirect, Route, Switch } from 'react-router-dom';
 import Category from '../category/Category';
 import Product from '../product/Product';
 import Role from '../role/Role';
-import User from '../user/User';
 import Bar from '../chars/Bar';
 import Line from '../chars/Line';
 import Pie from '../chars/Pie';
 import Home from '../home/Home';
 import MemeoryUtils from '../../utils/MemeoryUtils';
+import { User } from '../user/User';
 const { Footer, Sider, Content } = Layout;
 
 export default class admin extends Component {
