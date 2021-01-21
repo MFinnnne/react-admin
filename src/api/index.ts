@@ -237,7 +237,7 @@ export const reqCreateRoleByName = (name: string): Promise<string> =>
 	ajax<string>('/api/role/createRoleByName', name, ReqMethodEnum.POST);
 
 /**
- * @name: reqUpdateRole  
+ * @name: reqUpdateRole
  * @test: test font
  * @msg: 根据更新用户
  * @param {string} id
@@ -246,3 +246,5 @@ export const reqCreateRoleByName = (name: string): Promise<string> =>
  */
 export const reqUpdateRole = (id: number, role: RoleModel): Promise<string> =>
 	ajax<string>(`/api/role/updateRole/${id}`, role, ReqMethodEnum.PUT);
+
+export const reqUsers = (): Promise<any> => ajax<any>('/api/user/getUsers', {}, ReqMethodEnum.GET);
