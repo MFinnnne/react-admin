@@ -4,7 +4,7 @@
  * @Author: MFine
  * @Date: 2020-09-28 21:45:10
  * @LastEditors: MFine
- * @LastEditTime: 2021-01-17 23:25:20
+ * @LastEditTime: 2021-01-22 20:06:28
  */
 import { CategoryModel } from './../pages/category/Model';
 import { message } from 'antd';
@@ -16,6 +16,7 @@ import { PageSplitModel } from './Model';
 import { ProductsModel } from '../pages/product/Model';
 import { BASE_URL } from '../utils/Constants';
 import { RoleModel } from '../pages/role/Model';
+import { UserModel } from '../pages/user/model';
 
 /**
  * @name: reqLogin
@@ -35,7 +36,7 @@ export const reqLogin = (name: string, password: string): Promise<any> =>
  * @param {any} user
  * @return {*}
  */
-export const reqAddUser = (user: any) => ajax('/manage/user/add', user, ReqMethodEnum.POST);
+export const reqAddUser = (user: UserModel): Promise<string> => ajax<string>('/api/user/add', user, ReqMethodEnum.POST);
 
 export const reqWheater = (city: string): Promise<{ dayPictureUrl: any; weather: any }> => {
 	return new Promise((resolve, reject) => {
@@ -247,4 +248,31 @@ export const reqCreateRoleByName = (name: string): Promise<string> =>
 export const reqUpdateRole = (id: number, role: RoleModel): Promise<string> =>
 	ajax<string>(`/api/role/updateRole/${id}`, role, ReqMethodEnum.PUT);
 
-export const reqUsers = (): Promise<any> => ajax<any>('/api/user/getUsers', {}, ReqMethodEnum.GET);
+/**
+ * @name: reqUsers
+ * @test: test font
+ * @msg: 查询所有用户
+ * @param {}
+ * @return {Promise<UserModel[]>}
+ */
+export const reqUsers = (): Promise<UserModel[]> => ajax<UserModel[]>('/api/user/getUsers', {}, ReqMethodEnum.GET);
+
+/**
+ * @name: reqUpdateUser
+ * @test: test font
+ * @msg:  更新用户
+ * @param {UserModel} user
+ * @return {string}
+ */
+export const reqUpdateUser = (user: UserModel): Promise<string> =>
+	ajax<string>(`/api/user/update/${user.id}`, user, ReqMethodEnum.PUT);
+
+/**
+ * @name: reqDeleteUser
+ * @test: test font
+ * @msg: 根据id删除用户
+ * @param {number} id
+ * @return {*}
+ */
+export const reqDeleteUser = (id: number): Promise<string> =>
+	ajax<string>(`/api/user/delete/${id}`, {}, ReqMethodEnum.DELETE);

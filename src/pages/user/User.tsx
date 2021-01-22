@@ -4,17 +4,19 @@
  * @Author: MFine
  * @Date: 2020-10-14 21:16:42
  * @LastEditors: MFine
- * @LastEditTime: 2021-01-22 00:23:38
+ * @LastEditTime: 2021-01-23 00:26:05
  */
 import ProForm, { ModalForm, ProFormText } from '@ant-design/pro-form';
-import { Button, Card, Space, Table } from 'antd';
+import { Button, Card, message, Space, Table } from 'antd';
+import { type } from 'os';
 import React, { useEffect, useState } from 'react';
-import { reqUsers } from '../../api';
+import { reqAddUser, reqDeleteUser, reqUpdateUser, reqUsers } from '../../api';
 import { UserModel } from './model';
+import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 
 export const User = () => {
-	const [users, setUsers] = useState<any>([]);
-
+	const [users, setUsers] = useState<UserModel[]>([]);
+	const [user, setUser] = useState<UserModel>();
 	const columns = [
 		{
 			title: '用户名',
@@ -50,21 +52,56 @@ export const User = () => {
 						modalProps={{
 							onCancel: () => console.log(text, record),
 						}}
-						onFinish={async () => {}}
+						onFinish={async (values: Record<string, UserModel>): Promise<boolean> => {
+							Object.assign(record, values);
+							const result: string = await reqUpdateUser(record);
+							if (result === 'success') {
+								setUser(values);
+								message.success('修改成功');
+							} else {
+								message.error('修改失败');
+							}
+							return true;
+						}}
 					>
 						{proForm(record)}
 					</ModalForm>
-
-					<span style={{ color: 'red', cursor: 'pointer' }} onClick={deleteUser}>
-						删除
-					</span>
+					<ModalForm
+						layout="horizontal"
+						title="删除用户"
+						labelCol={{ span: 4 }}
+						wrapperCol={{ span: 14 }}
+						trigger={<span style={{ color: 'red', cursor: 'pointer' }}>删除</span>}
+						modalProps={{
+							onCancel: () => console.log(text, record),
+						}}
+						onFinish={async (values: Record<string, UserModel>): Promise<boolean> => {
+							if (record.id) {
+								const result: string = await reqDeleteUser(record.id);
+								if (result === 'success') {
+									setUser(values);
+									message.success('删除成功');
+								} else {
+									message.error('删除失败');
+								}
+							}
+							return true;
+						}}
+					>
+						<span style={{ color: 'red', textAlign: 'center' }}>确定要删除此用户吗</span>
+					</ModalForm>
 				</Space>
 			),
 		},
 	];
 
-	const deleteUser = (): void => {
-		console.log('delete');
+	const deleteUser = async (user: UserModel): Promise<void> => {
+		if (user.id) {
+			const result = await reqDeleteUser(user.id);
+			if (result === 'success') {
+				message.success('');
+			}
+		}
 	};
 
 	useEffect(() => {
@@ -82,19 +119,40 @@ export const User = () => {
 		return () => {
 			ignore = true;
 		};
-	}, []);
+	}, [users]);
 
 	const proForm = (user?: UserModel): React.ReactElement => {
 		return (
 			<ProForm.Group>
 				<ProFormText
+					rules={[{ required: true, message: '请输入用户名!' }]}
 					name="name"
 					label="用户名"
 					width="lg"
 					placeholder="用户名"
 					initialValue={user?.name ?? ''}
 				></ProFormText>
+				{user === undefined ? (
+					<ProFormText
+						rules={[{ required: true, message: '请输入密码!' }]}
+						fieldProps={{ type: 'password',suffix:<EyeTwoTone />}}
+						name="password"
+						label="密码"
+						width="lg"
+						placeholder="密码"
+					></ProFormText>
+				) : (
+					<ProFormText
+						rules={[{ required: true, message: '请输入密码!' }]}
+						name="password"
+						label="密码"
+						width="lg"
+						placeholder="密码"
+						initialValue={user?.password ?? ''}
+					></ProFormText>
+				)}
 				<ProFormText
+					rules={[{ required: true, message: '请输入手机号!' }]}
 					name="phone"
 					label="手机号"
 					width="lg"
@@ -102,6 +160,7 @@ export const User = () => {
 					initialValue={user?.phone ?? ''}
 				></ProFormText>
 				<ProFormText
+					rules={[{ required: true, message: '请输入邮箱!' }]}
 					name="email"
 					label="邮箱"
 					width="lg"
@@ -109,6 +168,7 @@ export const User = () => {
 					initialValue={user?.email ?? ''}
 				></ProFormText>
 				<ProFormText
+					rules={[{ required: true, message: '请输入邮箱!' }]}
 					name="role"
 					label="角色"
 					width="lg"
@@ -130,7 +190,17 @@ export const User = () => {
 				modalProps={{
 					onCancel: () => console.log('run1'),
 				}}
-				onFinish={async () => {}}
+				onFinish={async (values: Record<string, UserModel>): Promise<boolean> => {
+					const result = await reqAddUser(values);
+
+					if (result === 'success') {
+						message.success('添加用户成功');
+						users.push(values);
+					} else {
+						message.error('添加用户失败');
+					}
+					return true;
+				}}
 			>
 				{proForm()}
 			</ModalForm>
