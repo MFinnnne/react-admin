@@ -4,19 +4,19 @@
  * @Author: MFine
  * @Date: 2020-10-14 21:16:42
  * @LastEditors: MFine
- * @LastEditTime: 2021-01-23 00:26:05
+ * @LastEditTime: 2021-01-23 00:41:43
  */
 import ProForm, { ModalForm, ProFormText } from '@ant-design/pro-form';
 import { Button, Card, message, Space, Table } from 'antd';
-import { type } from 'os';
 import React, { useEffect, useState } from 'react';
 import { reqAddUser, reqDeleteUser, reqUpdateUser, reqUsers } from '../../api';
 import { UserModel } from './model';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
+import WrappedProFormText from '@ant-design/pro-form/lib/components/Text';
 
 export const User = () => {
 	const [users, setUsers] = useState<UserModel[]>([]);
-	const [user, setUser] = useState<UserModel>();
+	const [isUpdate, setIsUpdate] = useState<boolean>(false);
 	const columns = [
 		{
 			title: '用户名',
@@ -49,14 +49,12 @@ export const User = () => {
 						labelCol={{ span: 4 }}
 						wrapperCol={{ span: 14 }}
 						trigger={<span style={{ color: '#4FC08D', cursor: 'pointer' }}>修改</span>}
-						modalProps={{
-							onCancel: () => console.log(text, record),
-						}}
+						modalProps={{}}
 						onFinish={async (values: Record<string, UserModel>): Promise<boolean> => {
 							Object.assign(record, values);
 							const result: string = await reqUpdateUser(record);
 							if (result === 'success') {
-								setUser(values);
+								setIsUpdate(true);
 								message.success('修改成功');
 							} else {
 								message.error('修改失败');
@@ -79,7 +77,7 @@ export const User = () => {
 							if (record.id) {
 								const result: string = await reqDeleteUser(record.id);
 								if (result === 'success') {
-									setUser(values);
+									setIsUpdate(true);
 									message.success('删除成功');
 								} else {
 									message.error('删除失败');
@@ -105,6 +103,7 @@ export const User = () => {
 	};
 
 	useEffect(() => {
+		setIsUpdate(false);
 		let ignore: boolean = false;
 		const fetchData = async () => {
 			const result = await reqUsers();
@@ -119,7 +118,7 @@ export const User = () => {
 		return () => {
 			ignore = true;
 		};
-	}, [users]);
+	}, [isUpdate]);
 
 	const proForm = (user?: UserModel): React.ReactElement => {
 		return (
@@ -133,23 +132,30 @@ export const User = () => {
 					initialValue={user?.name ?? ''}
 				></ProFormText>
 				{user === undefined ? (
-					<ProFormText
+					<WrappedProFormText.Password
 						rules={[{ required: true, message: '请输入密码!' }]}
-						fieldProps={{ type: 'password',suffix:<EyeTwoTone />}}
 						name="password"
 						label="密码"
 						width="lg"
 						placeholder="密码"
-					></ProFormText>
+						fieldProps={{
+							type: 'password',
+							iconRender: (visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />),
+						}}
+					></WrappedProFormText.Password>
 				) : (
-					<ProFormText
+					<WrappedProFormText.Password
 						rules={[{ required: true, message: '请输入密码!' }]}
 						name="password"
 						label="密码"
 						width="lg"
 						placeholder="密码"
-						initialValue={user?.password ?? ''}
-					></ProFormText>
+						initialValue={user?.password}
+						fieldProps={{
+							type: 'password',
+							iconRender: (visible = false) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />),
+						}}
+					></WrappedProFormText.Password>
 				)}
 				<ProFormText
 					rules={[{ required: true, message: '请输入手机号!' }]}
@@ -168,7 +174,7 @@ export const User = () => {
 					initialValue={user?.email ?? ''}
 				></ProFormText>
 				<ProFormText
-					rules={[{ required: true, message: '请输入邮箱!' }]}
+					rules={[{ required: true, message: '请输入角色!' }]}
 					name="role"
 					label="角色"
 					width="lg"
