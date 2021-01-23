@@ -1,3 +1,11 @@
+/*
+ * @Descripttion:
+ * @version:
+ * @Author: MFine
+ * @Date: 2020-10-14 21:16:42
+ * @LastEditors: MFine
+ * @LastEditTime: 2021-01-24 00:04:22
+ */
 import React, { Component } from 'react';
 import './index.less';
 import logo from '../../assets/images/logo.png';
@@ -5,6 +13,7 @@ import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { Menu } from 'antd';
 import { menuList, MenuConfig } from '../../config/menuConfig';
 import * as Icon from '@ant-design/icons';
+import StorageUtils, { LoginUser } from '../../utils/StorageUtils';
 
 const { SubMenu } = Menu;
 
@@ -33,7 +42,20 @@ class LeftNav extends Component<LeftNavProps, {}> {
 		});
 	};
 
-	getMenuNodes = (menuList: MenuConfig[]): JSX.Element[] => {
+	private hasAuth = (node: MenuConfig): boolean => {
+		const user: LoginUser = StorageUtils.getUser();
+
+		if (user.name === 'admin' || node.isPublic || user.menus.indexOf(node.key) !== -1) {
+			return true;
+		} else if (node.children) {
+			return !!node.children.find((child) => {
+				return user.menus.indexOf(child.key) !== -1;
+			});
+		}
+		return false;
+	};
+
+	getMenuNodes = (menuList: MenuConfig[]): JSX.Element[] | null => {
 		return menuList.map((item) => {
 			if (item.children) {
 				return (
@@ -53,18 +75,20 @@ class LeftNav extends Component<LeftNavProps, {}> {
 
 	getMenuNodes2 = (menuList: MenuConfig[]): JSX.Element[] => {
 		return menuList.reduce((pre: JSX.Element[], item: MenuConfig): JSX.Element[] => {
-			if (!item.children) {
-				pre.push(
-					<Menu.Item key={item.key} icon={React.createElement(Icon[item.icon])}>
-						<Link to={item.key}>{item.title}</Link>
-					</Menu.Item>
-				);
-			} else {
-				pre.push(
-					<SubMenu key={item.key} title={item.title} icon={React.createElement(Icon[item.icon])}>
-						{this.getMenuNodes(item.children)}
-					</SubMenu>
-				);
+			if (this.hasAuth(item)) {
+				if (!item.children) {
+					pre.push(
+						<Menu.Item key={item.key} icon={React.createElement(Icon[item.icon])}>
+							<Link to={item.key}>{item.title}</Link>
+						</Menu.Item>
+					);
+				} else {
+					pre.push(
+						<SubMenu key={item.key} title={item.title} icon={React.createElement(Icon[item.icon])}>
+							{this.getMenuNodes2(item.children)}
+						</SubMenu>
+					);
+				}
 			}
 			return pre;
 		}, []);

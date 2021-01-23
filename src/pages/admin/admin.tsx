@@ -1,3 +1,11 @@
+/*
+ * @Descripttion: 
+ * @version: 
+ * @Author: MFine
+ * @Date: 2020-10-14 21:16:42
+ * @LastEditors: MFine
+ * @LastEditTime: 2021-01-23 23:26:12
+ */
 import React, { Component } from 'react';
 import { Layout } from 'antd';
 import LeftNav from '../../components/left-nav';
@@ -10,13 +18,13 @@ import Bar from '../chars/Bar';
 import Line from '../chars/Line';
 import Pie from '../chars/Pie';
 import Home from '../home/Home';
-import MemeoryUtils from '../../utils/MemeoryUtils';
 import { User } from '../user/User';
+import StorageUtils from '../../utils/StorageUtils';
 const { Footer, Sider, Content } = Layout;
 
 export default class admin extends Component {
 	render() {
-		const user = MemeoryUtils.user;
+		const user = StorageUtils.getUser();
 		if (user === undefined || user.id === undefined) {
 			return <Redirect to="/login"></Redirect>;
 		}

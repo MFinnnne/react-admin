@@ -4,7 +4,7 @@
  * @Author: MFine
  * @Date: 2020-10-14 21:16:42
  * @LastEditors: MFine
- * @LastEditTime: 2021-01-23 19:34:23
+ * @LastEditTime: 2021-01-23 22:06:47
  */
 import ProForm, { ModalForm, ProFormSelect, ProFormText } from '@ant-design/pro-form';
 import { Button, Card, message, Space, Table } from 'antd';
@@ -54,7 +54,7 @@ export const User = () => {
 						trigger={<span style={{ color: '#4FC08D', cursor: 'pointer' }}>修改</span>}
 						modalProps={{}}
 						onFinish={async (values: Record<string, UserModel>): Promise<boolean> => {
-							Object.assign(record, values);
+              Object.assign(record, values);
 							const result: string = await reqUpdateUser(record);
 							if (result === 'success') {
 								setIsUpdate(true);

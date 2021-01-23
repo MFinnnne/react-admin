@@ -4,7 +4,7 @@
  * @Author: MFine
  * @Date: 2020-09-28 21:45:10
  * @LastEditors: MFine
- * @LastEditTime: 2021-01-23 22:01:43
+ * @LastEditTime: 2021-01-23 23:35:28
  */
 import { CategoryModel } from './../pages/category/Model';
 import { message } from 'antd';
@@ -26,8 +26,8 @@ import { UserModel } from '../pages/user/model';
  * @param {string} password
  * @return {*}
  */
-export const reqLogin = (name: string, password: string): Promise<any> =>
-	ajax<any>('/api/user/login', { name, password }, ReqMethodEnum.POST);
+export const reqLogin = (name: string, password: string): Promise<ResponseValue<UserModel>> =>
+	ajax<ResponseValue<UserModel>>('/api/user/login', { name, password }, ReqMethodEnum.POST);
 
 /**
  * @name: reqAddUser
@@ -277,3 +277,12 @@ export const reqUpdateUser = (user: UserModel): Promise<string> =>
 export const reqDeleteUser = (id: number): Promise<string> =>
 	ajax<string>(`/api/user/delete/${id}`, {}, ReqMethodEnum.DELETE);
 
+/**
+ * @name: reqRoleById
+ * @test: test font
+ * @msg: 根据id请求角色
+ * @param {string} id
+ * @return {role}
+ */
+export const reqRoleById = (id: string): Promise<RoleModel> =>
+	ajax<RoleModel>(`/api/role/get/${id}`, {}, ReqMethodEnum.GET);

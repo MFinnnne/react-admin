@@ -4,10 +4,9 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { reqWheater } from '../../api';
 import { MenuConfig, menuList } from '../../config/menuConfig';
 import { formatDate } from '../../utils/DateUtils';
-import MemeoryUtils from '../../utils/MemeoryUtils';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import './index.less';
-import StorageUtils from '../../utils/StorageUtils';
+import StorageUtils, { LoginUser } from '../../utils/StorageUtils';
 import LinkButton from '../link-button';
 
 interface HeaderState {
@@ -21,7 +20,7 @@ interface IProps {}
 type HeaderProps = IProps & RouteComponentProps;
 class Header extends Component<HeaderProps, HeaderState> {
 	timerId: NodeJS.Timeout | null = null;
-
+  user:LoginUser = StorageUtils.getUser();
 	constructor(props: HeaderProps) {
 		super(props);
 		this.state = {
@@ -80,8 +79,6 @@ class Header extends Component<HeaderProps, HeaderState> {
 			cancelText: '取消',
 			onOk: () => {
 				StorageUtils.removeUser();
-				MemeoryUtils.user.id = undefined;
-				MemeoryUtils.user.name = undefined;
 				this.props.history.replace('/login');
 			},
 			onCancel: () => {
@@ -94,7 +91,7 @@ class Header extends Component<HeaderProps, HeaderState> {
 		return (
 			<div className="header">
 				<div className="header-top">
-					<span>欢迎，{MemeoryUtils.user.name}</span>
+					<span>欢迎，{this.user.name}</span>
 					<LinkButton onClick={this.logout.bind(this)}>退出</LinkButton>
 				</div>
 				<div className="header-bottom">
