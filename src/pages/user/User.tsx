@@ -4,7 +4,7 @@
  * @Author: MFine
  * @Date: 2020-10-14 21:16:42
  * @LastEditors: MFine
- * @LastEditTime: 2021-01-23 22:06:47
+ * @LastEditTime: 2021-01-24 00:47:05
  */
 import ProForm, { ModalForm, ProFormSelect, ProFormText } from '@ant-design/pro-form';
 import { Button, Card, message, Space, Table } from 'antd';
@@ -14,11 +14,14 @@ import { UserModel } from './model';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import WrappedProFormText from '@ant-design/pro-form/lib/components/Text';
 import { RoleModel } from '../role/Model';
+import StorageUtils from '../../utils/StorageUtils';
+import { useHistory } from 'react-router-dom';
 
-export const User = () => {
+const User = () => {
 	const [users, setUsers] = useState<UserModel[]>([]);
 	const [roles, setRoles] = useState<RoleModel[]>([]);
 	const [isUpdate, setIsUpdate] = useState<boolean>(false);
+	const history = useHistory();
 	const columns = [
 		{
 			title: '用户名',
@@ -54,11 +57,16 @@ export const User = () => {
 						trigger={<span style={{ color: '#4FC08D', cursor: 'pointer' }}>修改</span>}
 						modalProps={{}}
 						onFinish={async (values: Record<string, UserModel>): Promise<boolean> => {
-              Object.assign(record, values);
+							Object.assign(record, values);
 							const result: string = await reqUpdateUser(record);
 							if (result === 'success') {
-								setIsUpdate(true);
 								message.success('修改成功');
+								setIsUpdate(true);
+								if (record.name === StorageUtils.getUser().name) {
+									message.info('请重新登陆');
+									StorageUtils.removeUser();
+									history.replace('/Login');
+								}
 							} else {
 								message.error('修改失败');
 							}
@@ -97,21 +105,15 @@ export const User = () => {
 	];
 
 	useEffect(() => {
-		setIsUpdate(false);
 		let ignore: boolean = false;
-
 		const fetchData = async () => {
 			const users = await reqUsers();
 			const roles = (await reqRoles()).data;
 			if (!ignore) {
 				setRoles(roles ?? []);
 				setUsers(users);
-			}
-			if (users.length === 0) {
-				ignore = true;
-			}
+			} 
 		};
-
 		fetchData();
 		return () => {
 			ignore = true;
@@ -206,8 +208,8 @@ export const User = () => {
 					const result = await reqAddUser(values);
 					if (result === 'success') {
 						message.success('添加用户成功');
-            users.push(values);
-            setIsUpdate(true);
+						users.push(values);
+						setIsUpdate(true);
 					} else {
 						message.error('添加用户失败');
 					}
@@ -227,3 +229,4 @@ export const User = () => {
 		</div>
 	);
 };
+export default User;

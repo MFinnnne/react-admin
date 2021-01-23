@@ -5,7 +5,7 @@ import { Form, Input, Button, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { RuleObject } from 'antd/lib/form';
 import { StoreValue } from 'antd/lib/form/interface';
-import { reqLogin, reqRoleById, reqRoles } from '../../api';
+import { reqLogin, reqRoleById } from '../../api';
 import { Redirect, RouteComponentProps } from 'react-router';
 import StorageUtils from '../../utils/StorageUtils';
 

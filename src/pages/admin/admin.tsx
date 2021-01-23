@@ -4,7 +4,7 @@
  * @Author: MFine
  * @Date: 2020-10-14 21:16:42
  * @LastEditors: MFine
- * @LastEditTime: 2021-01-23 23:26:12
+ * @LastEditTime: 2021-01-24 00:26:53
  */
 import React, { Component } from 'react';
 import { Layout } from 'antd';
@@ -18,8 +18,8 @@ import Bar from '../chars/Bar';
 import Line from '../chars/Line';
 import Pie from '../chars/Pie';
 import Home from '../home/Home';
-import { User } from '../user/User';
 import StorageUtils from '../../utils/StorageUtils';
+import User from '../user/User';
 const { Footer, Sider, Content } = Layout;
 
 export default class admin extends Component {
