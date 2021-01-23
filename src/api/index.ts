@@ -4,7 +4,7 @@
  * @Author: MFine
  * @Date: 2020-09-28 21:45:10
  * @LastEditors: MFine
- * @LastEditTime: 2021-01-22 20:06:28
+ * @LastEditTime: 2021-01-23 22:01:43
  */
 import { CategoryModel } from './../pages/category/Model';
 import { message } from 'antd';
@@ -276,3 +276,4 @@ export const reqUpdateUser = (user: UserModel): Promise<string> =>
  */
 export const reqDeleteUser = (id: number): Promise<string> =>
 	ajax<string>(`/api/user/delete/${id}`, {}, ReqMethodEnum.DELETE);
+

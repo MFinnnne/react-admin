@@ -5,7 +5,7 @@ import { ReqMethodEnum } from './ReqMethodEnum';
  * @Author: MFine
  * @Date: 2020-09-28 21:45:10
  * @LastEditors: MFine
- * @LastEditTime: 2021-01-14 21:26:08
+ * @LastEditTime: 2021-01-23 21:57:33
  */
 import { message } from 'antd';
 import Axios from 'axios';
@@ -32,13 +32,14 @@ export default function ajax<T>(url: string, data: {} = {}, method: ReqMethodEnu
 			default:
 				promise = Axios.get(url, { params: data, headers });
 				break;
-		}
-		promise
-			.then((response: any) => {
-				resolve(response.data);
-			})
-			.catch((error) => {
-				message.error('请求出错：' + error.message);
-			});
+    }
+    promise
+    .then((response: any) => {
+      resolve(response.data);
+    })
+    .catch((error) => {
+      message.error('请求出错：' + error.message);
+    });
+
 	});
 }
