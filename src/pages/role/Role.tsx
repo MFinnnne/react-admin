@@ -1,6 +1,6 @@
 import { Button, Card, message, Table, Tree } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
-import React, { Component } from 'react';
+import React, { Component, PureComponent } from 'react';
 import { reqCreateRole, reqRoles, reqUpdateRole } from '../../api';
 import { ResponseValue } from '../../api/Model';
 import { PAGE_SIZE } from '../../utils/Constants';
@@ -11,19 +11,24 @@ import { MenuConfig, menuList } from '../../config/menuConfig';
 import { formatDateByString } from '../../utils/DateUtils';
 import { SelectionSelectFn } from 'antd/lib/table/interface';
 import StorageUtils from '../../utils/StorageUtils';
+import { withRouter } from 'react-router';
+import { RouteComponentProps } from 'react-router-dom';
 
 interface State {
 	roles: RoleModel[];
 	role: RoleModel;
 	treeData: DataNode[];
+	reLogin: boolean;
 }
 
 interface Props {}
+type RouteProps = Props & RouteComponentProps;
 
-export default class Role extends Component<Props, State> {
+class Role extends PureComponent<RouteProps, State> {
 	columns: ColumnsType<any>;
 	state: State;
-	constructor(props: Props) {
+	mounted: boolean = false;
+	constructor(props: RouteProps) {
 		super(props);
 		this.columns = [];
 		this.initColumns();
@@ -38,6 +43,7 @@ export default class Role extends Component<Props, State> {
 				authTime: '',
 			},
 			treeData: [],
+			reLogin: false,
 		};
 	}
 
@@ -75,10 +81,28 @@ export default class Role extends Component<Props, State> {
 	};
 
 	async componentDidMount() {
+    console.log("did mount")
 		this.initDataSource();
 		this.initDataNode();
 	}
 
+	componentDidUpdate(prevProps: RouteProps, prevState: State) {
+		
+		const { role, reLogin } = this.state;
+		// console.log(StorageUtils.getUser(), role, reLogin);
+		// if (StorageUtils.getUser().roleId === role.id?.toString() && reLogin) {
+		// 	StorageUtils.removeUser();
+		// 	this.props.history.replace('/Login');
+		// }
+	}
+
+	componentWillUnmount() {
+		console.log('unmount');
+		this.mounted = false;
+		this.setState = (state, callback) => {
+			return;
+		};
+	}
 	private initDataNode = () => {
 		const treeData: DataNode[] = [
 			{
@@ -192,13 +216,15 @@ export default class Role extends Component<Props, State> {
 							const result: string = await reqUpdateRole(role.id, role);
 							if (result === 'success') {
 								let findRole: RoleModel | undefined = this.state.roles.find((item) => item.id === role.id);
-								if (!findRole === undefined) {
+								if (findRole !== undefined) {
 									findRole = role;
+									this.setState({
+										roles: roles,
+                    role: role,
+                    reLogin: true 
+									});
+									message.success('更新成功');
 								}
-								this.setState({
-									roles: roles,
-								});
-								message.success('更新成功');
 							}
 						}
 						return true;
@@ -239,3 +265,4 @@ export default class Role extends Component<Props, State> {
 		);
 	}
 }
+export default withRouter(Role);

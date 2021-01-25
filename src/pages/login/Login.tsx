@@ -42,7 +42,8 @@ export default class Login extends Component<LoginProps, {}> {
 			const name = response.data?.name ?? '';
 			const role = await reqRoleById(response.data?.roleId ?? '');
 			const menus = role.menus?.split(',') ?? [];
-			StorageUtils.saveUser({ id, name, menus });
+			const roleId = response.data?.roleId ?? '';
+			StorageUtils.saveUser({ id, name, menus, roleId });
 			message.success('登录成功');
 			this.props.history.replace('/');
 		} else {

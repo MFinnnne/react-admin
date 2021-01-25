@@ -4,7 +4,7 @@
  * @Author: MFine
  * @Date: 2020-10-14 21:16:42
  * @LastEditors: MFine
- * @LastEditTime: 2021-01-25 23:35:40
+ * @LastEditTime: 2021-01-25 23:37:25
  */
 import ProForm, { ModalForm, ProFormSelect, ProFormText } from '@ant-design/pro-form';
 import { Button, Card, message, Space, Table } from 'antd';
@@ -80,14 +80,16 @@ const User = () => {
 						labelCol={{ span: 4 }}
 						wrapperCol={{ span: 14 }}
 						trigger={<span style={{ color: 'red', cursor: 'pointer' }}>删除</span>}
-						modalProps={{
-							// onCancel: () => console.log(text, record),
-						}}
+						modalProps={
+							{
+								// onCancel: () => console.log(text, record),
+							}
+						}
 						onFinish={async (values: Record<string, UserModel>): Promise<boolean> => {
 							if (record.id) {
 								const result: string = await reqDeleteUser(record.id);
 								if (result === 'success') {
-									setIsUpdate(true);
+									setUser(record);
 									message.success('删除成功');
 								} else {
 									message.error('删除失败');
