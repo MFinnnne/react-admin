@@ -4,7 +4,7 @@
  * @Author: MFine
  * @Date: 2020-10-14 21:16:42
  * @LastEditors: MFine
- * @LastEditTime: 2021-01-24 00:26:53
+ * @LastEditTime: 2021-01-24 13:46:11
  */
 import React, { Component } from 'react';
 import { Layout } from 'antd';
@@ -42,9 +42,9 @@ export default class admin extends Component {
 							<Route path="/product" component={Product}></Route>
 							<Route path="/role" component={Role}></Route>
 							<Route path="/user" component={User}></Route>
-							<Route path="/charts/bar" component={Bar}></Route>
-							<Route path="/charts/line" component={Line}></Route>
-							<Route path="/charts/pie" component={Pie}></Route>
+							<Route path="/bar" component={Bar}></Route>
+							<Route path="/line" component={Line}></Route>
+							<Route path="/pie" component={Pie}></Route>
 							<Redirect to="/home"></Redirect>
 						</Switch>
 					</Content>

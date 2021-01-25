@@ -4,7 +4,7 @@
  * @Author: MFine
  * @Date: 2020-10-14 21:16:42
  * @LastEditors: MFine
- * @LastEditTime: 2021-01-24 00:47:05
+ * @LastEditTime: 2021-01-25 22:37:52
  */
 import ProForm, { ModalForm, ProFormSelect, ProFormText } from '@ant-design/pro-form';
 import { Button, Card, message, Space, Table } from 'antd';
@@ -15,13 +15,15 @@ import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import WrappedProFormText from '@ant-design/pro-form/lib/components/Text';
 import { RoleModel } from '../role/Model';
 import StorageUtils from '../../utils/StorageUtils';
-import { useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router';
 
 const User = () => {
 	const [users, setUsers] = useState<UserModel[]>([]);
 	const [roles, setRoles] = useState<RoleModel[]>([]);
+	const [user, setUser] = useState<UserModel>();
 	const [isUpdate, setIsUpdate] = useState<boolean>(false);
 	const history = useHistory();
+
 	const columns = [
 		{
 			title: '用户名',
@@ -55,18 +57,15 @@ const User = () => {
 						labelCol={{ span: 4 }}
 						wrapperCol={{ span: 14 }}
 						trigger={<span style={{ color: '#4FC08D', cursor: 'pointer' }}>修改</span>}
-						modalProps={{}}
+						modalProps={{
+							onCancel: () => console.log(text, record),
+						}}
 						onFinish={async (values: Record<string, UserModel>): Promise<boolean> => {
 							Object.assign(record, values);
 							const result: string = await reqUpdateUser(record);
 							if (result === 'success') {
 								message.success('修改成功');
-								setIsUpdate(true);
-								if (record.name === StorageUtils.getUser().name) {
-									message.info('请重新登陆');
-									StorageUtils.removeUser();
-									history.replace('/Login');
-								}
+								setUser(record);
 							} else {
 								message.error('修改失败');
 							}
@@ -110,15 +109,23 @@ const User = () => {
 			const users = await reqUsers();
 			const roles = (await reqRoles()).data;
 			if (!ignore) {
+				console.log('ok');
 				setRoles(roles ?? []);
 				setUsers(users);
-			} 
+				if (user?.name === StorageUtils.getUser().name) {
+					StorageUtils.removeUser();
+					message.info('修改当前用户信息，请重新登录');
+					history.replace('/Login');
+				}
+			}
 		};
 		fetchData();
 		return () => {
+			console.log('unmount');
 			ignore = true;
+			setIsUpdate(false);
 		};
-	}, [isUpdate]);
+	}, [isUpdate, user]);
 
 	const proForm = (user?: UserModel): React.ReactElement => {
 		return (
