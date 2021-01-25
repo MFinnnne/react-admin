@@ -4,7 +4,7 @@
  * @Author: MFine
  * @Date: 2020-10-14 21:16:42
  * @LastEditors: MFine
- * @LastEditTime: 2021-01-25 22:37:52
+ * @LastEditTime: 2021-01-25 23:35:40
  */
 import ProForm, { ModalForm, ProFormSelect, ProFormText } from '@ant-design/pro-form';
 import { Button, Card, message, Space, Table } from 'antd';
@@ -81,7 +81,7 @@ const User = () => {
 						wrapperCol={{ span: 14 }}
 						trigger={<span style={{ color: 'red', cursor: 'pointer' }}>删除</span>}
 						modalProps={{
-							onCancel: () => console.log(text, record),
+							// onCancel: () => console.log(text, record),
 						}}
 						onFinish={async (values: Record<string, UserModel>): Promise<boolean> => {
 							if (record.id) {
@@ -109,7 +109,6 @@ const User = () => {
 			const users = await reqUsers();
 			const roles = (await reqRoles()).data;
 			if (!ignore) {
-				console.log('ok');
 				setRoles(roles ?? []);
 				setUsers(users);
 				if (user?.name === StorageUtils.getUser().name) {
@@ -121,7 +120,6 @@ const User = () => {
 		};
 		fetchData();
 		return () => {
-			console.log('unmount');
 			ignore = true;
 			setIsUpdate(false);
 		};
@@ -192,6 +190,7 @@ const User = () => {
 								return acc;
 							}, []);
 						}}
+						initialValue={user === undefined ? null : roles.find((r) => r.id?.toString() === user.roleId)?.name}
 						label="角色"
 						name="roleId"
 					/>
