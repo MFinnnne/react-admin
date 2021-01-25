@@ -5,10 +5,9 @@ import { Form, Input, Button, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { RuleObject } from 'antd/lib/form';
 import { StoreValue } from 'antd/lib/form/interface';
-import { reqLogin } from '../../api';
+import { reqLogin, reqRoleById } from '../../api';
 import { Redirect, RouteComponentProps } from 'react-router';
 import StorageUtils from '../../utils/StorageUtils';
-import MemeoryUtils from '../../utils/MemeoryUtils';
 
 /**
  *  登录的路由组件
@@ -20,10 +19,6 @@ interface IProps {}
 type LoginProps = IProps & RouteComponentProps;
 
 export default class Login extends Component<LoginProps, {}> {
-	// onFinish = (values: { username: string; password: string }) => {
-	// 	console.log(values);
-	// };
-
 	validatePwd = (rule: RuleObject, value: StoreValue) => {
 		if (!value) {
 			return Promise.reject('密码必须输入');
@@ -43,21 +38,27 @@ export default class Login extends Component<LoginProps, {}> {
 	onFinish = async (values: { name: string; password: string }) => {
 		const response = await reqLogin(values.name, values.password);
 		if (response.status === 0) {
+			const id = response.data?.id ?? -1;
+			const name = response.data?.name ?? '';
+			const role = await reqRoleById(response.data?.roleId ?? '');
+			const menus = role.menus?.split(',') ?? [];
+			StorageUtils.saveUser({ id, name, menus });
 			message.success('登录成功');
-			const id = response.data.id;
-			const name = response.data.name;
-			MemeoryUtils.user.id = id;
-			MemeoryUtils.user.name = name;
-			StorageUtils.saveUser({ id, name });
 			this.props.history.replace('/');
 		} else {
-			message.error("登录失败");
+			message.error('登录失败');
 		}
 	};
 
 	private loginFromCom() {
 		return (
-			<Form onFinish={this.onFinish} onFinishFailed={this.onFinishFailed} name="normal_login" className="login-form" initialValues={{ remember: true }}>
+			<Form
+				onFinish={this.onFinish}
+				onFinishFailed={this.onFinishFailed}
+				name="normal_login"
+				className="login-form"
+				initialValues={{ remember: true }}
+			>
 				<Form.Item
 					name="name"
 					rules={[
@@ -82,7 +83,7 @@ export default class Login extends Component<LoginProps, {}> {
 	}
 
 	render() {
-		const user = MemeoryUtils.user;
+		const user = StorageUtils.getUser();
 		if (user.id !== undefined) {
 			return <Redirect to="/"></Redirect>;
 		}

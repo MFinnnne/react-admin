@@ -4,19 +4,24 @@
  * @Author: MFine
  * @Date: 2020-10-14 21:16:42
  * @LastEditors: MFine
- * @LastEditTime: 2021-01-23 00:41:43
+ * @LastEditTime: 2021-01-24 00:47:05
  */
-import ProForm, { ModalForm, ProFormText } from '@ant-design/pro-form';
+import ProForm, { ModalForm, ProFormSelect, ProFormText } from '@ant-design/pro-form';
 import { Button, Card, message, Space, Table } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { reqAddUser, reqDeleteUser, reqUpdateUser, reqUsers } from '../../api';
+import { reqAddUser, reqDeleteUser, reqRoles, reqUpdateUser, reqUsers } from '../../api';
 import { UserModel } from './model';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import WrappedProFormText from '@ant-design/pro-form/lib/components/Text';
+import { RoleModel } from '../role/Model';
+import StorageUtils from '../../utils/StorageUtils';
+import { useHistory } from 'react-router-dom';
 
-export const User = () => {
+const User = () => {
 	const [users, setUsers] = useState<UserModel[]>([]);
+	const [roles, setRoles] = useState<RoleModel[]>([]);
 	const [isUpdate, setIsUpdate] = useState<boolean>(false);
+	const history = useHistory();
 	const columns = [
 		{
 			title: '用户名',
@@ -36,7 +41,8 @@ export const User = () => {
 		},
 		{
 			title: '所属角色',
-			dataIndex: 'role',
+			dataIndex: 'roleId',
+			render: (roleId: string) => roles.find((r) => r.id?.toString() === roleId)?.name,
 		},
 		{
 			title: '操作',
@@ -54,8 +60,13 @@ export const User = () => {
 							Object.assign(record, values);
 							const result: string = await reqUpdateUser(record);
 							if (result === 'success') {
-								setIsUpdate(true);
 								message.success('修改成功');
+								setIsUpdate(true);
+								if (record.name === StorageUtils.getUser().name) {
+									message.info('请重新登陆');
+									StorageUtils.removeUser();
+									history.replace('/Login');
+								}
 							} else {
 								message.error('修改失败');
 							}
@@ -93,26 +104,15 @@ export const User = () => {
 		},
 	];
 
-	const deleteUser = async (user: UserModel): Promise<void> => {
-		if (user.id) {
-			const result = await reqDeleteUser(user.id);
-			if (result === 'success') {
-				message.success('');
-			}
-		}
-	};
-
 	useEffect(() => {
-		setIsUpdate(false);
 		let ignore: boolean = false;
 		const fetchData = async () => {
-			const result = await reqUsers();
-			if (result.length === 0) {
-				ignore = true;
-			}
+			const users = await reqUsers();
+			const roles = (await reqRoles()).data;
 			if (!ignore) {
-				setUsers(result);
-			}
+				setRoles(roles ?? []);
+				setUsers(users);
+			} 
 		};
 		fetchData();
 		return () => {
@@ -173,14 +173,22 @@ export const User = () => {
 					placeholder="邮箱"
 					initialValue={user?.email ?? ''}
 				></ProFormText>
-				<ProFormText
-					rules={[{ required: true, message: '请输入角色!' }]}
-					name="role"
-					label="角色"
-					width="lg"
-					placeholder="角色"
-					initialValue={user?.role_id ?? ''}
-				></ProFormText>
+				<ProForm.Group>
+					<ProFormSelect
+						width="lg"
+						request={async () => {
+							return roles.reduce((acc: { label?: string; value?: string }[], curValue: RoleModel): {
+								label?: string;
+								value?: string;
+							}[] => {
+								acc.push({ label: curValue.name.toString(), value: curValue.id?.toString() });
+								return acc;
+							}, []);
+						}}
+						label="角色"
+						name="roleId"
+					/>
+				</ProForm.Group>
 			</ProForm.Group>
 		);
 	};
@@ -198,10 +206,10 @@ export const User = () => {
 				}}
 				onFinish={async (values: Record<string, UserModel>): Promise<boolean> => {
 					const result = await reqAddUser(values);
-
 					if (result === 'success') {
 						message.success('添加用户成功');
 						users.push(values);
+						setIsUpdate(true);
 					} else {
 						message.error('添加用户失败');
 					}
@@ -221,3 +229,4 @@ export const User = () => {
 		</div>
 	);
 };
+export default User;

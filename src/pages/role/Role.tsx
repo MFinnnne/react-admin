@@ -9,8 +9,8 @@ import ProForm, { ModalForm, ProFormText } from '@ant-design/pro-form';
 import { DataNode } from 'antd/lib/tree';
 import { MenuConfig, menuList } from '../../config/menuConfig';
 import { formatDateByString } from '../../utils/DateUtils';
-import MemeoryUtils from '../../utils/MemeoryUtils';
 import { SelectionSelectFn } from 'antd/lib/table/interface';
+import StorageUtils from '../../utils/StorageUtils';
 
 interface State {
 	roles: RoleModel[];
@@ -187,7 +187,7 @@ export default class Role extends Component<Props, State> {
 					}}
 					onFinish={async (values: Record<string, any>): Promise<boolean> => {
 						if (role.id !== undefined) {
-							role.authName = MemeoryUtils.user.name;
+							role.authName = StorageUtils.getUser().name;
 							role.authTime = formatDateByString(new Date(), 'yyyy-MM-dd hh:mm:ss');
 							const result: string = await reqUpdateRole(role.id, role);
 							if (result === 'success') {

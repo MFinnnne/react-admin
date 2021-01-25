@@ -1,13 +1,17 @@
+/*
+ * @Descripttion: 
+ * @version: 
+ * @Author: MFine
+ * @Date: 2020-10-14 21:16:42
+ * @LastEditors: MFine
+ * @LastEditTime: 2021-01-23 23:27:47
+ */
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import StorageUtils from './utils/StorageUtils';
-import MemeoryUtils from './utils/MemeoryUtils';
 
-const user = StorageUtils.getUser();
-MemeoryUtils.user = user
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
