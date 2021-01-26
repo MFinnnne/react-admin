@@ -1,6 +1,6 @@
 import { Button, Card, message, Table, Tree } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
-import React, { Component, PureComponent } from 'react';
+import React, { Component } from 'react';
 import { reqCreateRole, reqRoles, reqUpdateRole } from '../../api';
 import { ResponseValue } from '../../api/Model';
 import { PAGE_SIZE } from '../../utils/Constants';
@@ -24,10 +24,10 @@ interface State {
 interface Props {}
 type RouteProps = Props & RouteComponentProps;
 
-class Role extends PureComponent<RouteProps, State> {
+class Role extends Component<RouteProps, State> {
 	columns: ColumnsType<any>;
 	state: State;
-	mounted: boolean = false;
+	mounted: boolean = true;
 	constructor(props: RouteProps) {
 		super(props);
 		this.columns = [];
@@ -81,28 +81,10 @@ class Role extends PureComponent<RouteProps, State> {
 	};
 
 	async componentDidMount() {
-    console.log("did mount")
 		this.initDataSource();
 		this.initDataNode();
 	}
 
-	componentDidUpdate(prevProps: RouteProps, prevState: State) {
-		
-		const { role, reLogin } = this.state;
-		// console.log(StorageUtils.getUser(), role, reLogin);
-		// if (StorageUtils.getUser().roleId === role.id?.toString() && reLogin) {
-		// 	StorageUtils.removeUser();
-		// 	this.props.history.replace('/Login');
-		// }
-	}
-
-	componentWillUnmount() {
-		console.log('unmount');
-		this.mounted = false;
-		this.setState = (state, callback) => {
-			return;
-		};
-	}
 	private initDataNode = () => {
 		const treeData: DataNode[] = [
 			{
@@ -164,7 +146,7 @@ class Role extends PureComponent<RouteProps, State> {
 					title="添加角色"
 					trigger={<Button type="primary">创建角色 </Button>}
 					modalProps={{
-						onCancel: () => console.log('run1'),
+						onOk: () => {},
 					}}
 					onFinish={async (values: Record<string, any>): Promise<boolean> => {
 						const role: RoleModel = {
@@ -207,7 +189,13 @@ class Role extends PureComponent<RouteProps, State> {
 						</Button>
 					}
 					modalProps={{
-						onCancel: () => console.log('run'),
+						afterClose: () => {
+							if (StorageUtils.getUser().roleId === role.id?.toString()) {
+								StorageUtils.removeUser();
+								this.props.history.replace('/Login');
+								message.info('修改当前用户信息，请重新登录');
+							}
+						},
 					}}
 					onFinish={async (values: Record<string, any>): Promise<boolean> => {
 						if (role.id !== undefined) {
@@ -220,8 +208,7 @@ class Role extends PureComponent<RouteProps, State> {
 									findRole = role;
 									this.setState({
 										roles: roles,
-                    role: role,
-                    reLogin: true 
+										role: role,
 									});
 									message.success('更新成功');
 								}

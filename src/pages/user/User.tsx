@@ -4,7 +4,7 @@
  * @Author: MFine
  * @Date: 2020-10-14 21:16:42
  * @LastEditors: MFine
- * @LastEditTime: 2021-01-25 23:37:25
+ * @LastEditTime: 2021-01-26 21:19:59
  */
 import ProForm, { ModalForm, ProFormSelect, ProFormText } from '@ant-design/pro-form';
 import { Button, Card, message, Space, Table } from 'antd';
@@ -59,6 +59,13 @@ const User = () => {
 						trigger={<span style={{ color: '#4FC08D', cursor: 'pointer' }}>修改</span>}
 						modalProps={{
 							onCancel: () => console.log(text, record),
+							afterClose: () => {
+								if (user?.name === StorageUtils.getUser().name) {
+									StorageUtils.removeUser();
+									message.info('修改当前用户信息，请重新登录');
+									history.replace('/Login');
+								}
+							},
 						}}
 						onFinish={async (values: Record<string, UserModel>): Promise<boolean> => {
 							Object.assign(record, values);
@@ -113,11 +120,6 @@ const User = () => {
 			if (!ignore) {
 				setRoles(roles ?? []);
 				setUsers(users);
-				if (user?.name === StorageUtils.getUser().name) {
-					StorageUtils.removeUser();
-					message.info('修改当前用户信息，请重新登录');
-					history.replace('/Login');
-				}
 			}
 		};
 		fetchData();
