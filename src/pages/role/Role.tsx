@@ -11,19 +11,24 @@ import { MenuConfig, menuList } from '../../config/menuConfig';
 import { formatDateByString } from '../../utils/DateUtils';
 import { SelectionSelectFn } from 'antd/lib/table/interface';
 import StorageUtils from '../../utils/StorageUtils';
+import { withRouter } from 'react-router';
+import { RouteComponentProps } from 'react-router-dom';
 
 interface State {
 	roles: RoleModel[];
 	role: RoleModel;
 	treeData: DataNode[];
+	reLogin: boolean;
 }
 
 interface Props {}
+type RouteProps = Props & RouteComponentProps;
 
-export default class Role extends Component<Props, State> {
+class Role extends Component<RouteProps, State> {
 	columns: ColumnsType<any>;
 	state: State;
-	constructor(props: Props) {
+	mounted: boolean = true;
+	constructor(props: RouteProps) {
 		super(props);
 		this.columns = [];
 		this.initColumns();
@@ -38,6 +43,7 @@ export default class Role extends Component<Props, State> {
 				authTime: '',
 			},
 			treeData: [],
+			reLogin: false,
 		};
 	}
 
@@ -140,7 +146,7 @@ export default class Role extends Component<Props, State> {
 					title="添加角色"
 					trigger={<Button type="primary">创建角色 </Button>}
 					modalProps={{
-						onCancel: () => console.log('run1'),
+						onOk: () => {},
 					}}
 					onFinish={async (values: Record<string, any>): Promise<boolean> => {
 						const role: RoleModel = {
@@ -183,7 +189,13 @@ export default class Role extends Component<Props, State> {
 						</Button>
 					}
 					modalProps={{
-						onCancel: () => console.log('run'),
+						afterClose: () => {
+							if (StorageUtils.getUser().roleId === role.id?.toString()) {
+								StorageUtils.removeUser();
+								this.props.history.replace('/Login');
+								message.info('修改当前用户信息，请重新登录');
+							}
+						},
 					}}
 					onFinish={async (values: Record<string, any>): Promise<boolean> => {
 						if (role.id !== undefined) {
@@ -192,13 +204,14 @@ export default class Role extends Component<Props, State> {
 							const result: string = await reqUpdateRole(role.id, role);
 							if (result === 'success') {
 								let findRole: RoleModel | undefined = this.state.roles.find((item) => item.id === role.id);
-								if (!findRole === undefined) {
+								if (findRole !== undefined) {
 									findRole = role;
+									this.setState({
+										roles: roles,
+										role: role,
+									});
+									message.success('更新成功');
 								}
-								this.setState({
-									roles: roles,
-								});
-								message.success('更新成功');
 							}
 						}
 						return true;
@@ -239,3 +252,4 @@ export default class Role extends Component<Props, State> {
 		);
 	}
 }
+export default withRouter(Role);
