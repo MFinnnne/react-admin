@@ -4,5 +4,8 @@
  * @Author: MFine
  * @Date: 2021-01-27 23:38:20
  * @LastEditors: MFine
- * @LastEditTime: 2021-01-27 23:38:34
+ * @LastEditTime: 2021-01-28 00:05:27
  */
+export default function(){
+  console.log("ok")
+}
