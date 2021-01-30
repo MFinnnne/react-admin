@@ -63,17 +63,6 @@ interface ICategoryState {
 	showStatus: number;
 }
 
-interface Values {
-	title: string;
-	description: string;
-	modifier: string;
-}
-
-interface CollectionCreateFormProps {
-	visible: boolean;
-	onCreate: (values: Values | any) => void;
-	onCancel: () => void;
-}
 
 export default class Category extends Component<ICategoryProps, ICategoryState> {
 	private columns: any[] = [];

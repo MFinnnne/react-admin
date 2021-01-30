@@ -8,19 +8,25 @@ import { ExclamationCircleOutlined } from '@ant-design/icons';
 import './index.less';
 import StorageUtils, { LoginUser } from '../../utils/StorageUtils';
 import LinkButton from '../link-button';
+import { connect } from 'react-redux';
+import { RootState } from 'typesafe-actions';
 
+const mapStateToProps = (state: RootState) => ({
+	headTitle: state.headTitle,
+});
 interface HeaderState {
 	currentTime: string;
 	dayPictureUrl: string;
 	weather: string;
 }
 
-interface IProps {}
 
-type HeaderProps = IProps & RouteComponentProps;
+type HeaderProps =  RouteComponentProps & ReturnType<typeof mapStateToProps>;
+
 class Header extends Component<HeaderProps, HeaderState> {
 	timerId: NodeJS.Timeout | null = null;
-  user:LoginUser = StorageUtils.getUser();
+	user: LoginUser = StorageUtils.getUser();
+
 	constructor(props: HeaderProps) {
 		super(props);
 		this.state = {
@@ -52,18 +58,18 @@ class Header extends Component<HeaderProps, HeaderState> {
 	}
 
 	private getTitle(menuList: MenuConfig[]): string {
-		const path = this.props.location.pathname;
-		let title: string = '';
-		menuList.forEach((item) => {
-			if (item.key === path) {
-				title = item.title;
-				return;
-			} else {
-				const cItem = item.children?.find((cItem) => path.indexOf(cItem.key) === 0);
-				title = cItem?.title ?? title;
-			}
-		});
-		return title;
+		// const path = this.props.location.pathname;
+		// let title: string = '';
+		// menuList.forEach((item) => {
+		// 	if (item.key === path) {
+		// 		title = item.title;
+		// 		return;
+		// 	} else {
+		// 		const cItem = item.children?.find((cItem) => path.indexOf(cItem.key) === 0);
+		// 		title = cItem?.title ?? title;
+		// 	}
+		// });
+		return this.props.headTitle;
 	}
 
 	componentWillUnmount() {
@@ -106,4 +112,5 @@ class Header extends Component<HeaderProps, HeaderState> {
 		);
 	}
 }
-export default withRouter(Header);
+
+export default connect(mapStateToProps, {})(withRouter(Header));

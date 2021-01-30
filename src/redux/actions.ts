@@ -1,6 +1,5 @@
 import { reqLogin } from '../api';
 import { UserModel } from '../pages/user/model';
-import { LoginUser } from '../utils/StorageUtils';
 import { RECEIVE_USER, SET_HEAD_TITLE } from './action-types';
 /*
  * @Descripttion: 包含多个actiob creator的函数模块
@@ -8,7 +7,7 @@ import { RECEIVE_USER, SET_HEAD_TITLE } from './action-types';
  * @Author: MFine
  * @Date: 2021-01-27 23:38:20
  * @LastEditors: MFine
- * @LastEditTime: 2021-01-30 00:45:11
+ * @LastEditTime: 2021-01-30 20:07:24
  */
 export const setHeadTitle = (headTitle: string) => ({ type: SET_HEAD_TITLE, data: headTitle });
 

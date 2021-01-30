@@ -9958,6 +9958,11 @@ react-is@^17.0.1:
   resolved "https://registry.npm.taobao.org/react-is/download/react-is-17.0.1.tgz?cache=0&sync_timestamp=1610380868622&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Freact-is%2Fdownload%2Freact-is-17.0.1.tgz#5b3531bd76a645a4c9fb6e693ed36419e3301339"
   integrity sha1-WzUxvXamRaTJ+25pPtNkGeMwEzk=
 
+react-redux-typescript-scripts@^1.6.2:
+  version "1.6.2"
+  resolved "https://registry.npm.taobao.org/react-redux-typescript-scripts/download/react-redux-typescript-scripts-1.6.2.tgz#5425374e134eee848968bc35901abc5a9b084f7e"
+  integrity sha1-VCU3ThNO7oSJaLw1kBq8WpsIT34=
+
 react-redux@^7.2.2:
   version "7.2.2"
   resolved "https://registry.npm.taobao.org/react-redux/download/react-redux-7.2.2.tgz#03862e803a30b6b9ef8582dadcc810947f74b736"
