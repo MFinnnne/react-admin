@@ -2,7 +2,6 @@ import { Modal } from 'antd';
 import React, { Component } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { reqWheater } from '../../api';
-import { MenuConfig, menuList } from '../../config/menuConfig';
 import { formatDate } from '../../utils/DateUtils';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import './index.less';
@@ -57,20 +56,6 @@ class Header extends Component<HeaderProps, HeaderState> {
 		}, 1000);
 	}
 
-	private getTitle(menuList: MenuConfig[]): string {
-		// const path = this.props.location.pathname;
-		// let title: string = '';
-		// menuList.forEach((item) => {
-		// 	if (item.key === path) {
-		// 		title = item.title;
-		// 		return;
-		// 	} else {
-		// 		const cItem = item.children?.find((cItem) => path.indexOf(cItem.key) === 0);
-		// 		title = cItem?.title ?? title;
-		// 	}
-		// });
-		return this.props.headTitle;
-	}
 
 	componentWillUnmount() {
 		if (this.timerId !== null) {
@@ -101,7 +86,7 @@ class Header extends Component<HeaderProps, HeaderState> {
 					<LinkButton onClick={this.logout.bind(this)}>退出</LinkButton>
 				</div>
 				<div className="header-bottom">
-					<div className="header-bottom-left">{this.getTitle(menuList)}</div>
+					<div className="header-bottom-left">{this.props.headTitle}</div>
 					<div className="header-bottom-right">
 						<span>{this.state.currentTime}</span>
 						<img src={this.state.dayPictureUrl} alt="weather"></img>
