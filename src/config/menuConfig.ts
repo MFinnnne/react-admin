@@ -1,7 +1,16 @@
+/*
+ * @Descripttion:
+ * @version:
+ * @Author: MFine
+ * @Date: 2020-10-14 21:16:42
+ * @LastEditors: MFine
+ * @LastEditTime: 2021-01-23 23:57:31
+ */
 export interface MenuConfig {
 	title: string;
 	key: string;
 	icon: string;
+	isPublic?: boolean;
 	children?: MenuConfig[];
 }
 
@@ -10,6 +19,7 @@ export const menuList: MenuConfig[] = [
 		title: '首页',
 		key: '/home',
 		icon: 'HomeOutlined',
+		isPublic: true,
 	},
 	{
 		title: '商品',
@@ -45,20 +55,19 @@ export const menuList: MenuConfig[] = [
 		children: [
 			{
 				title: '柱形图',
-				key: '/charts/bar',
+				key: '/bar',
 				icon: 'BarsOutlined',
 			},
 			{
 				title: '折线图',
-				key: '/charts/line',
+				key: '/line',
 				icon: 'LineChartOutlined',
 			},
 			{
 				title: '饼图',
-				key: '/charts/pie',
+				key: '/pie',
 				icon: 'PieChartOutlined',
 			},
 		],
 	},
 ];
-

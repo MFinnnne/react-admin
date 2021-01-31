@@ -2,26 +2,29 @@ import { Modal } from 'antd';
 import React, { Component } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { reqWheater } from '../../api';
-import { MenuConfig, menuList } from '../../config/menuConfig';
 import { formatDate } from '../../utils/DateUtils';
-import MemeoryUtils from '../../utils/MemeoryUtils';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import './index.less';
-import StorageUtils from '../../utils/StorageUtils';
+import StorageUtils, { LoginUser } from '../../utils/StorageUtils';
 import LinkButton from '../link-button';
+import { connect } from 'react-redux';
+import { RootState } from 'typesafe-actions';
 
-
+const mapStateToProps = (state: RootState) => ({
+	headTitle: state.headTitle,
+});
 interface HeaderState {
 	currentTime: string;
 	dayPictureUrl: string;
 	weather: string;
 }
 
-interface IProps {}
 
-type HeaderProps = IProps & RouteComponentProps;
+type HeaderProps =  RouteComponentProps & ReturnType<typeof mapStateToProps>;
+
 class Header extends Component<HeaderProps, HeaderState> {
 	timerId: NodeJS.Timeout | null = null;
+	user: LoginUser = StorageUtils.getUser();
 
 	constructor(props: HeaderProps) {
 		super(props);
@@ -53,20 +56,6 @@ class Header extends Component<HeaderProps, HeaderState> {
 		}, 1000);
 	}
 
-	private getTitle(menuList: MenuConfig[]): string {
-		const path = this.props.location.pathname;
-		let title: string = '';
-		menuList.forEach((item) => {
-			if (item.key === path) {
-				title = item.title;
-				return;
-			} else {
-				const cItem = item.children?.find((cItem) => cItem.key === path);
-				title = cItem?.title ?? title;
-			}
-		});
-		return title;
-	}
 
 	componentWillUnmount() {
 		if (this.timerId !== null) {
@@ -81,8 +70,6 @@ class Header extends Component<HeaderProps, HeaderState> {
 			cancelText: '取消',
 			onOk: () => {
 				StorageUtils.removeUser();
-				MemeoryUtils.user.id = undefined;
-				MemeoryUtils.user.name = undefined;
 				this.props.history.replace('/login');
 			},
 			onCancel: () => {
@@ -95,11 +82,11 @@ class Header extends Component<HeaderProps, HeaderState> {
 		return (
 			<div className="header">
 				<div className="header-top">
-					<span>欢迎，{MemeoryUtils.user.name}</span>
+					<span>欢迎，{this.user.name}</span>
 					<LinkButton onClick={this.logout.bind(this)}>退出</LinkButton>
 				</div>
 				<div className="header-bottom">
-					<div className="header-bottom-left">{this.getTitle(menuList)}</div>
+					<div className="header-bottom-left">{this.props.headTitle}</div>
 					<div className="header-bottom-right">
 						<span>{this.state.currentTime}</span>
 						<img src={this.state.dayPictureUrl} alt="weather"></img>
@@ -110,4 +97,5 @@ class Header extends Component<HeaderProps, HeaderState> {
 		);
 	}
 }
-export default withRouter(Header);
+
+export default connect(mapStateToProps, {})(withRouter(Header));

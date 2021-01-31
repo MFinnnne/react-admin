@@ -49,7 +49,7 @@ import { PlusOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import LinkButton from '../../components/link-button';
 import { reqCategorys } from '../../api';
 import { ModalStatusCode } from './ModalStatusCode';
-import { CategoryModel, ICategory } from './DataModel';
+import { CategoryModel, ICategory } from './Model';
 import UpdateFrom from './UpdateFrom';
 import AddForm from './AddForm';
 
@@ -63,17 +63,6 @@ interface ICategoryState {
 	showStatus: number;
 }
 
-interface Values {
-	title: string;
-	description: string;
-	modifier: string;
-}
-
-interface CollectionCreateFormProps {
-	visible: boolean;
-	onCreate: (values: Values | any) => void;
-	onCancel: () => void;
-}
 
 export default class Category extends Component<ICategoryProps, ICategoryState> {
 	private columns: any[] = [];

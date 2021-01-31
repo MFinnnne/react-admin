@@ -1,7 +1,7 @@
 import { Select, Form, Input, Modal, message } from 'antd';
 import React, { Component } from 'react';
 import { reqAddCategory } from '../../api';
-import { ICategory } from './DataModel';
+import { ICategory } from './Model';
 import { ModalStatusCode } from './ModalStatusCode';
 
 const Option = Select.Option;
@@ -69,7 +69,7 @@ export default class AddForm extends Component<IAddFormProps, {}> {
 		const { categorys,category} = this.props;
 		return (
 			<div>
-				<Item name="value" initialValue={categorys[0]?.parentId === '' ? '0' : categorys[0]?.parentId}>
+				<Item label="分类名称" required name="value" initialValue={categorys[0]?.parentId === '' ? '0' : categorys[0]?.parentId}>
 					<Select style={{ width: '100%' }}>
     {category._id === '' ? <Option value="0">一级分类</Option> : <Option value={category._id}>{category.name}</Option>}
 						{this.props.categorys.map((item: ICategory) => {
@@ -81,7 +81,7 @@ export default class AddForm extends Component<IAddFormProps, {}> {
 						})}
 					</Select>
 				</Item>
-				<Item name="title">
+				<Item label="品类名称" required name="title" rules={[{ required: true, message: '请输入分类名称' }]}>
 					<Input placeholder="请输入分类名称"></Input>
 				</Item>
 			</div>
