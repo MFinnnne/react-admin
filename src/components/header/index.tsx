@@ -13,6 +13,7 @@ import { RootState } from 'typesafe-actions';
 const mapStateToProps = (state: RootState) => ({
 	headTitle: state.headTitle,
 });
+
 interface HeaderState {
 	currentTime: string;
 	dayPictureUrl: string;

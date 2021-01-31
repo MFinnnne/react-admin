@@ -1,24 +1,25 @@
 import React, { Component } from 'react';
 import './login.less';
 import logo from '../../assets/images/logo.png';
-import { Form, Input, Button, message } from 'antd';
+import { Form, Input, Button} from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { RuleObject } from 'antd/lib/form';
 import { StoreValue } from 'antd/lib/form/interface';
-import { reqLogin, reqRoleById } from '../../api';
-import { Redirect, RouteComponentProps } from 'react-router';
+import { Redirect, RouteComponentProps ,withRouter} from 'react-router';
 import StorageUtils from '../../utils/StorageUtils';
+import { connect } from 'react-redux';
+import { RootState } from 'typesafe-actions';
+import { login } from '../../redux/actions';
 
 /**
  *  登录的路由组件
  *  Author: MFine
  */
 
-interface IProps {}
 
-type LoginProps = IProps & RouteComponentProps;
+type LoginProps = RouteComponentProps & typeof dispathToProps;
 
-export default class Login extends Component<LoginProps, {}> {
+class Login extends Component<LoginProps, {}> {
 	validatePwd = (rule: RuleObject, value: StoreValue) => {
 		if (!value) {
 			return Promise.reject('密码必须输入');
@@ -36,19 +37,7 @@ export default class Login extends Component<LoginProps, {}> {
 	};
 
 	onFinish = async (values: { name: string; password: string }) => {
-		const response = await reqLogin(values.name, values.password);
-		if (response.status === 0) {
-			const id = response.data?.id ?? -1;
-			const name = response.data?.name ?? '';
-			const role = await reqRoleById(response.data?.roleId ?? '');
-			const menus = role.menus?.split(',') ?? [];
-			const roleId = response.data?.roleId ?? '';
-			StorageUtils.saveUser({ id, name, menus, roleId });
-			message.success('登录成功');
-			this.props.history.replace('/');
-		} else {
-			message.error('登录失败');
-		}
+		const result =await this.props.login(values.name, values.password);
 	};
 
 	private loginFromCom() {
@@ -102,3 +91,11 @@ export default class Login extends Component<LoginProps, {}> {
 		);
 	}
 }
+
+const mapStateToProps = (state: RootState) => ({
+	user: state.user,
+});
+
+const dispathToProps = { login };
+
+export default connect(mapStateToProps, dispathToProps)(withRouter(Login));
