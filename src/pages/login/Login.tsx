@@ -1,23 +1,23 @@
 import React, { Component } from 'react';
 import './login.less';
 import logo from '../../assets/images/logo.png';
-import { Form, Input, Button} from 'antd';
+import { Form, Input, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { RuleObject } from 'antd/lib/form';
 import { StoreValue } from 'antd/lib/form/interface';
-import { Redirect, RouteComponentProps ,withRouter} from 'react-router';
+import { Redirect, RouteComponentProps, withRouter } from 'react-router';
 import StorageUtils from '../../utils/StorageUtils';
 import { connect } from 'react-redux';
 import { RootState } from 'typesafe-actions';
 import { login } from '../../redux/actions';
+import { bindActionCreators } from 'redux';
 
 /**
  *  登录的路由组件
  *  Author: MFine
  */
 
-
-type LoginProps = RouteComponentProps & typeof dispathToProps;
+type LoginProps = RouteComponentProps & ReturnType<typeof mapDispatchToProps>;
 
 class Login extends Component<LoginProps, {}> {
 	validatePwd = (rule: RuleObject, value: StoreValue) => {
@@ -36,8 +36,8 @@ class Login extends Component<LoginProps, {}> {
 		console.log('错了', errorInfo);
 	};
 
-	onFinish = async (values: { name: string; password: string }) => {
-		const result =await this.props.login(values.name, values.password);
+	onFinish = (values: { name: string; password: string }) => {
+		this.props.login(values.name, values.password);
 	};
 
 	private loginFromCom() {
@@ -96,6 +96,12 @@ const mapStateToProps = (state: RootState) => ({
 	user: state.user,
 });
 
-const dispathToProps = { login };
+const mapDispatchToProps = (dispatch: any) =>
+	bindActionCreators(
+		{
+			login: login,
+		},
+		dispatch
+	);
 
-export default connect(mapStateToProps, dispathToProps)(withRouter(Login));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Login));

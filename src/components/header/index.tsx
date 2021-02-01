@@ -5,10 +5,11 @@ import { reqWheater } from '../../api';
 import { formatDate } from '../../utils/DateUtils';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import './index.less';
-import StorageUtils, { LoginUser } from '../../utils/StorageUtils';
+import StorageUtils from '../../utils/StorageUtils';
 import LinkButton from '../link-button';
 import { connect } from 'react-redux';
 import { RootState } from 'typesafe-actions';
+import { UserModel } from '../../pages/user/model';
 
 const mapStateToProps = (state: RootState) => ({
 	headTitle: state.headTitle,
@@ -25,7 +26,7 @@ type HeaderProps =  RouteComponentProps & ReturnType<typeof mapStateToProps>;
 
 class Header extends Component<HeaderProps, HeaderState> {
 	timerId: NodeJS.Timeout | null = null;
-	user: LoginUser = StorageUtils.getUser();
+	user: UserModel = StorageUtils.getUser();
 
 	constructor(props: HeaderProps) {
 		super(props);

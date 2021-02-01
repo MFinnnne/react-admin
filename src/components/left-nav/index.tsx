@@ -4,7 +4,7 @@
  * @Author: MFine
  * @Date: 2020-10-14 21:16:42
  * @LastEditors: MFine
- * @LastEditTime: 2021-01-31 00:28:04
+ * @LastEditTime: 2021-02-01 17:46:33
  */
 import React, { Component } from 'react';
 import './index.less';
@@ -44,13 +44,13 @@ class LeftNav extends Component<LeftNavProps, {}> {
 	};
 
 	private hasAuth = (node: MenuConfig): boolean => {
-		const user: LoginUser = StorageUtils.getUser();
-
-		if (user.name === 'admin' || node.isPublic || user.menus.indexOf(node.key) !== -1) {
+    const user: LoginUser = StorageUtils.getUser();
+    
+		if (user.name === 'admin' || node.isPublic || (user.menus??[]).indexOf(node.key) !== -1) {
 			return true;
 		} else if (node.children) {
 			return !!node.children.find((child) => {
-				return user.menus.indexOf(child.key) !== -1;
+				return (user.menus??[]).indexOf(child.key) !== -1;
 			});
 		}
 		return false;
