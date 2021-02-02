@@ -4,7 +4,7 @@
  * @Author: MFine
  * @Date: 2020-10-14 21:16:42
  * @LastEditors: MFine
- * @LastEditTime: 2021-02-01 17:46:33
+ * @LastEditTime: 2021-02-02 23:38:03
  */
 import React, { Component } from 'react';
 import './index.less';
@@ -20,7 +20,7 @@ import { setHeadTitle } from '../../redux/actions';
 
 const { SubMenu } = Menu;
 
-type LeftNavProps = RouteComponentProps & typeof dispathProps;
+type LeftNavProps = RouteComponentProps & typeof dispatchProps;
 
 class LeftNav extends Component<LeftNavProps, {}> {
 	menuNodes: JSX.Element[] = [];
@@ -122,6 +122,6 @@ class LeftNav extends Component<LeftNavProps, {}> {
 	}
 }
 
-const dispathProps = { setHeadTitle };
+const dispatchProps = { setHeadTitle };
 
-export default connect((state: RootState) => {}, dispathProps)(withRouter(LeftNav));
+export default connect((state: RootState) => {}, dispatchProps)(withRouter(LeftNav));

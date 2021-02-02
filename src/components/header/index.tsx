@@ -1,3 +1,11 @@
+/*
+ * @Descripttion:
+ * @version:
+ * @Author: MFine
+ * @Date: 2021-01-31 19:59:55
+ * @LastEditors: MFine
+ * @LastEditTime: 2021-02-02 23:43:29
+ */
 import { Modal } from 'antd';
 import React, { Component } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
@@ -5,15 +13,19 @@ import { reqWheater } from '../../api';
 import { formatDate } from '../../utils/DateUtils';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import './index.less';
-import StorageUtils from '../../utils/StorageUtils';
 import LinkButton from '../link-button';
 import { connect } from 'react-redux';
 import { RootState } from 'typesafe-actions';
+import { logout } from '../../redux/actions';
 
 const mapStateToProps = (state: RootState) => ({
 	headTitle: state.headTitle,
 	user: state.user,
 });
+
+const mapDispatchToProps = {
+	logout
+};
 
 interface HeaderState {
 	currentTime: string;
@@ -21,7 +33,7 @@ interface HeaderState {
 	weather: string;
 }
 
-type HeaderProps = RouteComponentProps & ReturnType<typeof mapStateToProps>;
+type HeaderProps = RouteComponentProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
 class Header extends Component<HeaderProps, HeaderState> {
 	timerId: NodeJS.Timeout | null = null;
@@ -69,8 +81,7 @@ class Header extends Component<HeaderProps, HeaderState> {
 			okText: '确认',
 			cancelText: '取消',
 			onOk: () => {
-				StorageUtils.removeUser();
-				this.props.history.replace('/login');
+				this.props.logout();
 			},
 			onCancel: () => {
 				console.log('cancel');
@@ -98,4 +109,4 @@ class Header extends Component<HeaderProps, HeaderState> {
 	}
 }
 
-export default connect(mapStateToProps, {})(withRouter(Header));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Header));

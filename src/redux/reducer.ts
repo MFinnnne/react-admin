@@ -1,13 +1,13 @@
 import { combineReducers } from 'redux';
 import StorageUtils, { LoginUser } from '../utils/StorageUtils';
-import { SET_HEAD_TITLE, RECEIVE_USER, SHOW_ERROR_MSG } from './action-types';
+import { SET_HEAD_TITLE, RECEIVE_USER, SHOW_ERROR_MSG, RESET_USER } from './action-types';
 /*
  * @Descripttion:
  * @version:
  * @Author: MFine
  * @Date: 2021-01-27 23:37:19
  * @LastEditors: MFine
- * @LastEditTime: 2021-02-02 21:44:45
+ * @LastEditTime: 2021-02-02 23:46:10
  */
 
 //管理头部标题
@@ -32,6 +32,9 @@ function user(state: LoginUser = initUser, action: { type: any; payload: LoginUs
 		case SHOW_ERROR_MSG:
 			const errorMsg = action.payload.errorMsg;
 			return { ...state, errorMsg };
+		case RESET_USER:
+      StorageUtils.removeUser();
+			return {};
 		default:
 			return state;
 	}
