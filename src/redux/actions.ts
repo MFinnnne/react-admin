@@ -1,24 +1,23 @@
-import { RootAction } from 'typesafe-actions';
 import { reqRoleById } from './../api/index';
-import { message } from 'antd';
 import { reqLogin } from '../api';
-import { UserModel } from '../pages/user/model';
-import { RECEIVE_USER, SET_HEAD_TITLE } from './action-types';
-import StorageUtils from '../utils/StorageUtils';
-import { Dispatch } from 'react';
+import { RECEIVE_USER, SET_HEAD_TITLE, SHOW_ERROR_MSG } from './action-types';
+import StorageUtils, { LoginUser } from '../utils/StorageUtils';
+import { createAction } from 'typesafe-actions';
 /*
  * @Descripttion: 包含多个actiob creator的函数模块
  * @version:
  * @Author: MFine
  * @Date: 2021-01-27 23:38:20
  * @LastEditors: MFine
- * @LastEditTime: 2021-02-01 16:55:30
+ * @LastEditTime: 2021-02-02 21:50:14
  */
-export const setHeadTitle = (headTitle: string) => ({ type: SET_HEAD_TITLE, data: headTitle });
+export const setHeadTitle = createAction(SET_HEAD_TITLE)<string>();
 
-export const receiveUser = (user: UserModel) => ({ type: RECEIVE_USER, user });
+export const receiveUser = createAction(RECEIVE_USER)<LoginUser>();
 
-export const login = (username: string, password: string) => async (dispatch: Dispatch<RootAction>) => {
+export const showErrorMsg = createAction(SHOW_ERROR_MSG)<LoginUser>();
+
+export const login = (username: string, password: string) => async (dispatch: any) => {
 	const result = await reqLogin(username, password);
 	if (result.status === 0) {
 		const user = result.data;
@@ -30,10 +29,11 @@ export const login = (username: string, password: string) => async (dispatch: Di
 				menus: role.menus?.split(',') ?? [],
 				roleId: role.id?.toString() ?? '',
 			});
-			dispatch(receiveUser(user));
-			message.success('登录成功');
+			dispatch(receiveUser({ id: user.id, name: user.name, roleId: user.roleId, menus: role.menus?.split(',') }));
+		} else {
+			dispatch(showErrorMsg({errorMsg:'用户名或密码错误'}));
 		}
 	} else {
-		message.error('登录失败');
+		dispatch(showErrorMsg({errorMsg:'用户名或密码错误'}));
 	}
 };

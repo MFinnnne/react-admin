@@ -6,18 +6,18 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { RuleObject } from 'antd/lib/form';
 import { StoreValue } from 'antd/lib/form/interface';
 import { Redirect, RouteComponentProps, withRouter } from 'react-router';
-import StorageUtils from '../../utils/StorageUtils';
 import { connect } from 'react-redux';
 import { RootState } from 'typesafe-actions';
 import { login } from '../../redux/actions';
 import { bindActionCreators } from 'redux';
+import { LoginUser } from '../../utils/StorageUtils';
 
 /**
  *  登录的路由组件
  *  Author: MFine
  */
 
-type LoginProps = RouteComponentProps & ReturnType<typeof mapDispatchToProps>;
+type LoginProps = RouteComponentProps & ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateToProps>;
 
 class Login extends Component<LoginProps, {}> {
 	validatePwd = (rule: RuleObject, value: StoreValue) => {
@@ -73,10 +73,11 @@ class Login extends Component<LoginProps, {}> {
 	}
 
 	render() {
-		const user = StorageUtils.getUser();
-		if (user.id !== undefined) {
+		const user: LoginUser = this.props.user;
+		if (user && user.id) {
 			return <Redirect to="/"></Redirect>;
 		}
+
 		return (
 			<div className="login">
 				<header className="login-header">
@@ -84,6 +85,7 @@ class Login extends Component<LoginProps, {}> {
 					<h1>React项目:后台管理系统</h1>
 				</header>
 				<section className="login-content">
+					<div className={user.errorMsg ? 'error-msg show' : 'error-msg'}>{user.errorMsg}</div>
 					<h2>用户登录</h2>
 					{this.loginFromCom()}
 				</section>

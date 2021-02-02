@@ -5,14 +5,14 @@ import { UserModel } from './../pages/user/model';
  * @Author: MFine
  * @Date: 2020-10-14 21:16:42
  * @LastEditors: MFine
- * @LastEditTime: 2021-02-01 17:45:34
+ * @LastEditTime: 2021-02-02 21:23:04
  */
 
 import store from 'store';
 
 const USER_KEY = 'user_key';
 
-export type LoginUser = Partial<UserModel & { menus: string[] }>;
+export type LoginUser = Partial<UserModel & { menus: string[],errorMsg:string }>;
 
 export default {
 	saveUser(user: LoginUser) {
