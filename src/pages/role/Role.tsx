@@ -10,9 +10,11 @@ import { DataNode } from 'antd/lib/tree';
 import { MenuConfig, menuList } from '../../config/menuConfig';
 import { formatDateByString } from '../../utils/DateUtils';
 import { SelectionSelectFn } from 'antd/lib/table/interface';
-import StorageUtils from '../../utils/StorageUtils';
 import { withRouter } from 'react-router';
 import { RouteComponentProps } from 'react-router-dom';
+import { RootState } from 'typesafe-actions';
+import { logout } from '../../redux/actions';
+import { connect } from 'react-redux';
 
 interface State {
 	roles: RoleModel[];
@@ -21,8 +23,7 @@ interface State {
 	reLogin: boolean;
 }
 
-interface Props {}
-type RouteProps = Props & RouteComponentProps;
+type RouteProps = typeof mapDispatchToProps  & RouteComponentProps & ReturnType<typeof mapStateToProps>;
 
 class Role extends Component<RouteProps, State> {
 	columns: ColumnsType<any>;
@@ -190,16 +191,17 @@ class Role extends Component<RouteProps, State> {
 					}
 					modalProps={{
 						afterClose: () => {
-							if (StorageUtils.getUser().roleId === role.id?.toString()) {
-								StorageUtils.removeUser();
-								this.props.history.replace('/Login');
+              const user = this.props.user;
+							if (user.roleId === role.id?.toString()) {
+                this.props.logout();
 								message.info('修改当前用户信息，请重新登录');
 							}
 						},
 					}}
 					onFinish={async (values: Record<string, any>): Promise<boolean> => {
 						if (role.id !== undefined) {
-							role.authName = StorageUtils.getUser().name;
+              const user = this.props.user;
+							role.authName = user.name;
 							role.authTime = formatDateByString(new Date(), 'yyyy-MM-dd hh:mm:ss');
 							const result: string = await reqUpdateRole(role.id, role);
 							if (result === 'success') {
@@ -252,4 +254,13 @@ class Role extends Component<RouteProps, State> {
 		);
 	}
 }
-export default withRouter(Role);
+
+const mapStateToProps = (state: RootState) => ({
+	user: state.user,
+});
+
+const mapDispatchToProps = {
+	logout,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Role));

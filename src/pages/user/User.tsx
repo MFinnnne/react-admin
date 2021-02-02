@@ -4,11 +4,11 @@
  * @Author: MFine
  * @Date: 2020-10-14 21:16:42
  * @LastEditors: MFine
- * @LastEditTime: 2021-01-26 21:19:59
+ * @LastEditTime: 2021-02-03 01:28:36
  */
 import ProForm, { ModalForm, ProFormSelect, ProFormText } from '@ant-design/pro-form';
 import { Button, Card, message, Space, Table } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { reqAddUser, reqDeleteUser, reqRoles, reqUpdateUser, reqUsers } from '../../api';
 import { UserModel } from './model';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
@@ -16,6 +16,9 @@ import WrappedProFormText from '@ant-design/pro-form/lib/components/Text';
 import { RoleModel } from '../role/Model';
 import StorageUtils from '../../utils/StorageUtils';
 import { useHistory } from 'react-router';
+import { RootState } from 'typesafe-actions';
+import { useDispatch, useMappedState } from 'redux-react-hook';
+import { shallowEqual } from 'react-redux';
 
 const User = () => {
 	const [users, setUsers] = useState<UserModel[]>([]);
@@ -24,6 +27,15 @@ const User = () => {
 	const [isUpdate, setIsUpdate] = useState<boolean>(false);
 	const history = useHistory();
 
+	const mapState = useCallback(
+		(state: RootState) => ({
+			LoginUser: state.user,
+		}),
+		[]
+	);
+
+  const { LoginUser } = useMappedState(mapState, shallowEqual);
+  
 	const columns = [
 		{
 			title: '用户名',

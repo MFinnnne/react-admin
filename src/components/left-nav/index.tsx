@@ -4,7 +4,7 @@
  * @Author: MFine
  * @Date: 2020-10-14 21:16:42
  * @LastEditors: MFine
- * @LastEditTime: 2021-02-02 23:38:03
+ * @LastEditTime: 2021-02-02 23:56:52
  */
 import React, { Component } from 'react';
 import './index.less';
@@ -13,14 +13,14 @@ import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { Menu } from 'antd';
 import { menuList, MenuConfig } from '../../config/menuConfig';
 import * as Icon from '@ant-design/icons';
-import StorageUtils, { LoginUser } from '../../utils/StorageUtils';
+import { LoginUser } from '../../utils/StorageUtils';
 import { connect } from 'react-redux';
 import { RootState } from 'typesafe-actions';
 import { setHeadTitle } from '../../redux/actions';
 
 const { SubMenu } = Menu;
 
-type LeftNavProps = RouteComponentProps & typeof dispatchProps;
+type LeftNavProps = RouteComponentProps & typeof dispatchProps & ReturnType<typeof mapStateToProps>;
 
 class LeftNav extends Component<LeftNavProps, {}> {
 	menuNodes: JSX.Element[] = [];
@@ -44,8 +44,7 @@ class LeftNav extends Component<LeftNavProps, {}> {
 	};
 
 	private hasAuth = (node: MenuConfig): boolean => {
-    const user: LoginUser = StorageUtils.getUser();
-    
+    const user: LoginUser = this.props.user;
 		if (user.name === 'admin' || node.isPublic || (user.menus??[]).indexOf(node.key) !== -1) {
 			return true;
 		} else if (node.children) {
@@ -123,5 +122,6 @@ class LeftNav extends Component<LeftNavProps, {}> {
 }
 
 const dispatchProps = { setHeadTitle };
+const mapStateToProps = (state: RootState) => ({user:state.user})
 
-export default connect((state: RootState) => {}, dispatchProps)(withRouter(LeftNav));
+export default connect(mapStateToProps, dispatchProps)(withRouter(LeftNav));

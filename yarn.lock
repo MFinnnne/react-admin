@@ -10206,6 +10206,11 @@ redux-devtools-extension@^2.13.8:
   resolved "https://registry.npm.taobao.org/redux-devtools-extension/download/redux-devtools-extension-2.13.8.tgz#37b982688626e5e4993ff87220c9bbb7cd2d96e1"
   integrity sha1-N7mCaIYm5eSZP/hyIMm7t80tluE=
 
+redux-react-hook@^4.0.3:
+  version "4.0.3"
+  resolved "https://registry.npm.taobao.org/redux-react-hook/download/redux-react-hook-4.0.3.tgz#859a9ba517f7e2e934def3b6aaa5c5a8da921cdc"
+  integrity sha1-hZqbpRf34uk03vO2qqXFqNqSHNw=
+
 redux-thunk@^2.3.0:
   version "2.3.0"
   resolved "https://registry.npm.taobao.org/redux-thunk/download/redux-thunk-2.3.0.tgz#51c2c19a185ed5187aaa9a2d08b666d0d6467622"
