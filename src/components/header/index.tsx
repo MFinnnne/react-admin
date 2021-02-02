@@ -9,10 +9,10 @@ import StorageUtils from '../../utils/StorageUtils';
 import LinkButton from '../link-button';
 import { connect } from 'react-redux';
 import { RootState } from 'typesafe-actions';
-import { UserModel } from '../../pages/user/model';
 
 const mapStateToProps = (state: RootState) => ({
 	headTitle: state.headTitle,
+	user: state.user,
 });
 
 interface HeaderState {
@@ -21,12 +21,11 @@ interface HeaderState {
 	weather: string;
 }
 
-
-type HeaderProps =  RouteComponentProps & ReturnType<typeof mapStateToProps>;
+type HeaderProps = RouteComponentProps & ReturnType<typeof mapStateToProps>;
 
 class Header extends Component<HeaderProps, HeaderState> {
 	timerId: NodeJS.Timeout | null = null;
-	user: UserModel = StorageUtils.getUser();
+	user = this.props.user;
 
 	constructor(props: HeaderProps) {
 		super(props);
@@ -57,7 +56,6 @@ class Header extends Component<HeaderProps, HeaderState> {
 			});
 		}, 1000);
 	}
-
 
 	componentWillUnmount() {
 		if (this.timerId !== null) {
