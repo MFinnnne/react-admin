@@ -1,48 +1,31 @@
-/*
- * @Descripttion:
- * @version:
- * @Author: MFine
- * @Date: 2020-10-01 19:14:47
- * @LastEditors: MFine
- * @LastEditTime: 2021-02-06 23:40:49
- */
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { Card, Button } from 'antd';
 import ReactEcharts from 'echarts-for-react';
 
-interface State {
-	sales: number[];
-	storage: number[];
-}
+/*
+后台管理的柱状图路由组件
+ */
+const Bar = () => {
+	const [sales, setSales] = useState<number[]>([5, 20, 36, 10, 10, 20]);
+	const [stores, setStore] = useState<number[]>([6, 10, 25, 20, 15, 10]);
 
-class Bar extends Component<{}, State> {
-  echarts_react: any;
-	constructor(props: any) {
-		super(props);
-		this.state = {
-			sales: [5, 20, 36, 10, 10, 20],
-			storage: [6, 21, 37, 11, 11, 21],
-		};
-	}
-
-	private update = () => {
-		this.setState((state, props) => {
-			return {
-				sales: state.sales.map((item) => item + 1),
-				storage: state.storage.map((item) => item - 1),
-			};
-		});
+	const update = () => {
+		setSales(sales.map((e) => e + 1));
+		setStore(stores.map((e) => e - 1));
 	};
 
-	private getOption = (sales: number[], storage: number[]) => {
+	/*
+  返回柱状图的配置对象
+   */
+	const getOption = (sales: any, stores: any) => {
 		return {
 			title: {
 				text: 'ECharts 入门示例',
 			},
+			tooltip: {},
 			legend: {
 				data: ['销量', '库存'],
 			},
-      tooltip:{},
 			xAxis: {
 				data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子'],
 			},
@@ -56,27 +39,24 @@ class Bar extends Component<{}, State> {
 				{
 					name: '库存',
 					type: 'bar',
-					data: storage,
+					data: stores,
 				},
 			],
 		};
 	};
 
-	render() {
-		const { sales, storage } = this.state;
-		return (
-			<>
-				<Card>
-					<Button type="primary" onClick={this.update}>
-						更新
-					</Button>
-				</Card>
-				<Card title="柱状图一">
-					<ReactEcharts option={this.getOption(sales, storage)}></ReactEcharts>
-				</Card>
-			</>
-		);
-	}
-}
+	return (
+		<div>
+			<Card>
+				<Button type="primary" onClick={update}>
+					更新
+				</Button>
+			</Card>
 
+			<Card title="柱状图一">
+				<ReactEcharts option={getOption(sales, stores)} />
+			</Card>
+		</div>
+	);
+};
 export default Bar;
