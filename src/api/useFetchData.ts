@@ -1,6 +1,5 @@
 import { message } from 'antd';
 import Axios from 'axios';
-import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { ReqMethodEnum } from './ReqMethodEnum';
 
@@ -10,7 +9,7 @@ import { ReqMethodEnum } from './ReqMethodEnum';
  * @Author: MFine
  * @Date: 2021-01-23 21:42:50
  * @LastEditors: MFine
- * @LastEditTime: 2021-01-23 22:01:02
+ * @LastEditTime: 2021-01-30 22:16:52
  */
 
 interface FetChDataModel {

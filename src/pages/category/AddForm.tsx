@@ -17,7 +17,7 @@ interface IAddFormProps {
 	onCancel: () => void;
 	showStatus: ModalStatusCode;
 	categorys: ICategory[];
-	updateCategory: () => void;
+	updateCategory: (category:ICategory) => void;
 }
 export default class AddForm extends Component<IAddFormProps, {}> {
 	private onCancel = (): void => {
@@ -26,7 +26,7 @@ export default class AddForm extends Component<IAddFormProps, {}> {
 
 	private CreateModalFrom = (): any => {
 		const [form] = Form.useForm();
-		const { categorys, updateCategory } = this.props;
+		const { categorys, updateCategory,category } = this.props;
 		return (
 			<Modal
 				destroyOnClose={true}
@@ -47,7 +47,7 @@ export default class AddForm extends Component<IAddFormProps, {}> {
 							const result = await reqAddCategory(values.value, values.value === '0' ? '一级分类' : categorys[Number.parseInt(values.value) - 1].categoryName, values.title);
 							if (result.status === 0) {
 								message.info('添加成功');
-								updateCategory();
+								updateCategory(category);
 							} else {
 								message.error('添加失败');
 							}

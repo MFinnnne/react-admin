@@ -4,7 +4,7 @@
  * @Author: MFine
  * @Date: 2020-10-14 21:16:42
  * @LastEditors: MFine
- * @LastEditTime: 2021-01-24 13:46:11
+ * @LastEditTime: 2021-02-02 23:22:47
  */
 import React, { Component } from 'react';
 import { Layout } from 'antd';
@@ -18,13 +18,16 @@ import Bar from '../chars/Bar';
 import Line from '../chars/Line';
 import Pie from '../chars/Pie';
 import Home from '../home/Home';
-import StorageUtils from '../../utils/StorageUtils';
 import User from '../user/User';
+import { connect } from 'react-redux';
+import { RootState } from 'typesafe-actions';
 const { Footer, Sider, Content } = Layout;
 
-export default class admin extends Component {
+type IProps = ReturnType<typeof mapStateToProps>
+
+class admin extends Component<IProps,{}> {
 	render() {
-		const user = StorageUtils.getUser();
+		const user = this.props.user;
 		if (user === undefined || user.id === undefined) {
 			return <Redirect to="/login"></Redirect>;
 		}
@@ -54,3 +57,9 @@ export default class admin extends Component {
 		);
 	}
 }
+
+const mapStateToProps = (state:RootState)=>({
+  user:state.user
+})
+
+export default connect(mapStateToProps,{})(admin)

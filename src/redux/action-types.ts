@@ -1,12 +1,15 @@
 /*
- * @Descripttion: 
- * @version: 
+ * @Descripttion:
+ * @version:
  * @Author: MFine
  * @Date: 2021-01-27 23:40:08
  * @LastEditors: MFine
- * @LastEditTime: 2021-01-28 00:05:37
+ * @LastEditTime: 2021-02-02 23:31:59
  */
-export default function(){
-  console.log("ok")
 
-}
+
+
+export const SET_HEAD_TITLE = 'set_head_title';
+export const RECEIVE_USER = 'receive_user';
+export const SHOW_ERROR_MSG = 'show_error_msg';
+export const RESET_USER = 'reset_user';

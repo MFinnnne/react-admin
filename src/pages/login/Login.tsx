@@ -1,24 +1,25 @@
 import React, { Component } from 'react';
 import './login.less';
 import logo from '../../assets/images/logo.png';
-import { Form, Input, Button, message } from 'antd';
+import { Form, Input, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { RuleObject } from 'antd/lib/form';
 import { StoreValue } from 'antd/lib/form/interface';
-import { reqLogin, reqRoleById } from '../../api';
-import { Redirect, RouteComponentProps } from 'react-router';
-import StorageUtils from '../../utils/StorageUtils';
+import { Redirect, RouteComponentProps, withRouter } from 'react-router';
+import { connect } from 'react-redux';
+import { RootState } from 'typesafe-actions';
+import { login } from '../../redux/actions';
+import { bindActionCreators } from 'redux';
+import { LoginUser } from '../../utils/StorageUtils';
 
 /**
  *  登录的路由组件
  *  Author: MFine
  */
 
-interface IProps {}
+type LoginProps = RouteComponentProps & ReturnType<typeof mapDispatchToProps> & ReturnType<typeof mapStateToProps>;
 
-type LoginProps = IProps & RouteComponentProps;
-
-export default class Login extends Component<LoginProps, {}> {
+class Login extends Component<LoginProps, {}> {
 	validatePwd = (rule: RuleObject, value: StoreValue) => {
 		if (!value) {
 			return Promise.reject('密码必须输入');
@@ -35,20 +36,8 @@ export default class Login extends Component<LoginProps, {}> {
 		console.log('错了', errorInfo);
 	};
 
-	onFinish = async (values: { name: string; password: string }) => {
-		const response = await reqLogin(values.name, values.password);
-		if (response.status === 0) {
-			const id = response.data?.id ?? -1;
-			const name = response.data?.name ?? '';
-			const role = await reqRoleById(response.data?.roleId ?? '');
-			const menus = role.menus?.split(',') ?? [];
-			const roleId = response.data?.roleId ?? '';
-			StorageUtils.saveUser({ id, name, menus, roleId });
-			message.success('登录成功');
-			this.props.history.replace('/');
-		} else {
-			message.error('登录失败');
-		}
+	onFinish = (values: { name: string; password: string }) => {
+		this.props.login(values.name, values.password);
 	};
 
 	private loginFromCom() {
@@ -84,10 +73,11 @@ export default class Login extends Component<LoginProps, {}> {
 	}
 
 	render() {
-		const user = StorageUtils.getUser();
-		if (user.id !== undefined) {
+		const user: LoginUser = this.props.user;
+		if (user && user.id) {
 			return <Redirect to="/"></Redirect>;
 		}
+
 		return (
 			<div className="login">
 				<header className="login-header">
@@ -95,6 +85,7 @@ export default class Login extends Component<LoginProps, {}> {
 					<h1>React项目:后台管理系统</h1>
 				</header>
 				<section className="login-content">
+					<div className={user.errorMsg ? 'error-msg show' : 'error-msg'}>{user.errorMsg}</div>
 					<h2>用户登录</h2>
 					{this.loginFromCom()}
 				</section>
@@ -102,3 +93,17 @@ export default class Login extends Component<LoginProps, {}> {
 		);
 	}
 }
+
+const mapStateToProps = (state: RootState) => ({
+	user: state.user,
+});
+
+const mapDispatchToProps = (dispatch: any) =>
+	bindActionCreators(
+		{
+			login: login,
+		},
+		dispatch
+	);
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Login));

@@ -76,9 +76,6 @@ export default class PicturesWall extends Component<PicturesWallProps, PicturesW
 		});
 	};
 
-  private beforeUpload = ():boolean => {
-    return true;
-  }
 
 	private handleChange = async ({ file, fileList, event }: UploadChangeParam) => {
 		if (file.status === 'done') {

@@ -4,7 +4,7 @@
  * @Author: MFine
  * @Date: 2020-09-28 21:45:10
  * @LastEditors: MFine
- * @LastEditTime: 2021-01-23 23:35:28
+ * @LastEditTime: 2021-02-06 22:54:23
  */
 import { CategoryModel } from './../pages/category/Model';
 import { message } from 'antd';
@@ -212,7 +212,7 @@ export const reqUpdateProduct = (id: number, product: ProductsModel): Promise<Re
  * @test: test font
  * @msg: 增加角色
  * @param {}
- * @return {Promisse<ResponseValue<RoleModel[]>}
+ * @return {Promise<ResponseValue<RoleModel[]>}
  */
 export const reqRoles = (): Promise<ResponseValue<RoleModel[]>> =>
 	ajax<ResponseValue<RoleModel[]>>('/api/role/getRoles', {}, ReqMethodEnum.GET);

@@ -1,4 +1,5 @@
 {
+  "extends": "./node_modules/react-redux-typescript-scripts/tsconfig.json",
   "compilerOptions": {
     "target": "es5",
     "lib": [
@@ -24,6 +25,5 @@
     "src",
     "craco.config.js"
   ],
-  "extends": "./base-tsconfig.json"
-
+  
 }

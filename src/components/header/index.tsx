@@ -1,13 +1,31 @@
+/*
+ * @Descripttion:
+ * @version:
+ * @Author: MFine
+ * @Date: 2021-01-31 19:59:55
+ * @LastEditors: MFine
+ * @LastEditTime: 2021-02-02 23:43:29
+ */
 import { Modal } from 'antd';
 import React, { Component } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { reqWheater } from '../../api';
-import { MenuConfig, menuList } from '../../config/menuConfig';
 import { formatDate } from '../../utils/DateUtils';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import './index.less';
-import StorageUtils, { LoginUser } from '../../utils/StorageUtils';
 import LinkButton from '../link-button';
+import { connect } from 'react-redux';
+import { RootState } from 'typesafe-actions';
+import { logout } from '../../redux/actions';
+
+const mapStateToProps = (state: RootState) => ({
+	headTitle: state.headTitle,
+	user: state.user,
+});
+
+const mapDispatchToProps = {
+	logout
+};
 
 interface HeaderState {
 	currentTime: string;
@@ -15,12 +33,12 @@ interface HeaderState {
 	weather: string;
 }
 
-interface IProps {}
+type HeaderProps = RouteComponentProps & ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-type HeaderProps = IProps & RouteComponentProps;
 class Header extends Component<HeaderProps, HeaderState> {
 	timerId: NodeJS.Timeout | null = null;
-  user:LoginUser = StorageUtils.getUser();
+	user = this.props.user;
+
 	constructor(props: HeaderProps) {
 		super(props);
 		this.state = {
@@ -51,21 +69,6 @@ class Header extends Component<HeaderProps, HeaderState> {
 		}, 1000);
 	}
 
-	private getTitle(menuList: MenuConfig[]): string {
-		const path = this.props.location.pathname;
-		let title: string = '';
-		menuList.forEach((item) => {
-			if (item.key === path) {
-				title = item.title;
-				return;
-			} else {
-				const cItem = item.children?.find((cItem) => path.indexOf(cItem.key) === 0);
-				title = cItem?.title ?? title;
-			}
-		});
-		return title;
-	}
-
 	componentWillUnmount() {
 		if (this.timerId !== null) {
 			clearInterval(this.timerId);
@@ -78,8 +81,7 @@ class Header extends Component<HeaderProps, HeaderState> {
 			okText: '确认',
 			cancelText: '取消',
 			onOk: () => {
-				StorageUtils.removeUser();
-				this.props.history.replace('/login');
+				this.props.logout();
 			},
 			onCancel: () => {
 				console.log('cancel');
@@ -95,7 +97,7 @@ class Header extends Component<HeaderProps, HeaderState> {
 					<LinkButton onClick={this.logout.bind(this)}>退出</LinkButton>
 				</div>
 				<div className="header-bottom">
-					<div className="header-bottom-left">{this.getTitle(menuList)}</div>
+					<div className="header-bottom-left">{this.props.headTitle}</div>
 					<div className="header-bottom-right">
 						<span>{this.state.currentTime}</span>
 						<img src={this.state.dayPictureUrl} alt="weather"></img>
@@ -106,4 +108,5 @@ class Header extends Component<HeaderProps, HeaderState> {
 		);
 	}
 }
-export default withRouter(Header);
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Header));

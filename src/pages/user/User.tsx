@@ -4,26 +4,28 @@
  * @Author: MFine
  * @Date: 2020-10-14 21:16:42
  * @LastEditors: MFine
- * @LastEditTime: 2021-01-26 21:19:59
+ * @LastEditTime: 2021-02-04 16:20:43
  */
 import ProForm, { ModalForm, ProFormSelect, ProFormText } from '@ant-design/pro-form';
 import { Button, Card, message, Space, Table } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, {  useEffect, useState } from 'react';
 import { reqAddUser, reqDeleteUser, reqRoles, reqUpdateUser, reqUsers } from '../../api';
 import { UserModel } from './model';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import WrappedProFormText from '@ant-design/pro-form/lib/components/Text';
 import { RoleModel } from '../role/Model';
-import StorageUtils from '../../utils/StorageUtils';
-import { useHistory } from 'react-router';
+import {logout} from '../../redux/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from 'typesafe-actions';
+
 
 const User = () => {
 	const [users, setUsers] = useState<UserModel[]>([]);
 	const [roles, setRoles] = useState<RoleModel[]>([]);
 	const [user, setUser] = useState<UserModel>();
 	const [isUpdate, setIsUpdate] = useState<boolean>(false);
-	const history = useHistory();
-
+  const dispath =useDispatch();
+  const loginUser = useSelector((state:RootState)=>state.user);
 	const columns = [
 		{
 			title: '用户名',
@@ -60,10 +62,8 @@ const User = () => {
 						modalProps={{
 							onCancel: () => console.log(text, record),
 							afterClose: () => {
-								if (user?.name === StorageUtils.getUser().name) {
-									StorageUtils.removeUser();
-									message.info('修改当前用户信息，请重新登录');
-									history.replace('/Login');
+								if (user?.name === loginUser.name) {
+									dispath(logout());
 								}
 							},
 						}}
@@ -239,4 +239,5 @@ const User = () => {
 		</div>
 	);
 };
+
 export default User;

@@ -9,7 +9,7 @@ interface IUpdateFormProps {
 	category: ICategory;
 	showStatus: ModalStatusCode;
 	onCancel: () => void;
-	updateCategory: () => void;
+	updateCategory: (category:ICategory) => void;
 }
 
 interface IUpdateFormState {
@@ -46,7 +46,7 @@ export default class UpdateFrom extends Component<IUpdateFormProps, IUpdateFormS
 							if (result.status === 0) {
 								message.info('品类更新成功');
 								//更新列表
-								updateCategory();
+								updateCategory(category);
 							} else {
 								message.error('品类更新失败');
 							}
