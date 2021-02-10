@@ -4,18 +4,45 @@
  * @Author: MFine
  * @Date: 2020-10-01 19:10:44
  * @LastEditors: MFine
- * @LastEditTime: 2021-02-09 00:18:23
+ * @LastEditTime: 2021-02-10 17:25:36
  */
-import { Card, Statistic } from 'antd';
+import { Card, Statistic, DatePicker, Timeline } from 'antd';
 import { QuestionCircleOutlined, ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
-import React from 'react';
-import './home.less';
+import React, { useState } from 'react';
+import './home.scss';
 import Line from './line';
+import Bar from './bar';
+import moment from 'moment';
+
+const dateFormat = 'YYYY/MM/DD';
+
 const Home = () => {
+	const [key, setKey] = useState<string>('views');
+
+	const tabListNoTitle = [
+		{
+			key: 'views',
+			tab: <div style={{fontSize:'x-large'}}>访问量</div>,
+		},
+		{
+			key: 'sales',
+			tab:<div style={{fontSize:'x-large'}}>销售量</div>,
+		},
+	];
+
+	const contentListNoTitle = {
+		views: <Bar />,
+		sales: <Bar />,
+	};
+
+	const onTabChange = (key: string, type: string) => {
+		setKey(key);
+	};
+
 	return (
-		<>
-			<div className="home">
-				<Card title="商品总量" style={{ width: 250 }} extra={<QuestionCircleOutlined />}>
+		<div className='home'>
+			<div className="home-top">
+				<Card title="商品总量" style={{ width: 250 }} extra={<QuestionCircleOutlined />} className="home-statistic">
 					<Statistic value={112893} suffix={'个'}></Statistic>
 					<Statistic
 						value={15}
@@ -40,12 +67,39 @@ const Home = () => {
 						prefix="日同比"
 					></Statistic>
 				</Card>
-        <Line/>
+				<Line className="home-line" />
 			</div>
-			<div className="home1">
-				<Card></Card>
-			</div>
-		</>
+			<Card
+        className='home-content'
+				style={{ width: '100%' }}
+				tabList={tabListNoTitle}
+				activeTabKey={key}
+				extra={
+					<DatePicker.RangePicker
+						size="large"
+						defaultValue={[moment('2015/01/01', dateFormat), moment('2015/01/01', dateFormat)]}
+						format={dateFormat}
+					/>
+				}
+				onTabChange={(key) => {
+					onTabChange(key, 'noTitleKey');
+				}}
+			>
+				<div className="home-bottom">
+					<Card className="home-bar" title={<div className='title'>{tabListNoTitle.find((item) => item.key === key)?.tab}</div>}>
+						{contentListNoTitle[key]}
+					</Card>
+					<Card title="任务" className="home-timeline">
+						<Timeline>
+							<Timeline.Item>Create a services site 2015-09-01</Timeline.Item>
+							<Timeline.Item>Solve initial network problems 2015-09-01</Timeline.Item>
+							<Timeline.Item>Technical testing 2015-09-01</Timeline.Item>
+							<Timeline.Item>Network problems being solved 2015-09-01</Timeline.Item>
+						</Timeline>
+					</Card>
+				</div>
+			</Card>
+		</div>
 	);
 };
 

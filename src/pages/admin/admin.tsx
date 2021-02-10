@@ -1,10 +1,10 @@
 /*
- * @Descripttion: 
- * @version: 
+ * @Descripttion:
+ * @version:
  * @Author: MFine
  * @Date: 2020-10-14 21:16:42
  * @LastEditors: MFine
- * @LastEditTime: 2021-02-02 23:22:47
+ * @LastEditTime: 2021-02-10 17:37:05
  */
 import React, { Component } from 'react';
 import { Layout } from 'antd';
@@ -23,22 +23,22 @@ import { connect } from 'react-redux';
 import { RootState } from 'typesafe-actions';
 const { Footer, Sider, Content } = Layout;
 
-type IProps = ReturnType<typeof mapStateToProps>
+type IProps = ReturnType<typeof mapStateToProps>;
 
-class admin extends Component<IProps,{}> {
+class admin extends Component<IProps, {}> {
 	render() {
 		const user = this.props.user;
 		if (user === undefined || user.id === undefined) {
 			return <Redirect to="/login"></Redirect>;
 		}
 		return (
-			<Layout style={{ height: '100%' }}>
-				<Sider>
+			<Layout style={{ minHeight: '100%' }}>
+				<Sider >
 					<LeftNav></LeftNav>
 				</Sider>
 				<Layout>
 					<Header></Header>
-					<Content style={{ backgroundColor: '#fff',margin:'20px' }}>
+					<Content style={{ backgroundColor: '#fff', margin: '20px' }}>
 						<Switch>
 							<Route path="/home" component={Home}></Route>
 							<Route path="/category" component={Category}></Route>
@@ -51,15 +51,17 @@ class admin extends Component<IProps,{}> {
 							<Redirect to="/home"></Redirect>
 						</Switch>
 					</Content>
-					<Footer style={{ textAlign: 'center', color: '#cccccc' }}>推荐使用谷歌浏览器，可以获得最佳页面操作体验</Footer>
+					<Footer style={{ textAlign: 'center', color: '#cccccc' }}>
+						推荐使用谷歌浏览器，可以获得最佳页面操作体验
+					</Footer>
 				</Layout>
 			</Layout>
 		);
 	}
 }
 
-const mapStateToProps = (state:RootState)=>({
-  user:state.user
-})
+const mapStateToProps = (state: RootState) => ({
+	user: state.user,
+});
 
-export default connect(mapStateToProps,{})(admin)
+export default connect(mapStateToProps, {})(admin);
