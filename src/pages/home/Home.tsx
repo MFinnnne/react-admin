@@ -4,7 +4,7 @@
  * @Author: MFine
  * @Date: 2020-10-01 19:10:44
  * @LastEditors: MFine
- * @LastEditTime: 2021-02-10 17:25:36
+ * @LastEditTime: 2021-02-10 17:46:14
  */
 import { Card, Statistic, DatePicker, Timeline } from 'antd';
 import { QuestionCircleOutlined, ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
@@ -74,7 +74,7 @@ const Home = () => {
 				style={{ width: '100%' }}
 				tabList={tabListNoTitle}
 				activeTabKey={key}
-				extra={
+				tabBarExtraContent={
 					<DatePicker.RangePicker
 						size="large"
 						defaultValue={[moment('2015/01/01', dateFormat), moment('2015/01/01', dateFormat)]}
