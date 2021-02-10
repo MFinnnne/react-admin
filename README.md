@@ -1,44 +1,33 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 前言
 
-## Available Scripts
+学习React之后跟着尚硅谷教程写的一个后台管理系统。但是不同的是我用了TypeScript + React。后面尝试了React Hooks + Typescript个人感觉这样比较好用。单单Class组件结合ts会麻烦许多。
 
-In the project directory, you can run:
+## 主要依赖
 
-### `npm start`
+项目使用 create-react-app my-app --typescript创建。
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- [react](https://github.com/facebook/react)
+- [react-router](https://github.com/ReactTraining/react-router)
+- [react-redux](https://github.com/reduxjs/react-redux)
+- [antd](https://ant.design/index-cn)
+- [redux](https://github.com/reduxjs/redux)
+- [echarts](https://github.com/apache/echarts)
+- [bizcharts](https://github.com/alibaba/BizCharts)
+- [react-draft-wysiwyg](https://github.com/jpuri/react-draft-wysiwyg)
+- 其他省略...
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+## 功能模块
 
-### `npm test`
+- 首页
+- 导航菜单
+  - 侧边栏
+- 用户管理
+- 商品管理
+- 图形图表
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 结尾
 
-### `npm run build`
+经过该项目之后基本了解了TS和React结合之后的用法。全程参考了**[TypeScript-React-Starter](https://github.com/microsoft/TypeScript-React-Starter)**里面关于TS和React的用法。
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+最后大家有更好关于TS和React结合的用法可以一起交流！
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
