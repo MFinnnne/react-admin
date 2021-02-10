@@ -4,7 +4,7 @@
  * @Author: MFine
  * @Date: 2021-02-08 23:39:49
  * @LastEditors: MFine
- * @LastEditTime: 2021-02-10 14:38:31
+ * @LastEditTime: 2021-02-10 21:12:39
  */
 import React from "react";
 import {
@@ -232,7 +232,6 @@ const Line=(props:any)=> {
 						 (title:any, items:any) => {
 							 // 配置了 class="g2-tooltip-list" 则会将模版中的内容渲染进来
 							 // 您也可以根据 items 自行渲染
-               console.log(title,items);
 							 return (<table>
 								<thead>
 									<tr>
