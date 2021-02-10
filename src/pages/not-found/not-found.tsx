@@ -4,11 +4,11 @@
  * @Author: MFine
  * @Date: 2021-02-11 01:17:41
  * @LastEditors: MFine
- * @LastEditTime: 2021-02-11 01:42:57
+ * @LastEditTime: 2021-02-11 01:48:16
  */
 
 import { Button, Col, Row } from 'antd';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import { setHeadTitle } from '../../redux/actions';
@@ -18,9 +18,13 @@ const NotFound = () => {
 	const history = useHistory();
 	const dispatch = useDispatch();
 	const goHome = () => {
-		dispatch(setHeadTitle('404'));
+		dispatch(setHeadTitle('首页'));
 		history.push('/home');
 	};
+
+ useEffect(()=>{
+   dispatch(setHeadTitle('404'))
+ })
 	return (
 		<Row className="not-found">
 			<Col span={12} className="left"></Col>
