@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { RouteComponentProps, withRouter } from 'react-router';
 import LinkButton from '../../components/link-button';
-import { ProductsModel } from './Model';
 import { reqCategoryById } from '../../api';
+import MemoryUtils from '../../utils/MemoryUtils';
 
 interface ProductDetailState {
 	cName: string;
@@ -30,25 +30,25 @@ class ProductDetail extends Component<ProductDetailRoutePros, ProductDetailState
 	}
 
 	private async getCategoryName() {
-		const { categoryId, pcategoryId } = (this.props.location.state as any).product as ProductsModel;
+		const { categoryId, pcategoryId } = MemoryUtils.product??{};
 		if (pcategoryId === '0') {
-			const cResult = await reqCategoryById(categoryId);
+			const cResult = await reqCategoryById(categoryId??'');
 			this.setState({
 				cName: cResult.name,
 			});
 		} else {
-			Promise.all([reqCategoryById(categoryId), reqCategoryById(pcategoryId)]).then((value) => {
-        this.setState({
-          cName: value[0].name,
-          pName: value[1].name,
-        });
-      });
-			
+			Promise.all([reqCategoryById(categoryId??''), reqCategoryById(pcategoryId??'')]).then((value) => {
+				this.setState({
+					cName: value[0].name,
+					pName: value[1].name,
+				});
+			});
 		}
 	}
 
 	render() {
-		const { desc, detail, images, price, name } = (this.props.location.state as any).product as ProductsModel;
+   
+		const  { desc, detail, images, price, name } = MemoryUtils.product??{};
 		const { cName, pName } = this.state;
 		const imageList: string[] = images?.split(',') ?? [];
 		const title = (
@@ -99,7 +99,7 @@ class ProductDetail extends Component<ProductDetailRoutePros, ProductDetailState
 						</List.Item>
 						<List.Item className="item">
 							<span className="left">商品详情:</span>
-							<span dangerouslySetInnerHTML={{ __html: detail }}></span>
+							<span dangerouslySetInnerHTML={{ __html: detail??"" }}></span>
 						</List.Item>
 					</List>
 				</Card>

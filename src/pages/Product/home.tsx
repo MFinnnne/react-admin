@@ -7,6 +7,7 @@ import { ProductsModel } from './Model';
 import { PageSplitModel } from '../../api/Model';
 import { PAGE_SIZE } from '../../utils/Constants';
 import { RouteComponentProps, withRouter } from 'react-router';
+import MemoryUtils from '../../utils/MemoryUtils';
 /**
  * product的默认子路由组件
  */
@@ -37,9 +38,18 @@ class ProductHome extends Component<ProductHomeRouteProps, ProductHomeState> {
 			pageNum: 1,
 		};
 
-    this.initColumns();
+		this.initColumns();
 	}
 
+	private showDetails = (product: ProductsModel): void => {
+		MemoryUtils.product = product;
+		this.props.history.push('/product/detail');
+	};
+
+	private showUpdate = (product: ProductsModel) => {
+		MemoryUtils.product = product;
+		this.props.history.push('/product/add');
+	};
 	/**
 	 * @name: 初始化表头
 	 * @test: test font
@@ -73,10 +83,10 @@ class ProductHome extends Component<ProductHomeRouteProps, ProductHomeState> {
 							<Button
 								type="primary"
 								onClick={() => {
-                  if (id===undefined) {
-                    message.error("id为空");
-                    return;
-                  }
+									if (id === undefined) {
+										message.error('id为空');
+										return;
+									}
 									this.updateStatus(id, status === 1 ? 2 : 1);
 								}}
 							>
@@ -94,17 +104,15 @@ class ProductHome extends Component<ProductHomeRouteProps, ProductHomeState> {
 						<span>
 							<LinkButton
 								onClick={() => {
-									this.props.history.push('/product/detail', { product });
+									this.showDetails(product);
 								}}
 							>
 								详情
 							</LinkButton>
 							<LinkButton
-								onClick={
-									(() => {
-										this.props.history.push('/product/add',{ product});
-									})
-								}
+								onClick={() => {
+									this.showUpdate(product);
+								}}
 							>
 								修改
 							</LinkButton>
