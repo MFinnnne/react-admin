@@ -1,7 +1,20 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: MFine
+ * @Date: 2020-09-28 21:45:10
+ * @LastEditors: MFine
+ * @LastEditTime: 2021-02-11 23:09:01
+-->
 ## 前言
 
 学习React之后跟着尚硅谷教程写的一个后台管理系统。但是不同的是我用了TypeScript + React。后面尝试了React Hooks + Typescript个人感觉这样比较好用。单单Class组件结合ts会麻烦许多。
 
+后端项目地址:[react-admin-server](https://github.com/MFinnnne/react-admin-server)
+
+项目地址:[React-app](http://123.57.208.169:8888)
+
+随意查看，不要乱搞就行。。。。
 ## 主要依赖
 
 项目使用 create-react-app my-app --typescript创建。
