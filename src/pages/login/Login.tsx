@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './login.less';
 import logo from '../../assets/images/logo.png';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { RuleObject } from 'antd/lib/form';
 import { StoreValue } from 'antd/lib/form/interface';
@@ -38,6 +38,7 @@ class Login extends Component<LoginProps, {}> {
 
 	onFinish = (values: { name: string; password: string }) => {
 		this.props.login(values.name, values.password);
+    message.info("张旭你个傻逼，新年快乐呀")
 	};
 
 	private loginFromCom() {
