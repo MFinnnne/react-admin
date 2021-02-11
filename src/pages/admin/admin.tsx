@@ -4,13 +4,13 @@
  * @Author: MFine
  * @Date: 2020-10-14 21:16:42
  * @LastEditors: MFine
- * @LastEditTime: 2021-02-10 17:37:05
+ * @LastEditTime: 2021-02-11 01:32:47
  */
 import React, { Component } from 'react';
 import { Layout } from 'antd';
 import LeftNav from '../../components/left-nav';
 import Header from '../../components/header';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Redirect, Route,  Switch } from 'react-router-dom';
 import Category from '../category/Category';
 import Product from '../product/Product';
 import Role from '../role/Role';
@@ -21,6 +21,7 @@ import Home from '../home/Home';
 import User from '../user/User';
 import { connect } from 'react-redux';
 import { RootState } from 'typesafe-actions';
+import NotFound from '../not-found/not-found';
 const { Footer, Sider, Content } = Layout;
 
 type IProps = ReturnType<typeof mapStateToProps>;
@@ -33,13 +34,14 @@ class admin extends Component<IProps, {}> {
 		}
 		return (
 			<Layout style={{ minHeight: '100%' }}>
-				<Sider >
+				<Sider>
 					<LeftNav></LeftNav>
 				</Sider>
 				<Layout>
 					<Header></Header>
 					<Content style={{ backgroundColor: '#fff', margin: '20px' }}>
 						<Switch>
+							<Redirect exact={true} from="/" to="/home"></Redirect>
 							<Route path="/home" component={Home}></Route>
 							<Route path="/category" component={Category}></Route>
 							<Route path="/product" component={Product}></Route>
@@ -48,7 +50,7 @@ class admin extends Component<IProps, {}> {
 							<Route path="/bar" component={Bar}></Route>
 							<Route path="/line" component={Line}></Route>
 							<Route path="/pie" component={Pie}></Route>
-							<Redirect to="/home"></Redirect>
+							<Route component={NotFound}></Route>
 						</Switch>
 					</Content>
 					<Footer style={{ textAlign: 'center', color: '#cccccc' }}>

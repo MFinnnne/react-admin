@@ -12,6 +12,7 @@ import { ResponseValue } from '../../api/Model';
 import { ProductsModel } from './Model';
 import PicturesWall from './pictures-wall';
 import RichTextEditor from './rich-text-editor';
+import MemoryUtils from '../../utils/MemoryUtils';
 
 interface Options {
 	value: string;
@@ -54,7 +55,7 @@ class ProductAddUpdate extends Component<ProductAddUpdateRouteProps, ProductAddU
 		this.state = {
 			options: [],
 		};
-		const product: undefined | ProductsModel = (this.props.location.state as any)?.product as ProductsModel;
+		const product: undefined | ProductsModel = MemoryUtils.product;
 		this.isUpdate = !!product;
 		this.product = product;
 		this.getCategorys('0');
