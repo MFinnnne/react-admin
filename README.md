@@ -12,7 +12,7 @@
 
 后端项目地址:[react-admin-server](https://github.com/MFinnnne/react-admin-server)
 
-项目地址:[React-app](http://123.57.208.169:8888)
+项目地址:[React-app](http://http://159.75.128.32:8888)
 
 随意查看，不要乱搞就行。。。。
 ## 主要依赖
