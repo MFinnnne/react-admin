@@ -12,9 +12,8 @@
 
 后端项目地址:[react-admin-server](https://github.com/MFinnnne/react-admin-server)
 
-项目地址:[React-app](http://http://159.75.128.32:8888)
+由于云服务器到期（3月14号正式到期），本人也没有多余的钱去购买新的服务器，因此暂停提供线上服务 大家可以自己尝试本地部署。
 
-随意查看，不要乱搞就行。。。。
 ## 主要依赖
 
 项目使用 create-react-app my-app --typescript创建。
